@@ -1,0 +1,301 @@
+:root {
+  --motion-short: 240ms;
+  --motion-medium: 480ms;
+  --motion-long: 820ms;
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-lift: 6px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page-transition {
+  animation: page-enter var(--motion-medium) var(--motion-ease-out) both;
+}
+
+.animate-fade-up {
+  animation: fade-up var(--motion-long) var(--motion-ease-out) both;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--motion-medium) var(--motion-ease-out),
+    transform var(--motion-medium) var(--motion-ease-out);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fade-up var(--motion-medium) var(--motion-ease-out) both;
+  animation-delay: var(--stagger-delay, 0ms);
+}
+
+.card-hover {
+  transition: transform var(--motion-short) var(--motion-spring),
+    box-shadow var(--motion-short) var(--motion-ease-out);
+  will-change: transform;
+}
+
+.card-hover:hover {
+  transform: translateY(calc(var(--motion-lift) * -1));
+  box-shadow: 0 20px 40px rgba(11, 60, 93, 0.18);
+}
+
+.card-hover .card-media {
+  transition: transform var(--motion-medium) var(--motion-ease-out);
+}
+
+.card-hover:hover .card-media {
+  transform: scale(1.05);
+}
+
+.card-hover .card-overlay {
+  transition: opacity var(--motion-medium) var(--motion-ease-out);
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.card-hover:hover .card-overlay {
+  opacity: 0.35;
+}
+
+.btn-micro {
+  transition: transform var(--motion-short) var(--motion-spring),
+    box-shadow var(--motion-short) var(--motion-ease-out),
+    filter var(--motion-short) var(--motion-ease-out),
+    background-color var(--motion-short) var(--motion-ease-out);
+}
+
+.btn-micro:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+  box-shadow: 0 10px 24px rgba(11, 60, 93, 0.16);
+}
+
+.btn-micro:active {
+  transform: translateY(0) scale(0.98);
+  filter: brightness(0.98);
+}
+
+.nav-link {
+  position: relative;
+  color: var(--muted-foreground);
+  transition: opacity var(--motion-short) var(--motion-ease-out);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  background: var(--primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--motion-short) var(--motion-ease-out),
+    opacity var(--motion-short) var(--motion-ease-out);
+  opacity: 0.6;
+}
+
+.nav-link:hover {
+  opacity: 0.8;
+}
+
+.nav-link:hover::after {
+  transform: scaleX(0.4);
+}
+
+.nav-link-active {
+  color: var(--foreground);
+}
+
+.nav-link-active::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.auth-shell {
+  background:
+    radial-gradient(circle at top, rgba(49, 166, 177, 0.18), transparent 55%),
+    linear-gradient(135deg, rgba(11, 60, 93, 0.12), transparent 45%);
+}
+
+.auth-hero {
+  animation: fade-up var(--motion-long) var(--motion-ease-out) both;
+}
+
+.auth-panel {
+  animation: fade-up var(--motion-medium) var(--motion-ease-out) both;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.auth-input-icon {
+  transition: transform var(--motion-short) var(--motion-spring),
+    color var(--motion-short) var(--motion-ease-out);
+}
+
+.auth-input:focus-within .auth-input-icon {
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.admin-nav-link {
+  position: relative;
+  color: var(--muted-foreground);
+  transition: color var(--motion-short) var(--motion-ease-out),
+    background-color var(--motion-short) var(--motion-ease-out);
+}
+
+.admin-nav-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity var(--motion-short) var(--motion-ease-out);
+}
+
+.admin-nav-link:hover {
+  color: var(--foreground);
+  background-color: var(--accent);
+}
+
+.admin-nav-link-active {
+  color: var(--foreground);
+  background-color: var(--accent);
+}
+
+.admin-nav-link-active::before {
+  opacity: 1;
+}
+
+.admin-row {
+  transition: background-color var(--motion-short) var(--motion-ease-out),
+    border-color var(--motion-short) var(--motion-ease-out);
+}
+
+.admin-row:hover {
+  background-color: var(--accent);
+}
+
+.admin-row-actions {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--motion-short) var(--motion-ease-out),
+    transform var(--motion-short) var(--motion-ease-out);
+}
+
+.admin-row:hover .admin-row-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-parallax {
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.admin-section {
+  animation: admin-fade var(--motion-short) var(--motion-ease-in-out) both;
+}
+
+@media (max-width: 768px) {
+  .hero-parallax {
+    background-attachment: scroll;
+  }
+
+  .reveal,
+  .stagger-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition,
+  .animate-fade-up,
+  .reveal,
+  .stagger-item,
+  .card-hover,
+  .card-hover .card-media,
+  .btn-micro,
+  .auth-hero,
+  .auth-panel,
+  .auth-input-icon,
+  .admin-section,
+  .admin-row,
+  .admin-row-actions {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .hero-parallax {
+    background-attachment: scroll;
+  }
+
+  .reveal,
+  .stagger-item {
+    opacity: 1 !important;
+  }
+}

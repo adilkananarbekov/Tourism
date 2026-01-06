@@ -1,0 +1,201 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userRole() {
+      return isSignedIn()
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : null;
+    }
+
+    function isAdmin() {
+      return isSignedIn()
+        && (request.auth.token.admin == true || userRole() == 'admin');
+    }
+
+    function isSeller() {
+      return isSignedIn()
+        && (request.auth.token.role == 'seller' || userRole() == 'seller');
+    }
+
+    function isValidCustomTourRequest() {
+      return request.resource.data.keys().hasOnly([
+        'groupSize',
+        'startDate',
+        'endDate',
+        'startLocation',
+        'endLocation',
+        'sights',
+        'activities',
+        'pace',
+        'accommodation',
+        'name',
+        'email',
+        'phone',
+        'budget',
+        'specialRequests',
+        'userId',
+        'createdAt',
+        'status'
+      ])
+      && request.resource.data.groupSize is int
+      && request.resource.data.groupSize > 0
+      && request.resource.data.startDate is string
+      && request.resource.data.endDate is string
+      && request.resource.data.startLocation is string
+      && request.resource.data.endLocation is string
+      && request.resource.data.sights is list
+      && request.resource.data.activities is list
+      && request.resource.data.pace is string
+      && request.resource.data.accommodation is string
+      && request.resource.data.name is string
+      && request.resource.data.email is string
+      && request.resource.data.phone is string
+      && request.resource.data.budget is string
+      && request.resource.data.specialRequests is string
+      && request.resource.data.userId is string
+      && request.resource.data.createdAt == request.time
+      && request.resource.data.status is string;
+    }
+
+    function isValidBookingRequest() {
+      return request.resource.data.keys().hasOnly([
+        'tourId',
+        'tourTitle',
+        'name',
+        'email',
+        'phone',
+        'participants',
+        'startDate',
+        'endDate',
+        'notes',
+        'pricePerPerson',
+        'totalPrice',
+        'userId',
+        'createdAt',
+        'status'
+      ])
+      && request.resource.data.tourId is int
+      && request.resource.data.tourTitle is string
+      && request.resource.data.name is string
+      && request.resource.data.email is string
+      && request.resource.data.phone is string
+      && request.resource.data.participants is int
+      && request.resource.data.participants > 0
+      && request.resource.data.startDate is string
+      && request.resource.data.endDate is string
+      && request.resource.data.notes is string
+      && request.resource.data.pricePerPerson is string
+      && request.resource.data.totalPrice is string
+      && request.resource.data.userId is string
+      && request.resource.data.createdAt == request.time
+      && request.resource.data.status is string;
+    }
+
+    function isValidSellerSubmission() {
+      return request.resource.data.keys().hasOnly([
+        'title',
+        'duration',
+        'price',
+        'season',
+        'tourType',
+        'description',
+        'highlights',
+        'itinerary',
+        'image',
+        'contactName',
+        'contactEmail',
+        'ownerId',
+        'status',
+        'createdAt'
+      ])
+      && request.resource.data.title is string
+      && request.resource.data.duration is string
+      && request.resource.data.price is string
+      && request.resource.data.season is string
+      && request.resource.data.tourType is string
+      && request.resource.data.description is string
+      && request.resource.data.highlights is list
+      && request.resource.data.itinerary is list
+      && request.resource.data.image is string
+      && request.resource.data.contactName is string
+      && request.resource.data.contactEmail is string
+      && request.resource.data.ownerId is string
+      && request.resource.data.status is string
+      && request.resource.data.createdAt == request.time;
+    }
+
+    function isValidFeedback() {
+      return request.resource.data.keys().hasOnly([
+        'name',
+        'rating',
+        'comments',
+        'createdAt'
+      ])
+      && request.resource.data.name is string
+      && request.resource.data.rating is int
+      && request.resource.data.rating >= 1
+      && request.resource.data.rating <= 5
+      && request.resource.data.comments is string
+      && request.resource.data.createdAt == request.time;
+    }
+
+    match /tours/{tourId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /sights/{sightId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /blogPosts/{postId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /feedback/{feedbackId} {
+      allow create: if isValidFeedback();
+      allow read: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    match /customTourRequests/{requestId} {
+      allow create: if isSignedIn()
+        && isValidCustomTourRequest()
+        && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /bookings/{bookingId} {
+      allow create: if isSignedIn()
+        && isValidBookingRequest()
+        && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /sellerSubmissions/{submissionId} {
+      allow create: if isSeller()
+        && isValidSellerSubmission()
+        && request.resource.data.ownerId == request.auth.uid;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.ownerId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
+      allow write: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
+    }
+
+    match /content/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

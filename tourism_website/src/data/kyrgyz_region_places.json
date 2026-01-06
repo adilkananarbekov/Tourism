@@ -1,0 +1,199 @@
+[
+  {
+    "name": "Chuy",
+    "description": "Northern region with the capital Bishkek, known for historic sites and mountain valleys.",
+    "places": [
+      {
+        "name": "Burana Tower",
+        "description": "An 11th-century minaret near Tokmok; one of the oldest structures in Central Asia.",
+        "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Ala-Archa Gorge",
+        "description": "Alpine national park offering hiking trails, waterfalls and glaciers.",
+        "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Chon-Kemin National Park",
+        "description": "Scenic valley with forests, rivers and horseback-riding opportunities.",
+        "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Suusamyr Valley",
+        "description": "High-altitude valley famous for its summer pastures and wildflowers.",
+        "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80"
+      }
+    ]
+  },
+  {
+    "name": "Issyk-Kul",
+    "description": "Eastern region dominated by Issyk-Kul Lake and dramatic mountain ranges.",
+    "places": [
+      {
+        "name": "Issyk-Kul Lake",
+        "description": "Gigantic alpine lake that never freezes, called the 'Pearl of Kyrgyzstan'",
+        "imageUrl": "https://images.unsplash.com/photo-1717341248908-fba98ac15111?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Jety-Oguz Gorge",
+        "description": "Red sandstone cliffs nicknamed the 'Seven Bulls' and therapeutic hot springs",
+        "imageUrl": "https://images.unsplash.com/photo-1717341248908-fba98ac15111?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Fairy Tale Canyon (Skazka)",
+        "description": "Colorful canyon with wind-carved formations resembling castles and creatures",
+        "imageUrl": "https://images.unsplash.com/photo-1717341248908-fba98ac15111?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Altyn-Arashan",
+        "description": "High valley with natural hot springs and alpine meadows accessible via Karakol",
+        "imageUrl": "https://images.unsplash.com/photo-1717341248908-fba98ac15111?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Ala-Kul Lake",
+        "description": "Turquoise glacial lake reached by a challenging trek from Karakol",
+        "imageUrl": "https://images.unsplash.com/photo-1717341248908-fba98ac15111?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Barskoon Waterfall",
+        "description": "Dramatic waterfalls on the southern shore; gateway to high passes",
+        "imageUrl": "https://images.unsplash.com/photo-1717341248908-fba98ac15111?auto=format&fit=crop&w=800&q=80"
+      }
+    ]
+  },
+  {
+    "name": "Talas",
+    "description": "North-western region famous for Kyrgyz epic heritage and rural charm.",
+    "places": [
+      {
+        "name": "Manas Mausoleum (Manas Kumbez)",
+        "description": "Memorial complex dedicated to the legendary hero Manas",
+        "imageUrl": "https://images.unsplash.com/photo-1563725774215-b0040bd214cd?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Sheker (Aitmatov Museum)",
+        "description": "Village where writer Chyngyz Aitmatov was born; houses a museum in his honour",
+        "imageUrl": "https://images.unsplash.com/photo-1563725774215-b0040bd214cd?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Besh-Tash National Park",
+        "description": "Mountain park with lakes, forests and nomad settlements.",
+        "imageUrl": "https://images.unsplash.com/photo-1563725774215-b0040bd214cd?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Talassky Valley",
+        "description": "Scenic valley known for horse pastures and traditional lifestyle.",
+        "imageUrl": "https://images.unsplash.com/photo-1563725774215-b0040bd214cd?auto=format&fit=crop&w=800&q=80"
+      }
+    ]
+  },
+  {
+    "name": "Naryn",
+    "description": "Central mountainous region with high plateaus and nomadic heritage.",
+    "places": [
+      {
+        "name": "Song-Kol Lake",
+        "description": "High-mountain lake where travellers can stay in yurts and experience nomadic life",
+        "imageUrl": "https://images.unsplash.com/photo-1695554477492-303aacd40561?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Tash-Rabat Caravanserai",
+        "description": "15th-century stone caravanserai on the Silk Road near the Chinese border",
+        "imageUrl": "https://images.unsplash.com/photo-1695554477492-303aacd40561?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "description": "Remote glacial lake surrounded by sheer cliffs; requires off-road travel and border permit",
+        "imageUrl": "https://images.unsplash.com/photo-1695554477492-303aacd40561?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Naryn City",
+        "description": "Administrative centre perched along a deep gorge; gateway to Eki-Naryn and At-Bashi valleys.",
+        "imageUrl": "https://images.unsplash.com/photo-1695554477492-303aacd40561?auto=format&fit=crop&w=800&q=80"
+      }
+    ]
+  },
+  {
+    "name": "Jalal-Abad",
+    "description": "South-western region with lush forests, reservoirs and cultural diversity.",
+    "places": [
+      {
+        "name": "Sary-Chelek Biosphere Reserve",
+        "description": "UNESCO-listed reserve with an alpine lake surrounded by dense forests",
+        "imageUrl": "https://images.unsplash.com/photo-1603475429038-44361bcde123?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Toktogul Reservoir",
+        "description": "Largest reservoir in Kyrgyzstan and Central Asia",
+        "imageUrl": "https://images.unsplash.com/photo-1603475429038-44361bcde123?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Arslanbob Walnut Forest",
+        "description": "World's largest natural walnut forest and the birthplace of the walnut",
+        "imageUrl": "https://images.unsplash.com/photo-1603475429038-44361bcde123?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Jalal-Abad City",
+        "description": "Regional capital known for mineral springs and traditional bazaars.",
+        "imageUrl": "https://images.unsplash.com/photo-1603475429038-44361bcde123?auto=format&fit=crop&w=800&q=80"
+      }
+    ]
+  },
+  {
+    "name": "Osh",
+    "description": "Southern region nicknamed the 'second capital' with ancient history and stunning peaks.",
+    "places": [
+      {
+        "name": "Sulaiman-Too Mountain",
+        "description": "UNESCO-listed sacred mountain rising above Osh city",
+        "imageUrl": "https://images.unsplash.com/photo-1654139800156-65f9afb0fa01?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Uzgen Minaret & Mausoleums",
+        "description": "Ancient complex from the Karakhanid dynasty with ornate brickwork.",
+        "imageUrl": "https://images.unsplash.com/photo-1654139800156-65f9afb0fa01?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Lenin Peak",
+        "description": "One of Kyrgyzstan's highest peaks located in the Pamir Alai range",
+        "imageUrl": "https://images.unsplash.com/photo-1654139800156-65f9afb0fa01?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Alai Valley",
+        "description": "High valley connecting Kyrgyzstan and Tajikistan, offering views of the Pamir Mountains",
+        "imageUrl": "https://images.unsplash.com/photo-1654139800156-65f9afb0fa01?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Tulpar-Kol Lake",
+        "description": "Picturesque alpine lake near the base camp for climbing Lenin Peak",
+        "imageUrl": "https://images.unsplash.com/photo-1654139800156-65f9afb0fa01?auto=format&fit=crop&w=800&q=80"
+      }
+    ]
+  },
+  {
+    "name": "Batken",
+    "description": "Remote south-western region known for its rugged terrain and endemic flowers.",
+    "places": [
+      {
+        "name": "Aigul-Tash Mountain",
+        "description": "Mountain where the rare Aigul flower blooms",
+        "imageUrl": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Karavshan Gorge",
+        "description": "High-cliffed gorge popular with climbers and trekkers",
+        "imageUrl": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Ai-Kul Lake",
+        "description": "Mountain lake with crystal-clear water",
+        "imageUrl": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "name": "Kahn Fortress",
+        "description": "Historic fortress ruins perched on a hill",
+        "imageUrl": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80"
+      }
+    ]
+  }
+]

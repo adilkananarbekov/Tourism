@@ -1,0 +1,566 @@
+export interface Tour {
+  id: number;
+  title: string;
+  duration: string;
+  tourType: string;
+  season: string;
+  description: string;
+  image: string;
+  price: string;
+  locations?: {
+    name: string;
+    lat: number;
+    lng: number;
+  }[];
+  highlights: string[];
+  itinerary: {
+    day: number;
+    title: string;
+    description: string;
+  }[];
+  packingList: string[];
+  practicalInfo: {
+    accommodation: string;
+    meals: string;
+    difficulty: string;
+    groupSize: string;
+    included: string[];
+    notIncluded: string[];
+  };
+}
+
+export const tours: Tour[] = [
+  {
+    id: 1,
+    title: 'Song-Kul Lake Expedition',
+    duration: '7 days',
+    tourType: 'Trekking & Culture',
+    season: 'Summer',
+    description: 'Journey to the pristine high-altitude Song-Kul Lake and experience authentic nomadic life in traditional yurts.',
+    image: 'https://images.unsplash.com/photo-1717341248908-fba98ac15111?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBpbmUlMjBsYWtlJTIwdHVycXVvaXNlfGVufDF8fHx8MTc2Njk0NDczOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    price: '$890',
+    locations: [
+      { name: 'Song-Kul Lake', lat: 41.807, lng: 75.297 },
+      { name: 'Bishkek', lat: 42.8746, lng: 74.5698 }
+    ],
+    highlights: [
+      'Stay in traditional yurts with nomadic families',
+      'Horseback riding around Song-Kul Lake',
+      'Witness traditional eagle hunting demonstrations',
+      'Experience authentic Kyrgyz cuisine',
+      'Visit ancient petroglyphs'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Bishkek',
+        description: 'Pick up from airport, transfer to hotel. City orientation tour including Ala-Too Square and Osh Bazaar.'
+      },
+      {
+        day: 2,
+        title: 'Bishkek to Kochkor',
+        description: 'Drive through scenic mountain passes to Kochkor village. Visit local felt-making workshop.'
+      },
+      {
+        day: 3,
+        title: 'Trek to Song-Kul Lake',
+        description: 'Begin trek to Song-Kul Lake (3,016m). Arrive at yurt camp and settle in with nomadic family.'
+      },
+      {
+        day: 4,
+        title: 'Song-Kul Exploration',
+        description: 'Horseback riding around the lake. Optional fishing. Evening cultural performance.'
+      },
+      {
+        day: 5,
+        title: 'Song-Kul Activities',
+        description: 'Participate in daily nomadic activities. Learn traditional crafts. Sunset photography.'
+      },
+      {
+        day: 6,
+        title: 'Return to Bishkek',
+        description: 'Morning at leisure. Trek back and drive to Bishkek. Farewell dinner.'
+      },
+      {
+        day: 7,
+        title: 'Departure',
+        description: 'Transfer to airport for departure flight.'
+      }
+    ],
+    packingList: [
+      'Warm sleeping bag (temperatures can drop to 5 C)',
+      'Waterproof hiking boots',
+      'Layered clothing (thermal underwear, fleece, waterproof jacket)',
+      'Sun protection (hat, sunglasses, sunscreen)',
+      'Personal first aid kit',
+      'Reusable water bottle',
+      'Headlamp or flashlight',
+      'Camera and extra batteries'
+    ],
+    practicalInfo: {
+      accommodation: 'Mix of hotels (Bishkek) and traditional yurts (Song-Kul)',
+      meals: 'All meals included from Day 2 lunch to Day 6 breakfast',
+      difficulty: 'Moderate - suitable for regular hikers',
+      groupSize: '4-12 participants',
+      included: [
+        'Airport transfers',
+        'All accommodation',
+        'Transportation in private vehicle',
+        'English-speaking guide',
+        'Entrance fees',
+        'Horse rental at Song-Kul',
+        'All meals as specified'
+      ],
+      notIncluded: [
+        'International flights',
+        'Travel insurance',
+        'Personal expenses',
+        'Tips for guides and drivers',
+        'Alcoholic beverages'
+      ]
+    }
+  },
+  {
+    id: 2,
+    title: 'Ala-Archa Gorge Adventure',
+    duration: '3 days',
+    tourType: 'Hiking',
+    season: 'All seasons',
+    description: 'Explore the stunning Ala-Archa National Park with its dramatic gorges, alpine meadows, and snow-capped peaks.',
+    image: 'https://images.unsplash.com/photo-1603475429038-44361bcde123?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoaWtpbmclMjBtb3VudGFpbiUyMHRyYWlsfGVufDF8fHx8MTc2NjkyNzY3NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    price: '$450',
+    locations: [
+      { name: 'Ala-Archa National Park', lat: 42.65, lng: 74.48 },
+      { name: 'Bishkek', lat: 42.8746, lng: 74.5698 }
+    ],
+    highlights: [
+      'Trek to Ak-Sai glacier viewpoint',
+      'Pristine alpine scenery just 40km from Bishkek',
+      'Spot rare wildlife including ibex and snow leopards',
+      'Visit local alpine research station',
+      'Photography opportunities'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Bishkek to Ala-Archa',
+        description: 'Morning pickup and drive to Ala-Archa National Park. Begin hiking to base camp.'
+      },
+      {
+        day: 2,
+        title: 'Glacier Trek',
+        description: 'Full day trek to Ak-Sai glacier viewpoint (3,900m). Return to base camp.'
+      },
+      {
+        day: 3,
+        title: 'Return to Bishkek',
+        description: 'Morning descent and return to Bishkek. City tour if time permits.'
+      }
+    ],
+    packingList: [
+      'Sturdy hiking boots',
+      'Warm layers and rain gear',
+      'Sunscreen and sunglasses',
+      'Water bottle',
+      'Snacks for trail',
+      'Camera',
+      'Small backpack (25-30L)'
+    ],
+    practicalInfo: {
+      accommodation: 'Alpine huts or tents',
+      meals: 'All meals included',
+      difficulty: 'Moderate to challenging',
+      groupSize: '4-10 participants',
+      included: [
+        'All transportation',
+        'Park entrance fees',
+        'Experienced guide',
+        'All meals',
+        'Camping equipment'
+      ],
+      notIncluded: [
+        'Travel insurance',
+        'Personal gear',
+        'Tips',
+        'Extra snacks'
+      ]
+    }
+  },
+  {
+    id: 3,
+    title: 'Silk Road Heritage Tour',
+    duration: '10 days',
+    tourType: 'Cultural & Historical',
+    season: 'Spring & Autumn',
+    description: 'Follow ancient Silk Road routes through Kyrgyzstan, visiting historic caravanserais, bazaars, and UNESCO sites.',
+    image: 'https://images.unsplash.com/photo-1695554477492-303aacd40561?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5dXJ0JTIwdHJhZGl0aW9uYWwlMjBjYW1waW5nfGVufDF8fHx8MTc2Njk0NDczOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    price: '$1,450',
+    locations: [
+      { name: 'Issyk-Kul Lake', lat: 42.455, lng: 77.185 },
+      { name: 'Tash Rabat', lat: 40.722, lng: 75.13 },
+      { name: 'Osh', lat: 40.53, lng: 72.8 }
+    ],
+    highlights: [
+      'Explore Burana Tower and ancient Balasagun',
+      'Visit vibrant Osh Bazaar and Jayma Bazaar',
+      'Stay at Tash Rabat caravanserai',
+      'Discover Issyk-Kul Lake, the "Pearl of Kyrgyzstan"',
+      'Meet local craftspeople and artisans'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Bishkek',
+        description: 'Airport transfer and city tour. Visit State History Museum and Ala-Too Square.'
+      },
+      {
+        day: 2,
+        title: 'Bishkek to Cholpon-Ata',
+        description: 'Visit Burana Tower. Continue to Issyk-Kul Lake. Explore ancient petroglyphs.'
+      },
+      {
+        day: 3,
+        title: 'Issyk-Kul Exploration',
+        description: 'Visit Przhevalsky Museum. Relax at hot springs. Beach time at the lake.'
+      },
+      {
+        day: 4,
+        title: 'To Karakol',
+        description: 'Drive to Karakol. Visit Dungan Mosque and Russian Orthodox Cathedral.'
+      },
+      {
+        day: 5,
+        title: 'Jeti-Oguz & Skazka Canyon',
+        description: 'Explore Seven Bulls rocks and Fairytale Canyon. Return to Karakol.'
+      },
+      {
+        day: 6,
+        title: 'To Kochkor',
+        description: 'Cross mountain passes to Kochkor. Visit felt-making cooperative.'
+      },
+      {
+        day: 7,
+        title: 'To Tash Rabat',
+        description: 'Journey to the ancient Tash Rabat caravanserai. Overnight in nearby yurt camp.'
+      },
+      {
+        day: 8,
+        title: 'To Osh',
+        description: 'Long but scenic drive to Osh via Torugart Pass area.'
+      },
+      {
+        day: 9,
+        title: 'Osh Exploration',
+        description: 'Visit Solomon\'s Throne. Explore Jayma Bazaar. Local craft workshops.'
+      },
+      {
+        day: 10,
+        title: 'Departure from Osh',
+        description: 'Transfer to airport for departure.'
+      }
+    ],
+    packingList: [
+      'Comfortable walking shoes',
+      'Light layers for varying temperatures',
+      'Sun protection',
+      'Camera with extra storage',
+      'Modest clothing for religious sites',
+      'Small daypack',
+      'Personal medications'
+    ],
+    practicalInfo: {
+      accommodation: 'Hotels and guesthouses (mix of yurts in some locations)',
+      meals: 'Daily breakfast, selected lunches and dinners',
+      difficulty: 'Easy - mostly driving and short walks',
+      groupSize: '6-14 participants',
+      included: [
+        'All transportation',
+        'Accommodation',
+        'Experienced cultural guide',
+        'Entrance fees',
+        'Most meals'
+      ],
+      notIncluded: [
+        'International flights',
+        'Travel insurance',
+        'Some meals',
+        'Personal expenses',
+        'Tips'
+      ]
+    }
+  },
+  {
+    id: 4,
+    title: 'Horseback Riding Expedition',
+    duration: '5 days',
+    tourType: 'Horse Riding',
+    season: 'Summer',
+    description: 'Experience the nomadic way of life on horseback, riding through valleys, over passes, and along mountain ridges.',
+    image: 'https://images.unsplash.com/photo-1654139800156-65f9afb0fa01?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3JzZSUyMHJpZGluZyUyMG1vdW50YWluc3xlbnwxfHx8fDE3NjY5NDQ3Mzh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    price: '$780',
+    locations: [
+      { name: 'Kochkor', lat: 42.216, lng: 75.756 },
+      { name: 'Song-Kul Lake', lat: 41.807, lng: 75.297 }
+    ],
+    highlights: [
+      'Multi-day horseback adventure',
+      'Camp in remote mountain valleys',
+      'Learn traditional horse care from locals',
+      'Spectacular mountain scenery',
+      'Authentic nomadic experience'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Bishkek to Kochkor',
+        description: 'Drive to Kochkor. Meet horses and guides. Horse riding basics introduction.'
+      },
+      {
+        day: 2,
+        title: 'Ride to First Camp',
+        description: '5-6 hours riding through valleys. Set up camp near river.'
+      },
+      {
+        day: 3,
+        title: 'Mountain Pass Crossing',
+        description: 'Cross high mountain pass (3,200m). Descend to alpine meadow camp.'
+      },
+      {
+        day: 4,
+        title: 'Valley Exploration',
+        description: 'Ride through pristine valleys. Visit nomadic family. Cultural exchange.'
+      },
+      {
+        day: 5,
+        title: 'Return Journey',
+        description: 'Ride back to Kochkor. Return to Bishkek in afternoon.'
+      }
+    ],
+    packingList: [
+      'Riding pants or comfortable trousers',
+      'Closed-toe shoes with heel (riding boots ideal)',
+      'Warm and waterproof layers',
+      'Gloves',
+      'Sun protection',
+      'Personal toiletries',
+      'Sleeping bag',
+      'Water bottle'
+    ],
+    practicalInfo: {
+      accommodation: 'Camping in tents',
+      meals: 'All meals included',
+      difficulty: 'Moderate - some riding experience recommended',
+      groupSize: '4-8 participants',
+      included: [
+        'All transportation',
+        'Horse rental and gear',
+        'Camping equipment',
+        'Experienced guide and horse handler',
+        'All meals',
+        'National Park fees'
+      ],
+      notIncluded: [
+        'Travel insurance',
+        'Personal riding gear',
+        'Tips',
+        'Personal expenses'
+      ]
+    }
+  },
+  {
+    id: 5,
+    title: 'Peak Lenin Base Camp Trek',
+    duration: '12 days',
+    tourType: 'Mountaineering',
+    season: 'Summer',
+    description: 'Challenge yourself with a trek to the base camp of Peak Lenin (7,134m), one of the most accessible 7,000m peaks.',
+    image: 'https://images.unsplash.com/photo-1563725774215-b0040bd214cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb3VudGFpbiUyMHRyZWtraW5nJTIwYWR2ZW50dXJlfGVufDF8fHx8MTc2NjkwMjYzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    price: '$1,680',
+    locations: [
+      { name: 'Peak Lenin Base Camp', lat: 39.348, lng: 72.877 },
+      { name: 'Osh', lat: 40.53, lng: 72.8 }
+    ],
+    highlights: [
+      'Trek to 4,400m base camp',
+      'Spectacular views of 7,000m+ peaks',
+      'Acclimatization and mountaineering training',
+      'Meet international climbers',
+      'Experience high-altitude camping'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive Osh',
+        description: 'Airport transfer. City orientation. Gear check.'
+      },
+      {
+        day: 2,
+        title: 'Drive to Sary-Tash',
+        description: 'Scenic drive through Alay Valley. Overnight in guesthouse.'
+      },
+      {
+        day: 3,
+        title: 'To Achik-Tash Base (3,600m)',
+        description: 'Drive to trailhead. Begin acclimatization.'
+      },
+      {
+        day: 4,
+        title: 'Acclimatization Day',
+        description: 'Short hikes around base camp. Mountaineering briefing.'
+      },
+      {
+        day: 5,
+        title: 'Trek to Camp 1 (4,400m)',
+        description: 'Full day trek to advanced base camp. Stunning views.'
+      },
+      {
+        day: 6,
+        title: 'Rest at Camp 1',
+        description: 'Acclimatization. Optional short hikes. Photography.'
+      },
+      {
+        day: 7,
+        title: 'Explore Higher',
+        description: 'Trek to 4,800m for acclimatization. Return to Camp 1.'
+      },
+      {
+        day: 8,
+        title: 'Reserve Day',
+        description: 'Buffer for weather or acclimatization needs.'
+      },
+      {
+        day: 9,
+        title: 'Descend to Achik-Tash',
+        description: 'Return to base camp. Celebratory dinner.'
+      },
+      {
+        day: 10,
+        title: 'Return to Osh',
+        description: 'Drive back to Osh. Hotel and rest.'
+      },
+      {
+        day: 11,
+        title: 'Osh Free Day',
+        description: 'Explore Osh. Visit bazaar and Solomon\'s Throne.'
+      },
+      {
+        day: 12,
+        title: 'Departure',
+        description: 'Transfer to airport.'
+      }
+    ],
+    packingList: [
+      'High-altitude sleeping bag (-20 C)',
+      'Four-season tent (provided)',
+      'Mountaineering boots',
+      'Crampons and ice axe',
+      'Technical clothing layers',
+      'Altitude medication',
+      'Personal climbing gear',
+      'High-altitude food supplements'
+    ],
+    practicalInfo: {
+      accommodation: 'Mix of guesthouses and high-altitude camping',
+      meals: 'All meals included',
+      difficulty: 'Challenging - requires good fitness and some altitude experience',
+      groupSize: '4-8 participants',
+      included: [
+        'All transportation',
+        'Experienced mountain guide',
+        'All accommodation and camping',
+        'All meals',
+        'Group climbing equipment',
+        'Permit fees'
+      ],
+      notIncluded: [
+        'International flights',
+        'Personal climbing gear',
+        'Travel insurance with altitude coverage',
+        'Tips',
+        'Extra food'
+      ]
+    }
+  },
+  {
+    id: 6,
+    title: 'Issyk-Kul Circuit',
+    duration: '6 days',
+    tourType: 'Road Trip & Culture',
+    season: 'Spring to Autumn',
+    description: 'Circle the stunning Issyk-Kul Lake, stopping at hot springs, gorges, and traditional villages along the way.',
+    image: 'https://images.unsplash.com/photo-1717341248908-fba98ac15111?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBpbmUlMjBsYWtlJTIwdHVycXVvaXNlfGVufDF8fHx8MTc2Njk0NDczOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    price: '$720',
+    locations: [
+      { name: 'Issyk-Kul Lake', lat: 42.455, lng: 77.185 },
+      { name: 'Karakol', lat: 42.49, lng: 78.4 }
+    ],
+    highlights: [
+      'Complete circuit of Issyk-Kul Lake',
+      'Relax in natural hot springs',
+      'Explore dramatic gorges and canyons',
+      'Visit eagle hunter and see demonstrations',
+      'Beach time at alpine lake'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Bishkek to North Shore',
+        description: 'Drive along north shore. Stop at Burana Tower. Arrive Cholpon-Ata.'
+      },
+      {
+        day: 2,
+        title: 'Cholpon-Ata & Petroglyphs',
+        description: 'Visit ancient petroglyph field. Beach time. Optional water activities.'
+      },
+      {
+        day: 3,
+        title: 'To Karakol',
+        description: 'Visit hot springs at Altyn-Arashan. Explore Karakol city.'
+      },
+      {
+        day: 4,
+        title: 'Jeti-Oguz & Skazka',
+        description: 'Morning at Seven Bulls. Afternoon at Fairytale Canyon.'
+      },
+      {
+        day: 5,
+        title: 'South Shore Journey',
+        description: 'Drive south shore. Visit eagle hunter. Traditional lunch with family.'
+      },
+      {
+        day: 6,
+        title: 'Return to Bishkek',
+        description: 'Morning at leisure. Drive back to Bishkek via scenic route.'
+      }
+    ],
+    packingList: [
+      'Swimsuit for hot springs and beach',
+      'Comfortable shoes',
+      'Sun protection',
+      'Light layers',
+      'Camera',
+      'Daypack',
+      'Towel'
+    ],
+    practicalInfo: {
+      accommodation: 'Hotels and guesthouses',
+      meals: 'Daily breakfast, some lunches and dinners',
+      difficulty: 'Easy - suitable for all ages',
+      groupSize: '4-12 participants',
+      included: [
+        'Private vehicle transport',
+        'Accommodation',
+        'English-speaking driver-guide',
+        'Entrance fees',
+        'Selected meals'
+      ],
+      notIncluded: [
+        'International flights',
+        'Travel insurance',
+        'Some meals',
+        'Optional activities',
+        'Tips'
+      ]
+    }
+  }
+];
