@@ -1,1 +1,0 @@
-import{aB as o,aC as s,aD as n,aE as g}from"./index-C4wYHplI.js";async function f(a,r){if(!o)throw new Error("Firebase Storage is not configured.");const t=a.name.replace(/[^a-zA-Z0-9_.-]/g,"_"),e=s(o,`${r}/${Date.now()}-${t}`);return await n(e,a),g(e)}export{f as u};
