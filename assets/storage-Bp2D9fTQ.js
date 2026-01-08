@@ -1,0 +1,1 @@
+import{aB as e,aC as s,aD as n,aE as g}from"./index-DCgGlQVr.js";async function f(a,r){if(!e)throw new Error("Storage is not configured.");const t=a.name.replace(/[^a-zA-Z0-9_.-]/g,"_"),o=s(e,`${r}/${Date.now()}-${t}`);return await n(o,a),g(o)}export{f as u};
