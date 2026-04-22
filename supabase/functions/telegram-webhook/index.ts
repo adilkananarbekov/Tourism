@@ -1,6 +1,13 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
+type TelegramUser = {
+  id?: number | string;
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+};
+
 type TelegramChat = {
   id?: number | string;
   type?: string;
@@ -9,14 +16,75 @@ type TelegramChat = {
 };
 
 type TelegramMessage = {
+  message_id?: number;
   text?: string;
   chat?: TelegramChat;
+  from?: TelegramUser;
+};
+
+type TelegramCallbackQuery = {
+  id?: string;
+  data?: string;
+  from?: TelegramUser;
+  message?: TelegramMessage;
 };
 
 type TelegramUpdate = {
   message?: TelegramMessage;
   channel_post?: TelegramMessage;
+  callback_query?: TelegramCallbackQuery;
 };
+
+type SurveyOption = {
+  label: string;
+  value: string;
+};
+
+type SurveyQuestion = {
+  key: string;
+  text: string;
+  options: SurveyOption[];
+};
+
+type SurveySession = {
+  chat_id: string;
+  current_step: number;
+  answers: Record<string, string>;
+  completed: boolean;
+};
+
+const surveyQuestions: SurveyQuestion[] = [
+  {
+    key: 'tour_interest',
+    text: '1/3 Какой формат тура вам интересен?',
+    options: [
+      { label: 'Треккинг', value: 'trekking' },
+      { label: 'Конные туры', value: 'horseback' },
+      { label: 'Культура', value: 'culture' },
+      { label: 'Свой маршрут', value: 'custom' },
+    ],
+  },
+  {
+    key: 'group_size',
+    text: '2/3 Сколько человек примерно будет в поездке?',
+    options: [
+      { label: '1 человек', value: '1' },
+      { label: '2-3 человека', value: '2-3' },
+      { label: '4+ человека', value: '4+' },
+      { label: 'Пока не знаю', value: 'unknown' },
+    ],
+  },
+  {
+    key: 'travel_time',
+    text: '3/3 Когда хотите поехать?',
+    options: [
+      { label: 'Май - Июнь', value: 'may_june' },
+      { label: 'Июль - Август', value: 'july_august' },
+      { label: 'Сентябрь', value: 'september' },
+      { label: 'Даты гибкие', value: 'flexible' },
+    ],
+  },
+];
 
 function json(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -52,19 +120,231 @@ async function readSecret(supabase: ReturnType<typeof createClient>, name: strin
   return data?.value as string | undefined;
 }
 
-async function writeSecret(supabase: ReturnType<typeof createClient>, name: string, value: string) {
-  const { error } = await supabase.from('app_secrets').upsert(
+async function readTelegramToken(supabase: ReturnType<typeof createClient>) {
+  return Deno.env.get('TELEGRAM_BOT_TOKEN') || (await readSecret(supabase, 'telegram_bot_token'));
+}
+
+function getOptionLabel(question: SurveyQuestion, value: string) {
+  return question.options.find((option) => option.value === value)?.label || value;
+}
+
+function keyboardForStep(step: number) {
+  const question = surveyQuestions[step];
+  return {
+    inline_keyboard: question.options.map((option) => [
+      {
+        text: option.label,
+        callback_data: `survey|${step}|${option.value}`,
+      },
+    ]),
+  };
+}
+
+function introText() {
+  return [
+    'Привет! Я бот Kyrgyz Riders.',
+    'Я могу принять короткий тестовый опрос и ответить на ваше сообщение.',
+    'Начнем мини-опрос.',
+  ].join('\n');
+}
+
+function summaryText(answers: Record<string, string>) {
+  const rows = surveyQuestions.map((question) => {
+    const answer = answers[question.key] || 'not answered';
+    return `- ${question.text.replace(/^\d\/3\s*/, '')}: ${getOptionLabel(question, answer)}`;
+  });
+
+  return [
+    'Спасибо! Тестовый опрос завершен.',
+    '',
+    'Ваши ответы:',
+    ...rows,
+    '',
+    'Теперь можете написать сообщение обычным текстом. Я отвечу, что получил его.',
+  ].join('\n');
+}
+
+async function telegramApi(
+  token: string,
+  method: string,
+  payload: Record<string, unknown>,
+) {
+  const response = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  return response.json();
+}
+
+async function sendMessage(
+  token: string,
+  chatId: string,
+  text: string,
+  replyMarkup?: Record<string, unknown>,
+) {
+  return telegramApi(token, 'sendMessage', {
+    chat_id: chatId,
+    text,
+    ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
+  });
+}
+
+async function answerCallback(token: string, callbackId: string, text = 'Ответ сохранен') {
+  return telegramApi(token, 'answerCallbackQuery', {
+    callback_query_id: callbackId,
+    text,
+  });
+}
+
+async function upsertSession(
+  supabase: ReturnType<typeof createClient>,
+  chatId: string,
+  user?: TelegramUser,
+  values?: Partial<SurveySession>,
+) {
+  const { error } = await supabase.from('telegram_survey_sessions').upsert(
     {
-      name,
-      value,
+      chat_id: chatId,
+      telegram_user_id: user?.id == null ? null : String(user.id),
+      username: user?.username || null,
+      first_name: user?.first_name || null,
+      last_name: user?.last_name || null,
+      ...(values || {}),
       updated_at: new Date().toISOString(),
     },
-    { onConflict: 'name' },
+    { onConflict: 'chat_id' },
   );
 
   if (error) {
     throw new Error(error.message);
   }
+}
+
+async function getSession(
+  supabase: ReturnType<typeof createClient>,
+  chatId: string,
+): Promise<SurveySession | null> {
+  const { data, error } = await supabase
+    .from('telegram_survey_sessions')
+    .select('chat_id,current_step,answers,completed')
+    .eq('chat_id', chatId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as SurveySession | null;
+}
+
+async function startSurvey(
+  supabase: ReturnType<typeof createClient>,
+  token: string,
+  chatId: string,
+  user?: TelegramUser,
+) {
+  await upsertSession(supabase, chatId, user, {
+    current_step: 0,
+    answers: {},
+    completed: false,
+  });
+
+  await sendMessage(token, chatId, introText());
+  await sendMessage(token, chatId, surveyQuestions[0].text, keyboardForStep(0));
+}
+
+async function processSurveyAnswer(
+  supabase: ReturnType<typeof createClient>,
+  token: string,
+  chatId: string,
+  step: number,
+  value: string,
+  user?: TelegramUser,
+) {
+  const question = surveyQuestions[step];
+  if (!question || !question.options.some((option) => option.value === value)) {
+    await sendMessage(token, chatId, 'Не понял этот вариант. Напишите /start, чтобы начать заново.');
+    return;
+  }
+
+  const session = await getSession(supabase, chatId);
+  const answers = {
+    ...(session?.answers || {}),
+    [question.key]: value,
+  };
+  const nextStep = step + 1;
+
+  if (nextStep >= surveyQuestions.length) {
+    await upsertSession(supabase, chatId, user, {
+      current_step: nextStep,
+      answers,
+      completed: true,
+    });
+    await sendMessage(token, chatId, summaryText(answers));
+    return;
+  }
+
+  await upsertSession(supabase, chatId, user, {
+    current_step: nextStep,
+    answers,
+    completed: false,
+  });
+  await sendMessage(token, chatId, surveyQuestions[nextStep].text, keyboardForStep(nextStep));
+}
+
+async function handleTextMessage(
+  supabase: ReturnType<typeof createClient>,
+  token: string,
+  message: TelegramMessage,
+) {
+  const chatId = message.chat?.id == null ? '' : String(message.chat.id);
+  const text = String(message.text || '').trim();
+
+  if (!chatId) {
+    return;
+  }
+
+  if (text.startsWith('/start') || text.startsWith('/survey')) {
+    await startSurvey(supabase, token, chatId, message.from);
+    return;
+  }
+
+  if (text.startsWith('/chatid')) {
+    await sendMessage(token, chatId, `Chat ID: ${chatId}`);
+    return;
+  }
+
+  if (!text) {
+    return;
+  }
+
+  const session = await getSession(supabase, chatId);
+  if (session && !session.completed) {
+    const step = Math.max(0, Math.min(session.current_step, surveyQuestions.length - 1));
+    await sendMessage(
+      token,
+      chatId,
+      'Пожалуйста, выберите один из вариантов кнопками ниже.',
+      keyboardForStep(step),
+    );
+    return;
+  }
+
+  await upsertSession(supabase, chatId, message.from, {});
+  await sendMessage(
+    token,
+    chatId,
+    [
+      'Сообщение получил.',
+      'Это тестовый автоответ бота. Если хотите пройти мини-опрос еще раз, отправьте /survey.',
+    ].join('\n'),
+  );
 }
 
 Deno.serve(async (req) => {
@@ -81,31 +361,44 @@ Deno.serve(async (req) => {
       return json({ ok: false, error: 'Unauthorized' }, 401);
     }
 
-    const update = (await req.json()) as TelegramUpdate;
-    const message = update.message || update.channel_post;
-    const chat = message?.chat;
-    const chatId = chat?.id == null ? '' : String(chat.id);
-    const text = String(message?.text || '').trim();
+    const telegramToken = await readTelegramToken(supabase);
+    if (!telegramToken) {
+      throw new Error('Telegram bot token is not configured.');
+    }
 
-    if (!chatId) {
+    const update = (await req.json()) as TelegramUpdate;
+
+    if (update.callback_query) {
+      const callback = update.callback_query;
+      let chatId = '';
+      if (callback.message?.chat?.id != null) {
+        chatId = String(callback.message.chat.id);
+      } else if (callback.from?.id != null) {
+        chatId = String(callback.from.id);
+      }
+      const [scope, stepText, value] = String(callback.data || '').split('|');
+
+      if (callback.id) {
+        await answerCallback(telegramToken, callback.id);
+      }
+
+      if (chatId && scope === 'survey') {
+        await processSurveyAnswer(
+          supabase,
+          telegramToken,
+          chatId,
+          Number(stepText),
+          value,
+          callback.from,
+        );
+      }
+
       return json({ ok: true });
     }
 
-    if (text.startsWith('/start')) {
-      await writeSecret(supabase, 'telegram_chat_id', chatId);
-      return json({
-        method: 'sendMessage',
-        chat_id: chatId,
-        text: 'Supabase bot is connected. New tour bookings and custom tour requests will appear here.',
-      });
-    }
-
-    if (text.startsWith('/chatid')) {
-      return json({
-        method: 'sendMessage',
-        chat_id: chatId,
-        text: `Chat ID: ${chatId}`,
-      });
+    const message = update.message || update.channel_post;
+    if (message) {
+      await handleTextMessage(supabase, telegramToken, message);
     }
 
     return json({ ok: true });
