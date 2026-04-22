@@ -53,7 +53,7 @@ type SurveySession = {
   completed: boolean;
 };
 
-const botCommandsVersion = 'telegram-menu-v2';
+const botCommandsVersion = 'telegram-menu-v3';
 const botCommands = [
   { command: 'start', description: 'Начать мини-опрос' },
   { command: 'survey', description: 'Пройти опрос заново' },
@@ -190,9 +190,9 @@ function keyboardForStep(step: number) {
 function introText() {
   return [
     'Привет! Я бот Kyrgyz Riders.',
-    'Я могу принять короткий тестовый опрос и ответить на ваше сообщение.',
-    'Команды доступны через меню Telegram.',
-    'Начнем мини-опрос.',
+    'Я помогу выбрать тур и передам заявку владельцу.',
+    'Оставьте короткие ответы, а затем владелец или менеджер свяжется с вами лично.',
+    'Начнем короткий опрос.',
   ].join('\n');
 }
 
@@ -206,7 +206,7 @@ function helpText() {
     '/contact - как связаться с гидом',
     '/help - показать помощь',
     '',
-    'Также можно написать обычное сообщение, и бот ответит тестовым автоответом.',
+    'Также можно написать обычное сообщение. Я сохраню контекст, а менеджер сможет связаться с вами по Telegram.',
   ].join('\n');
 }
 
@@ -227,9 +227,11 @@ function siteKeyboard() {
 
 function contactText() {
   return [
-    'Можно связаться через этот бот или оставить заявку на сайте.',
+    'Можно оставить заявку через этот бот или через сайт.',
     '',
-    'Для быстрого старта напишите:',
+    'Заявка уходит владельцу Kyrgyz Riders. Дальше он или менеджер свяжется с вами лично.',
+    '',
+    'Для быстрого старта укажите:',
     '- примерные даты',
     '- сколько человек',
     '- что хотите увидеть',
@@ -245,12 +247,12 @@ function summaryText(answers: Record<string, string>) {
   });
 
   return [
-    'Спасибо! Тестовый опрос завершен.',
+    'Спасибо! Заявка принята.',
     '',
     'Ваши ответы:',
     ...rows,
     '',
-    'Теперь можете написать сообщение обычным текстом. Я отвечу, что получил его.',
+    'Я передал ответы владельцу. Он или менеджер свяжется с вами лично.',
   ].join('\n');
 }
 
@@ -267,7 +269,7 @@ function ownerSummaryText(
   });
 
   return [
-    'New Telegram survey lead',
+    'New Telegram tour lead',
     `Name: ${name}`,
     `Username: ${username}`,
     `Chat ID: ${chatId}`,
@@ -480,7 +482,7 @@ async function handleTextMessage(
     await sendMessage(
       token,
       chatId,
-      'Вот быстрые ссылки на сайт Kyrgyz Riders.',
+      'Выберите готовый тур или оставьте custom-заявку на сайте Kyrgyz Riders.',
       siteKeyboard(),
     );
     return;

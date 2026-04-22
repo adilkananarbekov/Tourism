@@ -144,7 +144,7 @@ function formatBooking(row: Record<string, unknown>) {
     : 'Flexible';
 
   return [
-    '<b>New tour booking</b>',
+    '<b>New website tour request</b>',
     `Tour: ${escapeHtml(row.tour_title)}`,
     `Guest: ${escapeHtml(row.name)}`,
     `Contact: ${contact.join(' | ')}`,
@@ -153,6 +153,7 @@ function formatBooking(row: Record<string, unknown>) {
     `Participants: ${escapeHtml(row.participants)}`,
     `Total: ${escapeHtml(row.total_price)}`,
     `Notes: ${escapeHtml(row.notes || 'none')}`,
+    'Action: contact the guest personally to confirm details.',
   ].join('\n');
 }
 
@@ -167,7 +168,7 @@ function formatCustomTour(row: Record<string, unknown>) {
     : 'Flexible';
 
   return [
-    '<b>New custom tour request</b>',
+    '<b>New website custom request</b>',
     `Guest: ${escapeHtml(row.name)}`,
     `Contact: ${contact.join(' | ')}`,
     `Group: ${escapeHtml(row.group_size)} people`,
@@ -178,6 +179,7 @@ function formatCustomTour(row: Record<string, unknown>) {
     `Activities: ${escapeHtml(listValue(row.activities))}`,
     `Budget: ${escapeHtml(row.budget || 'not specified')}`,
     `Notes: ${escapeHtml(row.special_requests || 'none')}`,
+    'Action: contact the guest personally to confirm details.',
   ].join('\n');
 }
 

@@ -23,7 +23,7 @@ export function Header() {
     { label: 'Explore', to: '/explore' },
     { label: 'Gallery', to: '/gallery' },
     { label: 'Stories', to: '/blogs' },
-    { label: 'Contact', to: '/feedback' },
+    { label: 'Request', to: '/feedback' },
   ];
 
   return (
@@ -62,7 +62,7 @@ export function Header() {
               asChild
               className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              <Link to="/custom-tour">Plan Your Tour</Link>
+              <Link to="/custom-tour">Custom Request</Link>
             </Button>
             <ThemeToggle />
             <AuthStatus />
@@ -105,7 +105,7 @@ export function Header() {
                   className="w-full btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Link to="/custom-tour" onClick={() => setMobileMenuOpen(false)}>
-                    Plan Your Tour
+                    Custom Request
                   </Link>
                 </Button>
               </div>

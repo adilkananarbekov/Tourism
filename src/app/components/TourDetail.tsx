@@ -406,7 +406,7 @@ export function TourDetail({ tour }: TourDetailProps) {
                   onClick={() => setShowBookingForm(true)}
                   className="w-full btn-micro bg-primary hover:bg-primary/90 text-primary-foreground mb-4"
                 >
-                  Book Now
+                  Request This Tour
                 </Button>
               ) : (
                 <BookingFlow tour={tour} onCancel={() => setShowBookingForm(false)} />
@@ -539,7 +539,8 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
         <Check className="h-12 w-12 text-secondary mx-auto mb-4" />
         <h4 className="text-lg text-foreground mb-2">Thank you!</h4>
         <p className="text-sm text-muted-foreground mb-4">
-          Your booking request has been received and is pending review.
+          Your request was sent to Kyrgyz Riders. I or my managers will contact you directly using
+          your Telegram username or phone number.
         </p>
         <Button onClick={onCancel} variant="outline" size="sm">
           Close
@@ -554,7 +555,7 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
         <div className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground">
           <p className="text-foreground font-medium mb-2">Sign in required</p>
           <p className="mb-3">
-            Create an account to submit a booking request and track status updates.
+            Create an account to submit a request and track status updates.
           </p>
           <Button asChild variant="outline">
             <Link to={`/auth?next=${encodeURIComponent(location.pathname + location.search)}`}>
@@ -679,7 +680,7 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
               className="flex-1 btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Sending...' : 'Send Booking Request'}
+              {isSubmitting ? 'Sending...' : 'Send Tour Request'}
             </Button>
             <Button type="button" onClick={onCancel} variant="outline">
               Cancel

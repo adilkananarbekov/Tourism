@@ -7,18 +7,18 @@ export function ContactStrip() {
     {
       icon: Send,
       label: 'Trip request',
-      value: 'Use the short form for dates and route ideas',
+      value: 'Send a tour request with your contact details',
       to: '/feedback',
     },
     {
       icon: MessageCircle,
       label: 'Telegram bot',
-      value: 'Send /start or /contact in Telegram',
+      value: 'Requests also work through /start or /contact',
     },
     {
       icon: Mail,
       label: 'Contact details',
-      value: 'Phone, WhatsApp, Telegram, or email all work',
+      value: 'Managers follow up through Telegram, WhatsApp, or phone',
     },
     {
       icon: Clock,
@@ -31,13 +31,14 @@ export function ContactStrip() {
     <section className="py-12 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
       <div className="max-w-6xl mx-auto grid gap-8 lg:grid-cols-[1.2fr_1fr] items-center">
         <div className="space-y-3">
-          <h2 className="text-2xl sm:text-3xl text-foreground">Contact Me Directly</h2>
+          <h2 className="text-2xl sm:text-3xl text-foreground">Send a Tour Request</h2>
           <p className="text-muted-foreground">
-            Send your dates, group size, and travel style. I will reply with a plan and a clear quote.
+            Guests choose a tour or custom route, leave contact details, and my team follows up
+            personally.
           </p>
           <div>
             <Button asChild className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link to="/feedback">Start a Trip Request</Link>
+              <Link to="/feedback">Send Request</Link>
             </Button>
           </div>
         </div>

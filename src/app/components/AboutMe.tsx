@@ -50,9 +50,9 @@ export function AboutMe() {
           <div>
             <h2 className="text-3xl sm:text-4xl text-foreground mb-4">About Me</h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              I am a local guide based in Kyrgyzstan, focused on small-group travel and
-              authentic cultural experiences. Tell me your travel style, and I will build a
-              relaxed itinerary with the right mix of nature, culture, and comfort.
+              I am a local guide and tour seller based in Kyrgyzstan. Guests choose a ready route
+              or send a custom request, then I or my managers contact them directly to confirm the
+              tour details.
             </p>
           </div>
 
@@ -75,14 +75,14 @@ export function AboutMe() {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link to="/feedback">Contact Me</Link>
+              <Link to="/feedback">Send a Request</Link>
             </Button>
             <Button
               asChild
               variant="outline"
               className="btn-micro border-primary text-primary hover:bg-primary/10"
             >
-              <Link to="/custom-tour">Request a Custom Tour</Link>
+              <Link to="/custom-tour">Custom Tour</Link>
             </Button>
           </div>
         </div>

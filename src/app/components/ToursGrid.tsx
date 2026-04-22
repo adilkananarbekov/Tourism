@@ -49,7 +49,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
             Signature Tours
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose from my curated routes or use them as a starting point for your custom adventure.
+            Choose a route, send your contact details, and Kyrgyz Riders will follow up personally.
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
                     variant="outline"
                     className="w-full btn-micro border-primary text-primary hover:bg-primary/10"
                   >
-                    <Link to={`/tours/${tour.id}?book=true`}>Book Now</Link>
+                    <Link to={`/tours/${tour.id}?book=true`}>Request Tour</Link>
                   </Button>
                 </div>
               </div>

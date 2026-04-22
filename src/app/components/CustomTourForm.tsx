@@ -240,31 +240,30 @@ export function CustomTourForm() {
                 <Check className="h-8 w-8 text-secondary" />
               </div>
               <h2 className="text-2xl sm:text-3xl text-foreground mb-4">
-                Custom Tour Request Submitted!
+                Request Sent!
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Thank you for your interest in creating a custom tour. Our team will review your
-                requirements and get back to you within 24-48 hours with a personalized itinerary
-                and pricing.
+                Your request went directly to Kyrgyz Riders. I or my managers will contact you
+                through Telegram, WhatsApp, or phone to confirm the route, timing, and price.
               </p>
               <div className="bg-accent rounded-lg p-6 mb-8 text-left">
                 <h3 className="text-lg text-foreground mb-4">What happens next?</h3>
                 <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <Check className="h-5 w-5 text-secondary flex-shrink-0 mt-1" />
-                    <span>Our tour specialists will design a custom itinerary based on your preferences</span>
+                    <span>I review the request and check the route, season, transport, and timing</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Check className="h-5 w-5 text-secondary flex-shrink-0 mt-1" />
-                    <span>We'll send you a detailed proposal with day-by-day activities and pricing</span>
+                    <span>A manager contacts you personally using the contact details you entered</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Check className="h-5 w-5 text-secondary flex-shrink-0 mt-1" />
-                    <span>You can request modifications until the itinerary perfectly fits your needs</span>
+                    <span>We discuss changes, price, and final details before confirming anything</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Check className="h-5 w-5 text-secondary flex-shrink-0 mt-1" />
-                    <span>Once confirmed, we'll handle all bookings and logistics</span>
+                    <span>After confirmation, Kyrgyz Riders handles the logistics for your trip</span>
                   </li>
                 </ul>
               </div>
@@ -310,10 +309,10 @@ export function CustomTourForm() {
             Back to Tours
           </Button>
           <h1 className="text-3xl sm:text-4xl text-foreground mb-4">
-            Create Your Custom Tour
+            Request a Custom Tour
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground">
-            Design your perfect adventure in Kyrgyzstan with our help
+            Tell me what kind of Kyrgyzstan trip you want. I will contact you directly.
           </p>
         </div>
 
@@ -620,7 +619,7 @@ export function CustomTourForm() {
               <div>
                 <h2 className="text-xl sm:text-2xl text-foreground mb-2">Contact Information</h2>
                 <p className="text-muted-foreground mb-6">
-                  Let us know how to reach you with your custom itinerary
+                  Leave Telegram or phone so I or my managers can contact you personally
                 </p>
               </div>
 
@@ -739,7 +738,7 @@ export function CustomTourForm() {
                 className="flex-1 btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                {isSubmitting ? 'Submitting...' : 'Send Request'}
               </Button>
             )}
           </div>

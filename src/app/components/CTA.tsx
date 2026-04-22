@@ -14,10 +14,10 @@ export function CTA() {
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <h2 className="text-3xl sm:text-4xl md:text-5xl text-white mb-6">
-          Ready to Plan Your Kyrgyz Adventure?
+          Ready to Request Your Kyrgyz Tour?
         </h2>
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-10 leading-relaxed">
-          Choose a signature tour or tell me what you want to see, and I will build the right route for your time, pace, and budget.
+          Choose a signature tour or describe your route. Your request goes to Kyrgyz Riders, then I or my managers contact you directly.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
@@ -33,7 +33,7 @@ export function CTA() {
             variant="outline"
             className="btn-micro bg-transparent hover:bg-white/10 text-white border-2 border-white hover:border-white px-6 py-4 text-base sm:px-8 sm:py-6 sm:text-lg w-full sm:w-auto"
           >
-            <Link to="/custom-tour">Design Your Tour</Link>
+            <Link to="/custom-tour">Custom Request</Link>
           </Button>
         </div>
         <p className="mt-8 text-white/80 text-sm">
