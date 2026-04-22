@@ -53,14 +53,18 @@ type SurveySession = {
   completed: boolean;
 };
 
-const botCommandsVersion = 'telegram-menu-v1';
+const botCommandsVersion = 'telegram-menu-v2';
 const botCommands = [
   { command: 'start', description: 'Начать мини-опрос' },
   { command: 'survey', description: 'Пройти опрос заново' },
+  { command: 'tours', description: 'Открыть туры на сайте' },
   { command: 'photos', description: 'Показать фото туров' },
+  { command: 'contact', description: 'Связаться с гидом' },
   { command: 'help', description: 'Помощь и команды' },
   { command: 'chatid', description: 'Показать chat id' },
 ];
+
+const siteUrl = 'https://adilkan.com/Tourism/';
 
 const tourPhotos = [
   {
@@ -197,10 +201,40 @@ function helpText() {
     'Команды бота:',
     '/start - начать мини-опрос',
     '/survey - пройти опрос заново',
+    '/tours - открыть туры на сайте',
     '/photos - получить несколько фото туров',
+    '/contact - как связаться с гидом',
     '/help - показать помощь',
     '',
     'Также можно написать обычное сообщение, и бот ответит тестовым автоответом.',
+  ].join('\n');
+}
+
+function siteKeyboard() {
+  return {
+    inline_keyboard: [
+      [
+        { text: 'Смотреть туры', url: `${siteUrl}tours` },
+        { text: 'Создать маршрут', url: `${siteUrl}custom-tour` },
+      ],
+      [
+        { text: 'Галерея', url: `${siteUrl}gallery` },
+        { text: 'Контакты', url: `${siteUrl}feedback` },
+      ],
+    ],
+  };
+}
+
+function contactText() {
+  return [
+    'Можно связаться через этот бот или оставить заявку на сайте.',
+    '',
+    'Для быстрого старта напишите:',
+    '- примерные даты',
+    '- сколько человек',
+    '- что хотите увидеть',
+    '',
+    'Если удобнее, нажмите кнопку и заполните короткую форму.',
   ].join('\n');
 }
 
@@ -217,6 +251,29 @@ function summaryText(answers: Record<string, string>) {
     ...rows,
     '',
     'Теперь можете написать сообщение обычным текстом. Я отвечу, что получил его.',
+  ].join('\n');
+}
+
+function ownerSummaryText(
+  chatId: string,
+  user: TelegramUser | undefined,
+  answers: Record<string, string>,
+) {
+  const username = user?.username ? `@${user.username}` : 'not provided';
+  const name = [user?.first_name, user?.last_name].filter(Boolean).join(' ') || 'not provided';
+  const rows = surveyQuestions.map((question) => {
+    const answer = answers[question.key] || 'not answered';
+    return `- ${question.text.replace(/^\d\/3\s*/, '')}: ${getOptionLabel(question, answer)}`;
+  });
+
+  return [
+    'New Telegram survey lead',
+    `Name: ${name}`,
+    `Username: ${username}`,
+    `Chat ID: ${chatId}`,
+    '',
+    'Answers:',
+    ...rows,
   ].join('\n');
 }
 
@@ -274,6 +331,19 @@ async function sendTourPhotos(token: string, chatId: string) {
         : undefined,
     })),
   });
+}
+
+async function notifyOwner(
+  supabase: ReturnType<typeof createClient>,
+  token: string,
+  guestChatId: string,
+  text: string,
+) {
+  const ownerChatId = await readSecret(supabase, 'telegram_chat_id');
+  if (!ownerChatId || ownerChatId === guestChatId) {
+    return;
+  }
+  await sendMessage(token, ownerChatId, text);
 }
 
 async function answerCallback(token: string, callbackId: string, text = 'Ответ сохранен') {
@@ -368,6 +438,11 @@ async function processSurveyAnswer(
       completed: true,
     });
     await sendMessage(token, chatId, summaryText(answers));
+    try {
+      await notifyOwner(supabase, token, chatId, ownerSummaryText(chatId, user, answers));
+    } catch (error) {
+      console.error('Unable to notify owner about survey lead', error);
+    }
     return;
   }
 
@@ -401,9 +476,24 @@ async function handleTextMessage(
     return;
   }
 
+  if (text.startsWith('/tours')) {
+    await sendMessage(
+      token,
+      chatId,
+      'Вот быстрые ссылки на сайт Kyrgyz Riders.',
+      siteKeyboard(),
+    );
+    return;
+  }
+
   if (text.startsWith('/photos')) {
     await sendMessage(token, chatId, 'Отправляю несколько фото туров.');
     await sendTourPhotos(token, chatId);
+    return;
+  }
+
+  if (text.startsWith('/contact')) {
+    await sendMessage(token, chatId, contactText(), siteKeyboard());
     return;
   }
 
@@ -434,7 +524,7 @@ async function handleTextMessage(
     chatId,
     [
       'Сообщение получил.',
-      'Это тестовый автоответ бота. Если хотите пройти мини-опрос еще раз, отправьте /survey.',
+      'Если хотите оставить заявку, отправьте /survey или откройте форму на сайте через /tours.',
     ].join('\n'),
   );
 }
@@ -458,7 +548,11 @@ Deno.serve(async (req) => {
       throw new Error('Telegram bot token is not configured.');
     }
 
-    await ensureBotCommands(supabase, telegramToken);
+    try {
+      await ensureBotCommands(supabase, telegramToken);
+    } catch (error) {
+      console.error('Unable to sync Telegram command menu', error);
+    }
 
     const update = (await req.json()) as TelegramUpdate;
 

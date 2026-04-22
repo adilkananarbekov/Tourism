@@ -7,6 +7,7 @@ import { Hero } from '../components/Hero';
 import { GallerySection } from '../components/GallerySection';
 import { Highlights } from '../components/Highlights';
 import { HowItWorks } from '../components/HowItWorks';
+import { JourneyStory } from '../components/JourneyStory';
 import { Reveal } from '../components/Reveal';
 import { SEO } from '../components/SEO';
 import { ToursGrid } from '../components/ToursGrid';
@@ -26,27 +27,30 @@ export function HomePage() {
         <AboutMe />
       </Reveal>
       <Reveal delayMs={100}>
-        <Features />
+        <JourneyStory />
       </Reveal>
       <Reveal delayMs={150}>
-        <Highlights />
+        <Features />
       </Reveal>
       <Reveal delayMs={200}>
-        <GallerySection />
+        <Highlights />
       </Reveal>
       <Reveal delayMs={250}>
-        <ToursGrid tours={tours} loading={loading} error={error} />
+        <GallerySection />
       </Reveal>
       <Reveal delayMs={300}>
-        <HowItWorks />
+        <ToursGrid tours={tours} loading={loading} error={error} />
       </Reveal>
       <Reveal delayMs={350}>
-        <FAQ />
+        <HowItWorks />
       </Reveal>
       <Reveal delayMs={400}>
-        <CTA />
+        <FAQ />
       </Reveal>
       <Reveal delayMs={450}>
+        <CTA />
+      </Reveal>
+      <Reveal delayMs={500}>
         <ContactStrip />
       </Reveal>
     </>
