@@ -13,7 +13,7 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[520px] sm:min-h-[600px] md:min-h-[680px] lg:min-h-[760px] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[500px] sm:min-h-[540px] md:min-h-[600px] lg:min-h-[640px] flex items-center justify-center overflow-hidden">
       <div
         className="absolute inset-0 hero-parallax"
         style={{
@@ -46,7 +46,7 @@ export function Hero() {
             <Link to="/feedback">Send Quick Request</Link>
           </Button>
         </div>
-        <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm text-white/85">
+        <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm text-white/85">
           {trustItems.map((item) => {
             const Icon = item.icon;
             return (

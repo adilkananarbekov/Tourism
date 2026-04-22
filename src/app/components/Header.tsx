@@ -37,10 +37,10 @@ export function Header() {
         <div className={cn('flex items-center justify-between transition-all', isScrolled ? 'h-14' : 'h-16')}>
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground">KR</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 via-emerald-700 to-orange-700 text-white shadow-md ring-1 ring-white/25">
+              <span className="text-sm font-semibold">KR</span>
             </div>
-            <span className="text-xl text-foreground">Kyrgyz Riders</span>
+            <span className="text-xl font-medium text-foreground">Kyrgyz Riders</span>
           </Link>
 
           {/* Desktop Navigation */}
