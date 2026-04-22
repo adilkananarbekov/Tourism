@@ -53,14 +53,14 @@ type SurveySession = {
   completed: boolean;
 };
 
-const botCommandsVersion = 'telegram-menu-v3';
+const botCommandsVersion = 'telegram-menu-v4';
 const botCommands = [
-  { command: 'start', description: 'Начать мини-опрос' },
-  { command: 'survey', description: 'Пройти опрос заново' },
-  { command: 'tours', description: 'Открыть туры на сайте' },
-  { command: 'photos', description: 'Показать фото туров' },
-  { command: 'contact', description: 'Связаться с гидом' },
-  { command: 'help', description: 'Помощь и команды' },
+  { command: 'start', description: '👋 Начать мини-опрос' },
+  { command: 'survey', description: '🧭 Пройти опрос заново' },
+  { command: 'tours', description: '🏔️ Открыть туры на сайте' },
+  { command: 'photos', description: '📸 Показать фото туров' },
+  { command: 'contact', description: '💬 Связаться с гидом' },
+  { command: 'help', description: 'ℹ️ Помощь и команды' },
   { command: 'chatid', description: 'Показать chat id' },
 ];
 
@@ -90,30 +90,30 @@ const surveyQuestions: SurveyQuestion[] = [
     key: 'tour_interest',
     text: '1/3 Какой формат тура вам интересен?',
     options: [
-      { label: 'Треккинг', value: 'trekking' },
-      { label: 'Конные туры', value: 'horseback' },
-      { label: 'Культура', value: 'culture' },
-      { label: 'Свой маршрут', value: 'custom' },
+      { label: '🥾 Треккинг', value: 'trekking' },
+      { label: '🐎 Конные туры', value: 'horseback' },
+      { label: '🏕️ Культура', value: 'culture' },
+      { label: '✨ Свой маршрут', value: 'custom' },
     ],
   },
   {
     key: 'group_size',
     text: '2/3 Сколько человек примерно будет в поездке?',
     options: [
-      { label: '1 человек', value: '1' },
-      { label: '2-3 человека', value: '2-3' },
-      { label: '4+ человека', value: '4+' },
-      { label: 'Пока не знаю', value: 'unknown' },
+      { label: '🙋 1 человек', value: '1' },
+      { label: '👥 2-3 человека', value: '2-3' },
+      { label: '👨‍👩‍👧‍👦 4+ человека', value: '4+' },
+      { label: '🤔 Пока не знаю', value: 'unknown' },
     ],
   },
   {
     key: 'travel_time',
     text: '3/3 Когда хотите поехать?',
     options: [
-      { label: 'Май - Июнь', value: 'may_june' },
-      { label: 'Июль - Август', value: 'july_august' },
-      { label: 'Сентябрь', value: 'september' },
-      { label: 'Даты гибкие', value: 'flexible' },
+      { label: '🌿 Май - Июнь', value: 'may_june' },
+      { label: '☀️ Июль - Август', value: 'july_august' },
+      { label: '🍂 Сентябрь', value: 'september' },
+      { label: '🗓️ Даты гибкие', value: 'flexible' },
     ],
   },
 ];
@@ -189,22 +189,22 @@ function keyboardForStep(step: number) {
 
 function introText() {
   return [
-    'Привет! Я бот Kyrgyz Riders.',
-    'Я помогу выбрать тур и передам заявку владельцу.',
+    'Привет! 👋 Я бот Kyrgyz Riders.',
+    'Помогу выбрать тур и передам заявку владельцу 🏔️',
     'Оставьте короткие ответы, а затем владелец или менеджер свяжется с вами лично.',
-    'Начнем короткий опрос.',
+    'Начнем короткий опрос 🧭',
   ].join('\n');
 }
 
 function helpText() {
   return [
     'Команды бота:',
-    '/start - начать мини-опрос',
-    '/survey - пройти опрос заново',
-    '/tours - открыть туры на сайте',
-    '/photos - получить несколько фото туров',
-    '/contact - как связаться с гидом',
-    '/help - показать помощь',
+    '/start - 👋 начать мини-опрос',
+    '/survey - 🧭 пройти опрос заново',
+    '/tours - 🏔️ открыть туры на сайте',
+    '/photos - 📸 получить несколько фото туров',
+    '/contact - 💬 как связаться с гидом',
+    '/help - ℹ️ показать помощь',
     '',
     'Также можно написать обычное сообщение. Я сохраню контекст, а менеджер сможет связаться с вами по Telegram.',
   ].join('\n');
@@ -214,12 +214,12 @@ function siteKeyboard() {
   return {
     inline_keyboard: [
       [
-        { text: 'Смотреть туры', url: `${siteUrl}tours` },
-        { text: 'Создать маршрут', url: `${siteUrl}custom-tour` },
+        { text: '🏔️ Смотреть туры', url: `${siteUrl}tours` },
+        { text: '✨ Создать маршрут', url: `${siteUrl}custom-tour` },
       ],
       [
-        { text: 'Галерея', url: `${siteUrl}gallery` },
-        { text: 'Контакты', url: `${siteUrl}feedback` },
+        { text: '📸 Галерея', url: `${siteUrl}gallery` },
+        { text: '💬 Заявка', url: `${siteUrl}feedback` },
       ],
     ],
   };
@@ -227,7 +227,7 @@ function siteKeyboard() {
 
 function contactText() {
   return [
-    'Можно оставить заявку через этот бот или через сайт.',
+    'Можно оставить заявку через этот бот или через сайт 💬',
     '',
     'Заявка уходит владельцу Kyrgyz Riders. Дальше он или менеджер свяжется с вами лично.',
     '',
@@ -247,12 +247,12 @@ function summaryText(answers: Record<string, string>) {
   });
 
   return [
-    'Спасибо! Заявка принята.',
+    'Спасибо! Заявка принята ✅',
     '',
     'Ваши ответы:',
     ...rows,
     '',
-    'Я передал ответы владельцу. Он или менеджер свяжется с вами лично.',
+    'Я передал ответы владельцу. Он или менеджер свяжется с вами лично 💬',
   ].join('\n');
 }
 
@@ -320,6 +320,40 @@ async function sendMessage(
     text,
     ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
   });
+}
+
+async function clearInlineKeyboard(token: string, chatId: string, messageId?: number) {
+  if (!messageId) {
+    return;
+  }
+
+  try {
+    await telegramApi(token, 'editMessageReplyMarkup', {
+      chat_id: chatId,
+      message_id: messageId,
+      reply_markup: { inline_keyboard: [] },
+    });
+  } catch (error) {
+    console.error('Unable to clear inline keyboard', error);
+  }
+}
+
+async function trackBotEvent(
+  supabase: ReturnType<typeof createClient>,
+  eventName: string,
+  metadata: Record<string, unknown> = {},
+) {
+  try {
+    await supabase.from('site_events').insert({
+      source: 'telegram',
+      event_name: eventName,
+      path: 'telegram',
+      label: String(metadata.command || metadata.label || ''),
+      metadata,
+    });
+  } catch (error) {
+    console.error('Unable to track Telegram event', error);
+  }
 }
 
 async function sendTourPhotos(token: string, chatId: string) {
@@ -419,19 +453,50 @@ async function processSurveyAnswer(
   step: number,
   value: string,
   user?: TelegramUser,
+  callbackId?: string,
+  messageId?: number,
 ) {
   const question = surveyQuestions[step];
   if (!question || !question.options.some((option) => option.value === value)) {
+    if (callbackId) {
+      await answerCallback(token, callbackId, 'Эта кнопка устарела. Запустите /survey заново.');
+    }
+    await clearInlineKeyboard(token, chatId, messageId);
+    await trackBotEvent(supabase, 'telegram_survey_stale_button', { step, value, reason: 'invalid_option' });
     await sendMessage(token, chatId, 'Не понял этот вариант. Напишите /start, чтобы начать заново.');
     return;
   }
 
   const session = await getSession(supabase, chatId);
+  if (!session || session.completed || session.current_step !== step) {
+    if (callbackId) {
+      await answerCallback(token, callbackId, 'Эта кнопка уже устарела. Нажмите /survey.');
+    }
+    await clearInlineKeyboard(token, chatId, messageId);
+    await trackBotEvent(supabase, 'telegram_survey_stale_button', {
+      step,
+      value,
+      currentStep: session?.current_step ?? 'none',
+      completed: session?.completed ?? false,
+    });
+    return;
+  }
+
+  if (callbackId) {
+    await answerCallback(token, callbackId, 'Ответ сохранен ✅');
+  }
+  await clearInlineKeyboard(token, chatId, messageId);
+
   const answers = {
     ...(session?.answers || {}),
     [question.key]: value,
   };
   const nextStep = step + 1;
+  await trackBotEvent(supabase, 'telegram_survey_answer', {
+    step,
+    question: question.key,
+    value,
+  });
 
   if (nextStep >= surveyQuestions.length) {
     await upsertSession(supabase, chatId, user, {
@@ -445,6 +510,7 @@ async function processSurveyAnswer(
     } catch (error) {
       console.error('Unable to notify owner about survey lead', error);
     }
+    await trackBotEvent(supabase, 'telegram_survey_complete', { answersCount: Object.keys(answers).length });
     return;
   }
 
@@ -469,16 +535,21 @@ async function handleTextMessage(
   }
 
   if (text.startsWith('/start') || text.startsWith('/survey')) {
+    await trackBotEvent(supabase, 'telegram_command', {
+      command: text.startsWith('/start') ? 'start' : 'survey',
+    });
     await startSurvey(supabase, token, chatId, message.from);
     return;
   }
 
   if (text.startsWith('/help')) {
+    await trackBotEvent(supabase, 'telegram_command', { command: 'help' });
     await sendMessage(token, chatId, helpText());
     return;
   }
 
   if (text.startsWith('/tours')) {
+    await trackBotEvent(supabase, 'telegram_command', { command: 'tours' });
     await sendMessage(
       token,
       chatId,
@@ -489,12 +560,14 @@ async function handleTextMessage(
   }
 
   if (text.startsWith('/photos')) {
+    await trackBotEvent(supabase, 'telegram_command', { command: 'photos' });
     await sendMessage(token, chatId, 'Отправляю несколько фото туров.');
     await sendTourPhotos(token, chatId);
     return;
   }
 
   if (text.startsWith('/contact')) {
+    await trackBotEvent(supabase, 'telegram_command', { command: 'contact' });
     await sendMessage(token, chatId, contactText(), siteKeyboard());
     return;
   }
@@ -521,6 +594,7 @@ async function handleTextMessage(
   }
 
   await upsertSession(supabase, chatId, message.from, {});
+  await trackBotEvent(supabase, 'telegram_text_message', { hasUsername: Boolean(message.from?.username) });
   await sendMessage(
     token,
     chatId,
@@ -568,10 +642,6 @@ Deno.serve(async (req) => {
       }
       const [scope, stepText, value] = String(callback.data || '').split('|');
 
-      if (callback.id) {
-        await answerCallback(telegramToken, callback.id);
-      }
-
       if (chatId && scope === 'survey') {
         await processSurveyAnswer(
           supabase,
@@ -580,7 +650,15 @@ Deno.serve(async (req) => {
           Number(stepText),
           value,
           callback.from,
+          callback.id,
+          callback.message?.message_id,
         );
+      } else {
+        if (callback.id) {
+          await answerCallback(telegramToken, callback.id, 'Эта кнопка устарела.');
+        }
+        await clearInlineKeyboard(telegramToken, chatId, callback.message?.message_id);
+        await trackBotEvent(supabase, 'telegram_unknown_callback', { scope });
       }
 
       return json({ ok: true });

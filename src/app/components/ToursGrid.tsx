@@ -122,14 +122,26 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
                     asChild
                     className="w-full btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
-                    <Link to={`/tours/${tour.id}`}>View Details</Link>
+                    <Link
+                      to={`/tours/${tour.id}`}
+                      data-track-event="tour_card_view_click"
+                      data-track-label={tour.title}
+                    >
+                      View Details
+                    </Link>
                   </Button>
                   <Button
                     asChild
                     variant="outline"
-                    className="w-full btn-micro border-primary text-primary hover:bg-primary/10"
+                    className="w-full btn-micro btn-action-outline"
                   >
-                    <Link to={`/tours/${tour.id}?book=true`}>Request Tour</Link>
+                    <Link
+                      to={`/tours/${tour.id}?book=true`}
+                      data-track-event="tour_card_request_click"
+                      data-track-label={tour.title}
+                    >
+                      Request Tour
+                    </Link>
                   </Button>
                 </div>
               </div>

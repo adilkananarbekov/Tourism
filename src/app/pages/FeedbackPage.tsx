@@ -11,6 +11,7 @@ import { Textarea } from '../components/ui/textarea';
 import { SEO } from '../components/SEO';
 import { submitCustomTourRequest } from '../lib/firestore';
 import { guestSubmissionBackendEnabled } from '../lib/backend';
+import { trackEvent } from '../lib/eventTracker';
 
 const formString = z.preprocess((value) => (value == null ? '' : value), z.string());
 const requiredFormString = (message: string) => formString.pipe(z.string().trim().min(1, message));
@@ -109,6 +110,12 @@ export function FeedbackPage() {
         ].filter(Boolean).join('\n'),
       });
 
+      trackEvent('request_form_submit_success', {
+        label: selectedTour || 'Direct request',
+        hasTelegram: Boolean(values.telegramUsername.trim()),
+        hasPhone: Boolean(values.phone.trim()),
+        hasTravelTime: Boolean(values.travelTime.trim()),
+      });
       reset();
       setSubmitted(true);
     } catch (error) {
@@ -155,8 +162,14 @@ export function FeedbackPage() {
             </div>
           </div>
 
-          <Button asChild variant="outline" className="btn-micro border-primary text-primary">
-            <Link to="/tours">Browse tours first</Link>
+          <Button asChild variant="outline" className="btn-micro btn-action-outline">
+            <Link
+              to="/tours"
+              data-track-event="request_page_browse_tours_click"
+              data-track-label="Request page browse tours"
+            >
+              Browse tours first
+            </Link>
           </Button>
         </div>
 
@@ -257,8 +270,10 @@ export function FeedbackPage() {
 
           <Button
             type="submit"
-            className="w-full btn-micro bg-primary text-primary-foreground hover:bg-primary/90"
+            className="w-full btn-micro btn-action"
             disabled={isSubmitting}
+            data-track-event="request_form_submit_click"
+            data-track-label="Direct request form"
           >
             {isSubmitting ? 'Sending...' : 'Send to Kyrgyz Riders'}
           </Button>

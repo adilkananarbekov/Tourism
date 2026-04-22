@@ -37,8 +37,14 @@ export function ContactStrip() {
             personally.
           </p>
           <div>
-            <Button asChild className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link to="/feedback">Send Request</Link>
+            <Button asChild className="btn-micro btn-action">
+              <Link
+                to="/feedback"
+                data-track-event="contact_strip_request_click"
+                data-track-label="Contact strip request"
+              >
+                Send Request
+              </Link>
             </Button>
           </div>
         </div>

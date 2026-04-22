@@ -60,9 +60,15 @@ export function Header() {
             ))}
             <Button
               asChild
-              className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="btn-micro btn-action"
             >
-              <Link to="/custom-tour">Custom Request</Link>
+              <Link
+                to="/custom-tour"
+                data-track-event="header_custom_request_click"
+                data-track-label="Header custom request"
+              >
+                Custom Request
+              </Link>
             </Button>
             <ThemeToggle />
             <AuthStatus />
@@ -102,9 +108,14 @@ export function Header() {
               <div className="px-4 pt-2">
                 <Button
                   asChild
-                  className="w-full btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="w-full btn-micro btn-action"
                 >
-                  <Link to="/custom-tour" onClick={() => setMobileMenuOpen(false)}>
+                  <Link
+                    to="/custom-tour"
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-track-event="mobile_custom_request_click"
+                    data-track-label="Mobile custom request"
+                  >
                     Custom Request
                   </Link>
                 </Button>

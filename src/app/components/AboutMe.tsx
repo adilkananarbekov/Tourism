@@ -74,15 +74,27 @@ export function AboutMe() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button asChild className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link to="/feedback">Send a Request</Link>
+            <Button asChild className="btn-micro btn-action">
+              <Link
+                to="/feedback"
+                data-track-event="about_request_click"
+                data-track-label="About request"
+              >
+                Send a Request
+              </Link>
             </Button>
             <Button
               asChild
               variant="outline"
-              className="btn-micro border-primary text-primary hover:bg-primary/10"
+              className="btn-micro btn-action-outline"
             >
-              <Link to="/custom-tour">Custom Tour</Link>
+              <Link
+                to="/custom-tour"
+                data-track-event="about_custom_tour_click"
+                data-track-label="About custom tour"
+              >
+                Custom Tour
+              </Link>
             </Button>
           </div>
         </div>

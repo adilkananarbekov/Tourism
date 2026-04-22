@@ -10,6 +10,7 @@ const navItems = [
   { label: 'News', tab: 'blogs', to: '/admin/dashboard?tab=blogs' },
   { label: 'Requests', tab: 'requests', to: '/admin/dashboard?tab=requests' },
   { label: 'Bookings', tab: 'bookings', to: '/admin/dashboard?tab=bookings' },
+  { label: 'Events', tab: 'events', to: '/admin/dashboard?tab=events' },
   { label: 'Feedback', tab: 'feedback', to: '/admin/dashboard?tab=feedback' },
   { label: 'Users', tab: 'users', to: '/admin/dashboard?tab=users' },
   { label: 'Content', tab: 'content', to: '/admin/dashboard?tab=content' },

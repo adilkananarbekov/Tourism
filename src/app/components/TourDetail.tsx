@@ -23,6 +23,7 @@ import { guestSubmissionBackendEnabled } from '../lib/backend';
 import { supabaseEnabled } from '../lib/supabase';
 import { MapSection } from './MapSection';
 import { withBasePath } from '../lib/assets';
+import { trackEvent } from '../lib/eventTracker';
 
 interface TourDetailProps {
   tour: Tour | null;
@@ -404,7 +405,9 @@ export function TourDetail({ tour }: TourDetailProps) {
               {!showBookingForm ? (
                 <Button
                   onClick={() => setShowBookingForm(true)}
-                  className="w-full btn-micro bg-primary hover:bg-primary/90 text-primary-foreground mb-4"
+                  className="w-full btn-micro btn-action mb-4"
+                  data-track-event="tour_detail_request_open"
+                  data-track-label={tour.title}
                 >
                   Request This Tour
                 </Button>
@@ -518,6 +521,12 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
         userId: user?.uid,
       };
       await submitBookingRequest(bookingPayload);
+      trackEvent('tour_request_submit_success', {
+        label: tour.title,
+        participants: participantsCount,
+        hasTelegram: Boolean(details.telegramUsername?.trim()),
+        hasPhone: Boolean(details.phone?.trim()),
+      });
       appendLocalBooking({ ...bookingPayload, status: 'pending' });
       const existingProfile = loadLocalProfile();
       if (!existingProfile && details.email && details.name) {
@@ -677,8 +686,10 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
           <div className="flex flex-col sm:flex-row gap-2">
             <Button
               type="submit"
-              className="flex-1 btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="flex-1 btn-micro btn-action"
               disabled={isSubmitting}
+              data-track-event="tour_detail_request_submit"
+              data-track-label={tour.title}
             >
               {isSubmitting ? 'Sending...' : 'Send Tour Request'}
             </Button>

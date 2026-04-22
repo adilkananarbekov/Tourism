@@ -25,7 +25,9 @@ export function CTA() {
             size="lg"
             className="btn-micro bg-white text-primary hover:bg-white/90 px-6 py-4 text-base sm:px-8 sm:py-6 sm:text-lg w-full sm:w-auto"
           >
-            <Link to="/tours">Browse All Tours</Link>
+            <Link to="/tours" data-track-event="cta_browse_tours_click" data-track-label="CTA browse tours">
+              Browse All Tours
+            </Link>
           </Button>
           <Button
             asChild
@@ -33,7 +35,13 @@ export function CTA() {
             variant="outline"
             className="btn-micro bg-transparent hover:bg-white/10 text-white border-2 border-white hover:border-white px-6 py-4 text-base sm:px-8 sm:py-6 sm:text-lg w-full sm:w-auto"
           >
-            <Link to="/custom-tour">Custom Request</Link>
+            <Link
+              to="/custom-tour"
+              data-track-event="cta_custom_request_click"
+              data-track-label="CTA custom request"
+            >
+              Custom Request
+            </Link>
           </Button>
         </div>
         <p className="mt-8 text-white/80 text-sm">

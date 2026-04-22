@@ -163,9 +163,15 @@ export function JourneyStory() {
           <div className="pt-6">
             <Button
               asChild
-              className="btn-micro bg-primary text-primary-foreground hover:bg-primary/90"
+              className="btn-micro btn-action"
             >
-              <Link to="/custom-tour">Start With a Flexible Request</Link>
+              <Link
+                to="/custom-tour"
+                data-track-event="story_custom_request_click"
+                data-track-label="Story custom request"
+              >
+                Start With a Flexible Request
+              </Link>
             </Button>
           </div>
         </div>

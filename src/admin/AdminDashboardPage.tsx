@@ -41,6 +41,7 @@ import {
   updateTour,
   updateUserRole,
 } from '../app/lib/firestore';
+import { fetchEventSummary } from '../app/lib/eventTracker';
 
 type TourFormState = {
   id: string;
@@ -84,6 +85,17 @@ const EMPTY_TOUR_FORM: TourFormState = {
 
 const statusOptions = ['pending', 'approved', 'rejected', 'completed'];
 
+type EventSummary = {
+  totals: Record<string, number>;
+  recent: Array<{
+    source: string;
+    event_name: string;
+    path: string;
+    label: string;
+    created_at: string;
+  }>;
+};
+
 export function AdminDashboardPage() {
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') ?? 'overview';
@@ -97,6 +109,7 @@ export function AdminDashboardPage() {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>([]);
   const [contentSettings, setContentSettings] = useState<ContentSettings>({});
+  const [eventSummary, setEventSummary] = useState<EventSummary>({ totals: {}, recent: [] });
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -120,12 +133,13 @@ export function AdminDashboardPage() {
 
     const loadStatic = async () => {
       try {
-        const [toursData, sightsData, blogData, usersData, contentData] = await Promise.all([
+        const [toursData, sightsData, blogData, usersData, contentData, eventsData] = await Promise.all([
           fetchTours(),
           fetchSights(),
           fetchBlogPosts(),
           fetchUsers(),
           fetchContentSettings(),
+          fetchEventSummary().catch(() => ({ totals: {}, recent: [] })),
         ]);
         if (!isActive) {
           return;
@@ -135,6 +149,7 @@ export function AdminDashboardPage() {
         setBlogPosts(blogData);
         setUsers(usersData);
         setContentSettings(contentData || {});
+        setEventSummary(eventsData);
       } catch (err) {
         if (isActive) {
           setErrorMessage(err instanceof Error ? err.message : 'Unable to load admin data.');
@@ -198,13 +213,14 @@ export function AdminDashboardPage() {
   }, []);
 
   const stats = useMemo(() => {
+    const eventCount = Object.values(eventSummary.totals).reduce((sum, value) => sum + value, 0);
     return [
       { label: 'Tours', value: tours.length },
       { label: 'Bookings', value: bookings.length },
       { label: 'Custom Requests', value: customRequests.length },
-      { label: 'Seller Submissions', value: sellerSubmissions.length },
+      { label: 'Events', value: eventCount },
     ];
-  }, [tours, bookings, customRequests, sellerSubmissions]);
+  }, [tours, bookings, customRequests, eventSummary.totals]);
 
   const setTourFormFromTour = (tour: Tour) => {
     setTourForm({
@@ -1009,6 +1025,49 @@ export function AdminDashboardPage() {
             >
               Save Content
             </Button>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'events' && (
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl text-foreground mb-2">Event Tracker</h2>
+            <p className="text-muted-foreground text-sm">
+              Page views, CTA clicks, request submits, and Telegram bot actions.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {Object.entries(eventSummary.totals).slice(0, 9).map(([key, value]) => (
+              <div key={key} className="bg-muted rounded-lg p-4">
+                <p className="text-sm text-muted-foreground">{key}</p>
+                <p className="text-3xl text-foreground">{value}</p>
+              </div>
+            ))}
+            {Object.keys(eventSummary.totals).length === 0 && (
+              <p className="text-muted-foreground">No tracked events yet.</p>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-lg text-foreground">Recent Events</h3>
+            {eventSummary.recent.map((event, index) => (
+              <div
+                key={`${event.created_at}-${index}`}
+                className="border border-border rounded-lg p-4 admin-row"
+              >
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-foreground font-medium">
+                    {event.source}:{event.event_name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(event.created_at).toLocaleString()}
+                  </p>
+                </div>
+                <p className="text-sm text-muted-foreground">{event.label || event.path}</p>
+              </div>
+            ))}
           </div>
         </div>
       )}

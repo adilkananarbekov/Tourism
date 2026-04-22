@@ -113,6 +113,42 @@
   filter: brightness(0.98);
 }
 
+.btn-action {
+  border: 0;
+  background: linear-gradient(135deg, #0f766e 0%, #c2410c 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 28px rgba(194, 65, 12, 0.2);
+}
+
+.btn-action:hover {
+  background: linear-gradient(135deg, #0d9488 0%, #b45309 100%);
+  color: #ffffff;
+}
+
+.btn-action-outline {
+  border-color: rgba(194, 65, 12, 0.42);
+  background: rgba(194, 65, 12, 0.08);
+  color: #9a3412;
+}
+
+.btn-action-outline:hover {
+  border-color: rgba(15, 118, 110, 0.48);
+  background: rgba(15, 118, 110, 0.1);
+  color: #0f766e;
+}
+
+.dark .btn-action-outline {
+  border-color: rgba(251, 146, 60, 0.42);
+  background: rgba(251, 146, 60, 0.1);
+  color: #fdba74;
+}
+
+.dark .btn-action-outline:hover {
+  border-color: rgba(45, 212, 191, 0.48);
+  background: rgba(45, 212, 191, 0.1);
+  color: #5eead4;
+}
+
 .nav-link {
   position: relative;
   color: var(--muted-foreground);

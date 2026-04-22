@@ -23,6 +23,8 @@ export function ThemeToggle() {
           className="btn-micro h-9 w-9 rounded-full border-border bg-card text-foreground"
           aria-label="Choose color theme"
           title="Choose color theme"
+          data-track-event="theme_menu_open"
+          data-track-label="Theme menu"
         >
           <Icon className="h-4 w-4" />
         </Button>
@@ -35,15 +37,27 @@ export function ThemeToggle() {
             setPreference(value);
           }
         }}>
-          <DropdownMenuRadioItem value="system">
+          <DropdownMenuRadioItem
+            value="system"
+            data-track-event="theme_preference_select"
+            data-track-label="system"
+          >
             <Monitor className="h-4 w-4" />
             System
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="light">
+          <DropdownMenuRadioItem
+            value="light"
+            data-track-event="theme_preference_select"
+            data-track-label="light"
+          >
             <Sun className="h-4 w-4" />
             Light
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="dark">
+          <DropdownMenuRadioItem
+            value="dark"
+            data-track-event="theme_preference_select"
+            data-track-label="dark"
+          >
             <Moon className="h-4 w-4" />
             Dark
           </DropdownMenuRadioItem>

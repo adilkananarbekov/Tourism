@@ -15,6 +15,7 @@ import { submitCustomTourRequest } from '../lib/firestore';
 import { useAuth } from '../context/AuthContext';
 import { guestSubmissionBackendEnabled } from '../lib/backend';
 import { supabaseEnabled } from '../lib/supabase';
+import { trackEvent } from '../lib/eventTracker';
 
 const formString = z.preprocess((value) => (value == null ? '' : value), z.string());
 const requiredFormString = (message: string) => formString.pipe(z.string().trim().min(1, message));
@@ -217,6 +218,11 @@ export function CustomTourForm() {
         sights: values.sights || [],
         activities: values.activities || [],
         userId: user?.uid,
+      });
+      trackEvent('custom_tour_submit_success', {
+        groupSize: values.groupSize,
+        hasTelegram: Boolean(values.telegramUsername?.trim()),
+        hasPhone: Boolean(values.phone?.trim()),
       });
       setSubmitted(true);
     } catch (err) {
@@ -727,7 +733,9 @@ export function CustomTourForm() {
             {currentStep < totalSteps ? (
               <Button
                 onClick={handleNext}
-                className="flex-1 btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="flex-1 btn-micro btn-action"
+                data-track-event="custom_tour_next_click"
+                data-track-label={`Step ${currentStep}`}
               >
                 Next
                 <ArrowRight className="h-4 w-4 ml-2" />
@@ -735,8 +743,10 @@ export function CustomTourForm() {
             ) : (
               <Button
                 type="submit"
-                className="flex-1 btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="flex-1 btn-micro btn-action"
                 disabled={isSubmitting}
+                data-track-event="custom_tour_submit_click"
+                data-track-label="Custom tour form"
               >
                 {isSubmitting ? 'Submitting...' : 'Send Request'}
               </Button>
