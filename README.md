@@ -1,7 +1,8 @@
-# Tourism (React + Firebase)
+# Tourism (React + Firebase + Supabase)
 
 This project is built from the provided tourism design and wired to Firebase
-for tours data and request submissions.
+for the existing admin/auth features. Guest booking and custom tour requests
+can also be stored in Supabase and forwarded to Telegram.
 
 ## Launching the project
 
@@ -13,12 +14,23 @@ npm install
 ```
 
 Create a `.env` file (copy from `.env.example`) and fill in the missing values
-from Firebase Console > Project settings > General > Your apps (Web app config).
-The `projectId` and `messagingSenderId` are already provided in `.env.example`.
+from Firebase Console > Project settings > General > Your apps (Web app config)
+and Supabase Project Settings > API.
 
 ```bash
 copy .env.example .env
 ```
+
+For guest submissions through Supabase, set:
+
+```bash
+VITE_SUPABASE_URL=https://ufxxhnqbiyaqnwfgrtlw.supabase.co
+VITE_SUPABASE_GUEST_REQUEST_FUNCTION=guest-request
+VITE_SUPABASE_TELEGRAM_FUNCTION=telegram-notify
+```
+
+`VITE_SUPABASE_ANON_KEY` is optional for the current guest flow because the app
+submits booking requests through the public `guest-request` Edge Function.
 
 Run the app:
 
@@ -35,21 +47,45 @@ npm run preview
 
 If Firebase is not configured, the UI will fall back to the local sample tours.
 
+## Supabase guest requests
+
+The Supabase migration is in `supabase/migrations/202604220001_guest_requests_and_telegram.sql`.
+It creates:
+
+- `bookings` for tour booking requests
+- `custom_tour_requests` for custom itinerary requests
+- `tours` for future Supabase-backed tour content
+- `app_secrets` for server-side bot settings, protected by RLS with no public policies
+
+Guest visitors can submit booking and custom tour forms without creating an
+account when `VITE_SUPABASE_URL` is configured. The frontend posts to the
+`guest-request` Edge Function, which inserts the row with the Supabase service
+role and sends the Telegram notification server-side. Public clients cannot read
+or update submitted guest data.
+
+The Telegram notification Edge Functions are:
+
+- `guest-request`: receives website booking/custom tour requests and sends Telegram alerts
+- `telegram-webhook`: answers Telegram `/start` and stores the chat ID
+- `telegram-notify`: helper for notifying from an existing Supabase row
+
+The bot token, chat ID, and webhook secret are stored in `app_secrets`; do not
+put them in `.env` or commit them to the repo.
+
 ## Admin panel
 
 - Login route: `/admin/login`
 - Dashboard: `/admin/dashboard`
-- Default credentials (for this assignment): `admin` / `admin123`
-- Optional overrides via `.env`:
+- Configure these values in `.env` before building:
   - `VITE_ADMIN_USERNAME`
-  - `VITE_ADMIN_PASSWORD`
   - `VITE_ADMIN_EMAIL` (create this email in Firebase Auth to access Firestore admin data)
+- The admin password is the Firebase Auth password for `VITE_ADMIN_EMAIL`; do not put it in a `VITE_` variable because Vite client variables are bundled into the public site.
 
 ## Firebase Auth
 
 This project uses Firebase Email/Password authentication for buyers and sellers. Enable
 Email/Password in Firebase Console and create the admin user matching `VITE_ADMIN_EMAIL`
-and `VITE_ADMIN_PASSWORD` so the admin dashboard can read/write Firestore.
+so the admin dashboard can read/write Firestore.
 
 ## Pages and routes
 

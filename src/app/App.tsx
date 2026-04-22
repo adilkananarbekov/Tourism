@@ -13,6 +13,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => 
 const TourDetailPage = lazy(() => import('./pages/TourDetailPage').then((module) => ({ default: module.TourDetailPage })));
 const ToursPage = lazy(() => import('./pages/ToursPage').then((module) => ({ default: module.ToursPage })));
 const ExplorePage = lazy(() => import('./pages/ExplorePage').then((module) => ({ default: module.ExplorePage })));
+const GalleryPage = lazy(() => import('./pages/GalleryPage').then((module) => ({ default: module.GalleryPage })));
 const BlogsPage = lazy(() => import('./pages/BlogsPage').then((module) => ({ default: module.BlogsPage })));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
 const CreateTourPage = lazy(() => import('./pages/CreateTourPage').then((module) => ({ default: module.CreateTourPage })));
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/custom-tour" element={<CustomTourForm />} />
             <Route path="/join-tour" element={<JoinTourPage />} />
             <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/auth" element={<AuthPage />} />

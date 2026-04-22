@@ -14,10 +14,10 @@ export function CTA() {
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <h2 className="text-3xl sm:text-4xl md:text-5xl text-white mb-6">
-          Ready for Your Kyrgyz Adventure?
+          Ready to Plan Your Kyrgyz Adventure?
         </h2>
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-10 leading-relaxed">
-          Whether you choose one of our signature tours or create a custom journey, we'll help you discover the wonders of Kyrgyzstan
+          Choose a signature tour or tell me what you want to see, and I will build the right route for your time, pace, and budget.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
@@ -37,7 +37,7 @@ export function CTA() {
           </Button>
         </div>
         <p className="mt-8 text-white/80 text-sm">
-          Have questions? Contact us at <a href="mailto:info@kyrgyzriders.com" className="underline hover:text-white">info@kyrgyzriders.com</a>
+          Have questions? Contact me at <a href="mailto:info@kyrgyzriders.com" className="underline hover:text-white">info@kyrgyzriders.com</a>
         </p>
       </div>
     </section>

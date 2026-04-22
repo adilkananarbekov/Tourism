@@ -13,24 +13,61 @@ import { Checkbox } from './ui/checkbox';
 import { SEO } from './SEO';
 import { submitCustomTourRequest } from '../lib/firestore';
 import { useAuth } from '../context/AuthContext';
-import { firebaseEnabled } from '../lib/firebase';
+import { guestSubmissionBackendEnabled } from '../lib/backend';
+import { supabaseEnabled } from '../lib/supabase';
 
-const customTourSchema = z.object({
-  groupSize: z.coerce.number().min(1, 'Group size is required.'),
-  startDate: z.string().min(1, 'Start date is required.'),
-  endDate: z.string().min(1, 'End date is required.'),
-  startLocation: z.string().min(1),
-  endLocation: z.string().min(1),
-  sights: z.array(z.string()).optional(),
-  activities: z.array(z.string()).optional(),
-  pace: z.string().min(1),
-  accommodation: z.string().min(1),
-  name: z.string().min(1, 'Name is required.'),
-  email: z.string().email(),
-  phone: z.string().min(1, 'Phone is required.'),
-  budget: z.string().optional(),
-  specialRequests: z.string().optional(),
-});
+const formString = z.preprocess((value) => (value == null ? '' : value), z.string());
+const requiredFormString = (message: string) => formString.pipe(z.string().trim().min(1, message));
+const optionalEmail = formString.pipe(
+  z.string().refine((value) => !value || z.string().email().safeParse(value).success, {
+    message: 'Use a valid email or leave it empty.',
+  })
+);
+const formStringArray = z.preprocess(
+  (value) => (Array.isArray(value) ? value : []),
+  z.array(z.string())
+);
+
+const customTourSchema = z
+  .object({
+    groupSize: z.coerce.number().min(1, 'Group size is required.'),
+    startDate: formString,
+    endDate: formString,
+    dateFlexibility: formString,
+    startLocation: requiredFormString('Start location is required.'),
+    endLocation: requiredFormString('End location is required.'),
+    sights: formStringArray,
+    activities: formStringArray,
+    pace: requiredFormString('Pace is required.'),
+    accommodation: requiredFormString('Accommodation is required.'),
+    name: requiredFormString('Name is required.'),
+    email: optionalEmail,
+    telegramUsername: formString,
+    phone: formString,
+    budget: formString,
+    specialRequests: formString,
+  })
+  .superRefine((values, ctx) => {
+    if (!values.telegramUsername?.trim() && !values.phone?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['phone'],
+        message: 'Add a Telegram username or phone number.',
+      });
+    }
+
+    if (
+      values.startDate &&
+      values.endDate &&
+      Date.parse(values.endDate) < Date.parse(values.startDate)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['endDate'],
+        message: 'End date should be after the start date.',
+      });
+    }
+  });
 
 type CustomTourFormData = z.infer<typeof customTourSchema>;
 
@@ -56,6 +93,7 @@ export function CustomTourForm() {
       groupSize: 1,
       startDate: '',
       endDate: '',
+      dateFlexibility: '',
       startLocation: 'bishkek',
       endLocation: 'bishkek',
       sights: [],
@@ -64,6 +102,7 @@ export function CustomTourForm() {
       accommodation: 'mix',
       name: '',
       email: '',
+      telegramUsername: '',
       phone: '',
       budget: '',
       specialRequests: '',
@@ -129,9 +168,9 @@ export function CustomTourForm() {
     setErrorMessage(null);
     const fieldsToValidate: Array<keyof CustomTourFormData> =
       currentStep === 1
-        ? ['groupSize', 'startDate', 'endDate']
+        ? ['groupSize']
         : currentStep === 4
-          ? ['name', 'email', 'phone']
+          ? ['name', 'telegramUsername', 'phone']
           : [];
     if (fieldsToValidate.length) {
       const isValid = await trigger(fieldsToValidate);
@@ -155,12 +194,12 @@ export function CustomTourForm() {
   const onSubmit = async (values: CustomTourFormData) => {
     setErrorMessage(null);
 
-    if (!firebaseEnabled) {
+    if (!guestSubmissionBackendEnabled) {
       setErrorMessage('Backend is not configured. Please update your .env file.');
       return;
     }
 
-    if (!user) {
+    if (!supabaseEnabled && !user) {
       setErrorMessage('Please sign in to submit a custom tour request.');
       return;
     }
@@ -169,9 +208,15 @@ export function CustomTourForm() {
     try {
       await submitCustomTourRequest({
         ...values,
+        email: values.email || '',
+        telegramUsername: values.telegramUsername || '',
+        phone: values.phone || '',
+        startDate: values.startDate || '',
+        endDate: values.endDate || '',
+        dateFlexibility: values.dateFlexibility || '',
         sights: values.sights || [],
         activities: values.activities || [],
-        userId: user.uid,
+        userId: user?.uid,
       });
       setSubmitted(true);
     } catch (err) {
@@ -243,7 +288,7 @@ export function CustomTourForm() {
         description="Design a custom Kyrgyzstan itinerary with your preferred dates and activities."
       />
       <div className="max-w-4xl mx-auto">
-        {!user && (
+        {!user && !supabaseEnabled && (
         <div className="bg-card border border-border rounded-lg p-4 mb-6 text-sm text-muted-foreground flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-foreground font-medium mb-2">Sign in required</p>
@@ -341,7 +386,7 @@ export function CustomTourForm() {
                 <div>
                   <Label htmlFor="startDate">
                     <Calendar className="h-4 w-4 inline mr-2" />
-                    Start Date
+                    Preferred Start Date
                   </Label>
                   <Input
                     id="startDate"
@@ -356,7 +401,7 @@ export function CustomTourForm() {
                 <div>
                   <Label htmlFor="endDate">
                     <Calendar className="h-4 w-4 inline mr-2" />
-                    End Date
+                    Preferred End Date
                   </Label>
                   <Input
                     id="endDate"
@@ -366,6 +411,15 @@ export function CustomTourForm() {
                   {errors.endDate && (
                     <p className="text-xs text-red-600">{errors.endDate.message}</p>
                   )}
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label htmlFor="dateFlexibility">Flexible Timing</Label>
+                  <Input
+                    id="dateFlexibility"
+                    placeholder="Any week in July, weekend only, or not sure yet"
+                    {...register('dateFlexibility')}
+                  />
                 </div>
 
                 <div>
@@ -572,34 +626,43 @@ export function CustomTourForm() {
 
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Full Name *</Label>
+                  <Label htmlFor="name">Name *</Label>
                   <Input
                     id="name"
-                    placeholder="John Doe"
+                    placeholder="Adilkan"
                     {...register('name')}
                   />
                   {errors.name && <p className="text-xs text-red-600">{errors.name.message}</p>}
                 </div>
 
                 <div>
-                  <Label htmlFor="email">Email Address *</Label>
+                  <Label htmlFor="telegramUsername">Telegram Username</Label>
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="john@example.com"
-                    {...register('email')}
+                    id="telegramUsername"
+                    placeholder="@adilkan_dev"
+                    {...register('telegramUsername')}
                   />
-                  {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
                 </div>
 
                 <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Label htmlFor="phone">Phone or WhatsApp</Label>
                   <Input
                     id="phone"
-                    placeholder="+1 234 567 8900"
+                    placeholder="+996 555 123 456, 0555 123 456, or 996555123456"
                     {...register('phone')}
                   />
                   {errors.phone && <p className="text-xs text-red-600">{errors.phone.message}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="email">Email Address (optional)</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    {...register('email')}
+                  />
+                  {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
                 </div>
 
                 <div>
@@ -624,6 +687,9 @@ export function CustomTourForm() {
                   <p>
                     <strong>Dates:</strong> {formValues.startDate || 'Not specified'} to{' '}
                     {formValues.endDate || 'Not specified'}
+                  </p>
+                  <p>
+                    <strong>Timing:</strong> {formValues.dateFlexibility || 'Flexible'}
                   </p>
                   <p>
                     <strong>Route:</strong> {formValues.startLocation} to {formValues.endLocation}

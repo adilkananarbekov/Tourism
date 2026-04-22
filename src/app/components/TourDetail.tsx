@@ -1,4 +1,4 @@
-import { ArrowLeft, Calendar, Check, CreditCard, MapPin, Tag, Users } from 'lucide-react';
+import { ArrowLeft, Calendar, Check, MapPin, Tag, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -19,32 +19,58 @@ import { Textarea } from './ui/textarea';
 import { submitBookingRequest } from '../lib/firestore';
 import { appendLocalBooking, loadLocalProfile, saveLocalProfile } from '../lib/localStorage';
 import { useAuth } from '../context/AuthContext';
-import { firebaseEnabled } from '../lib/firebase';
+import { guestSubmissionBackendEnabled } from '../lib/backend';
+import { supabaseEnabled } from '../lib/supabase';
 import { MapSection } from './MapSection';
+import { withBasePath } from '../lib/assets';
 
 interface TourDetailProps {
   tour: Tour | null;
 }
 
-const bookingDetailsSchema = z.object({
-  name: z.string().min(1, 'Name is required.'),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  participants: z.coerce.number().min(1, 'Add at least 1 participant.'),
-  startDate: z.string().min(1, 'Start date is required.'),
-  endDate: z.string().min(1, 'End date is required.'),
-  notes: z.string().optional(),
-});
+const formString = z.preprocess((value) => (value == null ? '' : value), z.string());
+const requiredFormString = (message: string) => formString.pipe(z.string().trim().min(1, message));
+const optionalEmail = formString.pipe(
+  z.string().refine((value) => !value || z.string().email().safeParse(value).success, {
+    message: 'Use a valid email or leave it empty.',
+  })
+);
 
-const paymentSchema = z.object({
-  cardName: z.string().min(1, 'Cardholder name is required.'),
-  cardNumber: z.string().min(12, 'Card number looks too short.'),
-  expiry: z.string().min(4, 'Expiry date is required.'),
-  cvc: z.string().min(3, 'CVC is required.'),
-});
+const bookingDetailsSchema = z
+  .object({
+    name: requiredFormString('Name is required.'),
+    email: optionalEmail,
+    telegramUsername: formString,
+    phone: formString,
+    participants: z.coerce.number().min(1, 'Add at least 1 participant.'),
+    startDate: formString,
+    endDate: formString,
+    dateFlexibility: formString,
+    notes: formString,
+  })
+  .superRefine((values, ctx) => {
+    if (!values.telegramUsername?.trim() && !values.phone?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['phone'],
+        message: 'Add a Telegram username or phone number.',
+      });
+    }
+
+    if (
+      values.startDate &&
+      values.endDate &&
+      Date.parse(values.endDate) < Date.parse(values.startDate)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['endDate'],
+        message: 'End date should be after the start date.',
+      });
+    }
+  });
 
 type BookingDetailsValues = z.infer<typeof bookingDetailsSchema>;
-type PaymentValues = z.infer<typeof paymentSchema>;
 
 export function TourDetail({ tour }: TourDetailProps) {
   const [activeTab, setActiveTab] = useState('overview');
@@ -75,7 +101,7 @@ export function TourDetail({ tour }: TourDetailProps) {
       {/* Hero Section */}
       <div className="relative h-[320px] sm:h-[380px] md:h-[500px]">
         <img
-          src={tour.image}
+          src={withBasePath(tour.image)}
           alt={tour.title}
           loading="eager"
           decoding="async"
@@ -420,7 +446,7 @@ export function TourDetail({ tour }: TourDetailProps) {
 function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
   const { user, profile } = useAuth();
   const location = useLocation();
-  const [step, setStep] = useState<'details' | 'payment' | 'done'>('details');
+  const [step, setStep] = useState<'details' | 'done'>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const detailsForm = useForm<BookingDetailsValues>({
@@ -428,20 +454,13 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
     defaultValues: {
       name: profile?.name || '',
       email: profile?.email || user?.email || '',
+      telegramUsername: '',
       phone: '',
       participants: 2,
       startDate: '',
       endDate: '',
+      dateFlexibility: '',
       notes: '',
-    },
-  });
-  const paymentForm = useForm<PaymentValues>({
-    resolver: zodResolver(paymentSchema),
-    defaultValues: {
-      cardName: '',
-      cardNumber: '',
-      expiry: '',
-      cvc: '',
     },
   });
 
@@ -467,36 +486,32 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
     }
   }, [detailsForm, profile?.email, profile?.name, user?.email]);
 
-  const handleDetailsSubmit = (_values: BookingDetailsValues) => {
+  const handleDetailsSubmit = async (details: BookingDetailsValues) => {
     setErrorMessage(null);
 
-    if (!firebaseEnabled) {
+    if (!guestSubmissionBackendEnabled) {
       setErrorMessage('Backend is not configured. Please update your .env file.');
       return;
     }
 
-    if (!user) {
+    if (!supabaseEnabled && !user) {
       setErrorMessage('Please sign in to submit a booking request.');
       return;
     }
 
-    setStep('payment');
-  };
-
-  const handlePaymentSubmit = async (_values: PaymentValues) => {
-    setErrorMessage(null);
     setIsSubmitting(true);
     try {
-      const details = detailsForm.getValues();
       const bookingPayload = {
         tourId: tour.id,
         tourTitle: tour.title,
         name: details.name,
-        email: details.email,
+        email: details.email || '',
+        telegramUsername: details.telegramUsername || '',
         phone: details.phone || '',
         participants: participantsCount,
-        startDate: details.startDate,
-        endDate: details.endDate,
+        startDate: details.startDate || '',
+        endDate: details.endDate || '',
+        dateFlexibility: details.dateFlexibility || '',
         notes: details.notes || '',
         pricePerPerson: tour.price,
         totalPrice: totalPrice ? `$${totalPrice}` : tour.price,
@@ -505,8 +520,8 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
       await submitBookingRequest(bookingPayload);
       appendLocalBooking({ ...bookingPayload, status: 'pending' });
       const existingProfile = loadLocalProfile();
-      if (!existingProfile && bookingData.email && bookingData.name) {
-        saveLocalProfile({ name: bookingData.name, email: bookingData.email, role: 'buyer' });
+      if (!existingProfile && details.email && details.name) {
+        saveLocalProfile({ name: details.name, email: details.email, role: 'buyer' });
       }
       setStep('done');
     } catch (err) {
@@ -535,7 +550,7 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
 
   return (
     <div className="space-y-5">
-      {!user && (
+      {!user && !supabaseEnabled && (
         <div className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground">
           <p className="text-foreground font-medium mb-2">Sign in required</p>
           <p className="mb-3">
@@ -551,10 +566,10 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
       {step === 'details' && (
         <form onSubmit={detailsForm.handleSubmit(handleDetailsSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name">Name *</Label>
             <Input
               id="name"
-              placeholder="John Doe"
+              placeholder="Adilkan"
               {...detailsForm.register('name')}
             />
             {detailsForm.formState.errors.name && (
@@ -564,11 +579,32 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
             )}
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="telegramUsername">Telegram Username</Label>
+            <Input
+              id="telegramUsername"
+              placeholder="@adilkan_dev"
+              {...detailsForm.register('telegramUsername')}
+            />
+          </div>
+          <div>
+            <Label htmlFor="phone">Phone or WhatsApp</Label>
+            <Input
+              id="phone"
+              placeholder="+996 555 123 456, 0555 123 456, or 996555123456"
+              {...detailsForm.register('phone')}
+            />
+            {detailsForm.formState.errors.phone && (
+              <p className="text-xs text-red-600">
+                {detailsForm.formState.errors.phone.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Label htmlFor="email">Email (optional)</Label>
             <Input
               id="email"
               type="email"
-              placeholder="john@example.com"
+              placeholder="you@example.com"
               {...detailsForm.register('email')}
             />
             {detailsForm.formState.errors.email && (
@@ -577,17 +613,9 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
               </p>
             )}
           </div>
-          <div>
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              placeholder="+1 234 567 8900"
-              {...detailsForm.register('phone')}
-            />
-          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="startDate">Start Date</Label>
+              <Label htmlFor="startDate">Preferred Start Date</Label>
               <Input
                 id="startDate"
                 type="date"
@@ -600,7 +628,7 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
               )}
             </div>
             <div>
-              <Label htmlFor="endDate">End Date</Label>
+              <Label htmlFor="endDate">Preferred End Date</Label>
               <Input
                 id="endDate"
                 type="date"
@@ -612,6 +640,14 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
                 </p>
               )}
             </div>
+          </div>
+          <div>
+            <Label htmlFor="dateFlexibility">Flexible Timing</Label>
+            <Input
+              id="dateFlexibility"
+              placeholder="Any week in July, weekend only, or not sure yet"
+              {...detailsForm.register('dateFlexibility')}
+            />
           </div>
           <div>
             <Label htmlFor="participants">Number of Participants</Label>
@@ -631,7 +667,7 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
             <Label htmlFor="notes">Additional Notes</Label>
             <Textarea
               id="notes"
-              placeholder="Any special requests or questions..."
+              placeholder="Any special requests, questions, or preferred contact time..."
               rows={3}
               {...detailsForm.register('notes')}
             />
@@ -641,8 +677,9 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
             <Button
               type="submit"
               className="flex-1 btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+              disabled={isSubmitting}
             >
-              Continue to Payment
+              {isSubmitting ? 'Sending...' : 'Send Booking Request'}
             </Button>
             <Button type="button" onClick={onCancel} variant="outline">
               Cancel
@@ -651,93 +688,6 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
         </form>
       )}
 
-      {step === 'payment' && (
-        <form onSubmit={paymentForm.handleSubmit(handlePaymentSubmit)} className="space-y-4">
-          <div className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground">
-            <p className="text-foreground font-medium mb-2">Booking Summary</p>
-            <div className="space-y-1">
-              <p>Tour: {tour.title}</p>
-              <p>
-                Dates: {detailsForm.watch('startDate')} to {detailsForm.watch('endDate')}
-              </p>
-              <p>Participants: {participantsCount}</p>
-              <p>Price per person: {tour.price}</p>
-              <p className="text-foreground font-semibold">Total: ${totalPrice}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <CreditCard className="h-4 w-4 text-secondary" />
-            <span>Enter card details to simulate payment (no real charge).</span>
-          </div>
-
-          <div>
-            <Label htmlFor="cardName">Name on Card</Label>
-            <Input
-              id="cardName"
-              placeholder="John Doe"
-              {...paymentForm.register('cardName')}
-            />
-            {paymentForm.formState.errors.cardName && (
-              <p className="text-xs text-red-600">
-                {paymentForm.formState.errors.cardName.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="cardNumber">Card Number</Label>
-            <Input
-              id="cardNumber"
-              placeholder="4242 4242 4242 4242"
-              {...paymentForm.register('cardNumber')}
-            />
-            {paymentForm.formState.errors.cardNumber && (
-              <p className="text-xs text-red-600">
-                {paymentForm.formState.errors.cardNumber.message}
-              </p>
-            )}
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <Label htmlFor="expiry">Expiry</Label>
-              <Input
-                id="expiry"
-                placeholder="MM/YY"
-                {...paymentForm.register('expiry')}
-              />
-              {paymentForm.formState.errors.expiry && (
-                <p className="text-xs text-red-600">
-                  {paymentForm.formState.errors.expiry.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="cvc">CVC</Label>
-              <Input
-                id="cvc"
-                placeholder="123"
-                {...paymentForm.register('cvc')}
-              />
-              {paymentForm.formState.errors.cvc && (
-                <p className="text-xs text-red-600">{paymentForm.formState.errors.cvc.message}</p>
-              )}
-            </div>
-          </div>
-          {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button
-              type="submit"
-              className="flex-1 btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Submitting...' : 'Confirm Booking'}
-            </Button>
-            <Button type="button" variant="outline" onClick={() => setStep('details')}>
-              Back
-            </Button>
-          </div>
-        </form>
-      )}
     </div>
   );
 }

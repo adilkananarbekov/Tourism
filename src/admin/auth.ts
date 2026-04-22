@@ -3,28 +3,38 @@ import { auth } from '../app/lib/firebase';
 import { upsertUserProfile } from '../app/lib/firestore';
 
 const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
 const ADMIN_SESSION_KEY = 'tourism-admin-session';
 
 export async function authenticateAdmin(username: string, password: string) {
-  if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
+  if (!auth || !ADMIN_EMAIL) {
     return false;
   }
 
-  localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+  const normalizedUsername = username.trim().toLowerCase();
+  const normalizedAdminUsername = ADMIN_USERNAME.trim().toLowerCase();
+  const normalizedAdminEmail = ADMIN_EMAIL.trim().toLowerCase();
 
-  if (auth && ADMIN_EMAIL) {
-    const result = await signInWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASSWORD);
+  if (
+    normalizedUsername !== normalizedAdminUsername &&
+    normalizedUsername !== normalizedAdminEmail
+  ) {
+    return false;
+  }
+
+  try {
+    const result = await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
     await upsertUserProfile({
       name: 'Admin',
       email: ADMIN_EMAIL,
       role: 'admin',
       uid: result.user.uid,
     });
+    localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    return true;
+  } catch {
+    return false;
   }
-
-  return true;
 }
 
 export function isAdminAuthenticated() {

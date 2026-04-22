@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Mail, MapPin, Phone, Twitter } from 'lucide-react';
+import { Instagram, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Footer() {
@@ -15,17 +15,22 @@ export function Footer() {
               <span className="text-xl">Kyrgyz Riders</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-4">
-              Your gateway to unforgettable adventures in the heart of Central Asia.
+              Independent guide creating custom adventures across Kyrgyzstan.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+              <a
+                href="https://instagram.com/yourhandle"
+                className="text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+                aria-label="Instagram"
+              >
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                <Twitter className="h-5 w-5" />
+              <a
+                href="https://t.me/yourhandle"
+                className="text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+                aria-label="Telegram"
+              >
+                <Send className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -45,18 +50,23 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/gallery" className="hover:text-primary-foreground transition-colors">
+                  Gallery
+                </Link>
+              </li>
+              <li>
                 <Link to="/blogs" className="hover:text-primary-foreground transition-colors">
                   Travel Stories
                 </Link>
               </li>
               <li>
-                <Link to="/feedback" className="hover:text-primary-foreground transition-colors">
-                  Feedback
+                <Link to="/custom-tour" className="hover:text-primary-foreground transition-colors">
+                  Custom Tour Request
                 </Link>
               </li>
               <li>
-                <Link to="/admin/login" className="hover:text-primary-foreground transition-colors">
-                  Admin Login
+                <Link to="/feedback" className="hover:text-primary-foreground transition-colors">
+                  Contact
                 </Link>
               </li>
             </ul>
@@ -109,6 +119,10 @@ export function Footer() {
               <li className="flex items-start gap-2">
                 <Mail className="h-5 w-5 flex-shrink-0 mt-0.5" />
                 <span>info@kyrgyzriders.com</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Send className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                <span>t.me/yourhandle</span>
               </li>
             </ul>
           </div>

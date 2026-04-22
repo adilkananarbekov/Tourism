@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import regions from '../../data/kyrgyz_region_places.json';
 import { SEO } from '../components/SEO';
+import { withBasePath } from '../lib/assets';
 
 interface RegionPlace {
   name: string;
@@ -42,8 +43,7 @@ export function ExplorePage() {
               <div className="relative h-52 w-full bg-muted overflow-hidden">
                 <img
                   src={
-                    region.places[0]?.imageUrl ||
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80'
+                    withBasePath(region.places[0]?.imageUrl || '/images/gallery/gallery-01.jpg')
                   }
                   alt={`${region.name} region`}
                   loading="lazy"
@@ -62,7 +62,7 @@ export function ExplorePage() {
                     <div key={place.name} className="flex gap-3">
                       <div className="h-14 w-14 rounded-md overflow-hidden bg-muted flex-shrink-0">
                         <img
-                          src={place.imageUrl}
+                          src={withBasePath(place.imageUrl)}
                           alt={place.name}
                           loading="lazy"
                           decoding="async"

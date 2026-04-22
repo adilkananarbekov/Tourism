@@ -37,7 +37,7 @@ export const tours: Tour[] = [
     tourType: 'Trekking & Culture',
     season: 'Summer',
     description: 'Journey to the pristine high-altitude Song-Kul Lake and experience authentic nomadic life in traditional yurts.',
-    image: 'https://images.unsplash.com/photo-1717341248908-fba98ac15111?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBpbmUlMjBsYWtlJTIwdHVycXVvaXNlfGVufDF8fHx8MTc2Njk0NDczOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/tour-songkul.jpg',
     price: '$890',
     locations: [
       { name: 'Song-Kul Lake', lat: 41.807, lng: 75.297 },
@@ -127,7 +127,7 @@ export const tours: Tour[] = [
     tourType: 'Hiking',
     season: 'All seasons',
     description: 'Explore the stunning Ala-Archa National Park with its dramatic gorges, alpine meadows, and snow-capped peaks.',
-    image: 'https://images.unsplash.com/photo-1603475429038-44361bcde123?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoaWtpbmclMjBtb3VudGFpbiUyMHRyYWlsfGVufDF8fHx8MTc2NjkyNzY3NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/tour-ala-archa.jpg',
     price: '$450',
     locations: [
       { name: 'Ala-Archa National Park', lat: 42.65, lng: 74.48 },
@@ -193,7 +193,7 @@ export const tours: Tour[] = [
     tourType: 'Cultural & Historical',
     season: 'Spring & Autumn',
     description: 'Follow ancient Silk Road routes through Kyrgyzstan, visiting historic caravanserais, bazaars, and UNESCO sites.',
-    image: 'https://images.unsplash.com/photo-1695554477492-303aacd40561?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5dXJ0JTIwdHJhZGl0aW9uYWwlMjBjYW1waW5nfGVufDF8fHx8MTc2Njk0NDczOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/tour-silk-road.jpg',
     price: '$1,450',
     locations: [
       { name: 'Issyk-Kul Lake', lat: 42.455, lng: 77.185 },
@@ -296,7 +296,7 @@ export const tours: Tour[] = [
     tourType: 'Horse Riding',
     season: 'Summer',
     description: 'Experience the nomadic way of life on horseback, riding through valleys, over passes, and along mountain ridges.',
-    image: 'https://images.unsplash.com/photo-1654139800156-65f9afb0fa01?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3JzZSUyMHJpZGluZyUyMG1vdW50YWluc3xlbnwxfHx8fDE3NjY5NDQ3Mzh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/tour-horseback.jpg',
     price: '$780',
     locations: [
       { name: 'Kochkor', lat: 42.216, lng: 75.756 },
@@ -374,7 +374,7 @@ export const tours: Tour[] = [
     tourType: 'Mountaineering',
     season: 'Summer',
     description: 'Challenge yourself with a trek to the base camp of Peak Lenin (7,134m), one of the most accessible 7,000m peaks.',
-    image: 'https://images.unsplash.com/photo-1563725774215-b0040bd214cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb3VudGFpbiUyMHRyZWtraW5nJTIwYWR2ZW50dXJlfGVufDF8fHx8MTc2NjkwMjYzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/tour-peak-lenin.jpg',
     price: '$1,680',
     locations: [
       { name: 'Peak Lenin Base Camp', lat: 39.348, lng: 72.877 },
@@ -488,7 +488,7 @@ export const tours: Tour[] = [
     tourType: 'Road Trip & Culture',
     season: 'Spring to Autumn',
     description: 'Circle the stunning Issyk-Kul Lake, stopping at hot springs, gorges, and traditional villages along the way.',
-    image: 'https://images.unsplash.com/photo-1717341248908-fba98ac15111?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhbHBpbmUlMjBsYWtlJTIwdHVycXVvaXNlfGVufDF8fHx8MTc2Njk0NDczOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/tour-issyk-kul.jpg',
     price: '$720',
     locations: [
       { name: 'Issyk-Kul Lake', lat: 42.455, lng: 77.185 },

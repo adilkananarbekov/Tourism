@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
+import { withBasePath } from '../lib/assets';
 
 export function Hero() {
+  const heroImage = withBasePath('/images/hero.jpg');
+
   return (
     <section className="relative min-h-[520px] sm:min-h-[600px] md:min-h-[680px] lg:min-h-[760px] flex items-center justify-center overflow-hidden">
       <div
         className="absolute inset-0 hero-parallax"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
+          backgroundImage: `url('${heroImage}')`,
         }}
         aria-hidden="true"
       />
@@ -17,10 +19,10 @@ export function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white mb-6">
-          Discover the Heart of Central Asia
+          Private Adventures Across Kyrgyzstan
         </h1>
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-8 max-w-2xl mx-auto">
-          Experience unforgettable adventures through Kyrgyzstan's majestic mountains, pristine lakes, and nomadic culture
+          I design small-group treks, horseback journeys, and cultural stays that bring you closer to Kyrgyzstan's mountains, lakes, and nomadic life.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button

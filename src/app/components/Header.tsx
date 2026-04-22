@@ -21,11 +21,9 @@ export function Header() {
     { label: 'Home', to: '/' },
     { label: 'Tours', to: '/tours' },
     { label: 'Explore', to: '/explore' },
-    { label: 'Join Tour', to: '/join-tour' },
-    { label: 'Blogs', to: '/blogs' },
-    { label: 'Feedback', to: '/feedback' },
-    { label: 'Dashboard', to: '/dashboard' },
-    { label: 'Submit Tour', to: '/create-tour' },
+    { label: 'Gallery', to: '/gallery' },
+    { label: 'Stories', to: '/blogs' },
+    { label: 'Contact', to: '/feedback' },
   ];
 
   return (

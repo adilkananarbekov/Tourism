@@ -257,6 +257,66 @@
   animation: admin-fade var(--motion-short) var(--motion-ease-in-out) both;
 }
 
+.masonry-grid {
+  column-count: 2;
+  column-gap: 1rem;
+}
+
+.masonry-grid--preview {
+  column-count: 2;
+  column-gap: 0.75rem;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 1rem;
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 300px;
+}
+
+.masonry-grid--preview .masonry-item {
+  margin-bottom: 0.75rem;
+}
+
+.masonry-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 640px) {
+  .masonry-grid {
+    column-count: 3;
+  }
+
+  .masonry-grid--preview {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonry-grid {
+    column-count: 4;
+    column-gap: 1.25rem;
+  }
+
+  .masonry-grid--preview {
+    column-count: 4;
+    column-gap: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .masonry-grid {
+    column-count: 5;
+    column-gap: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-parallax {
     background-attachment: scroll;

@@ -6,6 +6,7 @@ import { Input } from '../app/components/ui/input';
 import { Label } from '../app/components/ui/label';
 import { SEO } from '../app/components/SEO';
 import { authenticateAdmin } from './auth';
+import { withBasePath } from '../app/lib/assets';
 
 export function AdminLoginPage() {
   const [username, setUsername] = useState('');
@@ -38,7 +39,7 @@ export function AdminLoginPage() {
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "url('https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=1400&q=80')",
+                `url('${withBasePath('/images/hero-alt.jpg')}')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -98,7 +99,7 @@ export function AdminLoginPage() {
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="admin123"
+                placeholder="Firebase admin password"
                 className="h-11"
                 required
               />

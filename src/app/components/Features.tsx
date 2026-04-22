@@ -1,36 +1,36 @@
-import { Calendar, Globe, Heart, Mountain, Shield, Users } from 'lucide-react';
+import { Backpack, BadgeCheck, Car, Compass, Home, Mountain } from 'lucide-react';
 
 export function Features() {
   const features = [
     {
+      icon: Compass,
+      title: 'Day Trips & Hikes',
+      description: 'Flexible day adventures to Ala-Archa, Burana Tower, Suusamyr, or local lakes.',
+    },
+    {
       icon: Mountain,
-      title: 'Expert Local Guides',
-      description: 'Our passionate guides are born and raised in Kyrgyzstan, offering authentic insights and stories.',
+      title: 'Multi-Day Treks',
+      description: 'Custom trekking routes with camping, yurt stays, and scenic mountain passes.',
     },
     {
-      icon: Users,
-      title: 'Small Group Tours',
-      description: 'We keep our groups intimate to ensure personalized attention and minimal environmental impact.',
+      icon: Backpack,
+      title: 'Horseback Adventures',
+      description: 'Ride through high valleys and alpine meadows with trusted local horsemen.',
     },
     {
-      icon: Globe,
-      title: 'Sustainable Tourism',
-      description: 'We partner with local communities and practice responsible tourism to preserve our natural heritage.',
+      icon: Home,
+      title: 'Cultural Homestays',
+      description: 'Stay with nomadic families, visit yurt camps, and learn traditional crafts.',
     },
     {
-      icon: Shield,
-      title: 'Safety First',
-      description: 'Your safety is our priority with comprehensive insurance, quality equipment, and experienced leadership.',
+      icon: Car,
+      title: 'Transport & Driver',
+      description: 'Private 4x4 transport, airport pickup, and intercity transfers included when needed.',
     },
     {
-      icon: Calendar,
-      title: 'Flexible Itineraries',
-      description: 'Choose from our curated tours or create a custom adventure tailored to your interests and pace.',
-    },
-    {
-      icon: Heart,
-      title: 'Authentic Experiences',
-      description: 'Stay with nomadic families, learn traditional crafts, and experience the real Kyrgyz hospitality.',
+      icon: BadgeCheck,
+      title: 'Permits & Logistics',
+      description: 'I help arrange border permits, lodging, and seasonal planning so you travel stress-free.',
     },
   ];
 
@@ -39,10 +39,10 @@ export function Features() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl text-foreground mb-4">
-            Why Choose Kyrgyz Riders
+            Services I Offer
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Experience the difference with our locally-rooted, adventure-focused approach to travel
+            Pick a ready-made itinerary or tell me what you want and I will design a route around your time and budget.
           </p>
         </div>
 

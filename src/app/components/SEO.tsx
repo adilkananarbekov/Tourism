@@ -1,10 +1,10 @@
 import { Helmet } from 'react-helmet-async';
+import { withBasePath } from '../lib/assets';
 
 const DEFAULT_TITLE = 'Tourism | Kyrgyz Riders';
 const DEFAULT_DESCRIPTION =
   'Plan Kyrgyzstan tours with curated itineraries, cultural experiences, and mountain adventures.';
-const DEFAULT_IMAGE =
-  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80';
+const DEFAULT_IMAGE = '/images/hero.jpg';
 
 type SEOProps = {
   title?: string;
@@ -16,7 +16,7 @@ type SEOProps = {
 export function SEO({ title, description, image, url }: SEOProps) {
   const metaTitle = title ? `${title} | Kyrgyz Riders` : DEFAULT_TITLE;
   const metaDescription = description || DEFAULT_DESCRIPTION;
-  const metaImage = image || DEFAULT_IMAGE;
+  const metaImage = withBasePath(image || DEFAULT_IMAGE);
 
   return (
     <Helmet>

@@ -15,12 +15,18 @@ import {
   type DocumentData,
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { supabaseEnabled } from './supabase';
+import {
+  submitSupabaseBookingRequest,
+  submitSupabaseCustomTourRequest,
+} from './supabaseSubmissions';
 import type { Tour } from '../components/tour-data';
 
 export interface CustomTourRequest {
   groupSize: number;
   startDate: string;
   endDate: string;
+  dateFlexibility?: string;
   startLocation: string;
   endLocation: string;
   sights: string[];
@@ -29,6 +35,7 @@ export interface CustomTourRequest {
   accommodation: string;
   name: string;
   email: string;
+  telegramUsername?: string;
   phone: string;
   budget: string;
   specialRequests: string;
@@ -41,10 +48,12 @@ export interface BookingRequest {
   tourTitle: string;
   name: string;
   email: string;
+  telegramUsername?: string;
   phone: string;
   participants: number;
   startDate: string;
   endDate: string;
+  dateFlexibility?: string;
   notes: string;
   pricePerPerson: string;
   totalPrice: string;
@@ -228,6 +237,11 @@ export async function deleteBlogPost(postId: string) {
 }
 
 export async function submitCustomTourRequest(data: CustomTourRequest) {
+  if (supabaseEnabled) {
+    await submitSupabaseCustomTourRequest(data);
+    return;
+  }
+
   const firestore = requireFirestore();
   if (!data.userId) {
     throw new Error('Sign in required to submit custom tour requests.');
@@ -292,6 +306,11 @@ export async function updateCustomTourRequestStatus(requestId: string, status: s
 }
 
 export async function submitBookingRequest(data: BookingRequest) {
+  if (supabaseEnabled) {
+    await submitSupabaseBookingRequest(data);
+    return;
+  }
+
   const firestore = requireFirestore();
   if (!data.userId) {
     throw new Error('Sign in required to submit booking requests.');

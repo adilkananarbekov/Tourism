@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { Spinner } from './Spinner';
 import { Skeleton } from './ui/skeleton';
 import type { Tour } from './tour-data';
+import { withBasePath } from '../lib/assets';
 
 interface ToursGridProps {
   tours: Tour[];
@@ -45,10 +46,10 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl text-foreground mb-4">
-            Our Adventure Tours
+            Signature Tours
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose from our carefully curated selection of tours, each designed to showcase the best of Kyrgyzstan's natural beauty and cultural heritage
+            Choose from my curated routes or use them as a starting point for your custom adventure.
           </p>
         </div>
 
@@ -77,7 +78,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
               {/* Tour Image */}
               <div className="relative h-56 overflow-hidden sm:h-64">
                 <img
-                  src={tour.image}
+                  src={withBasePath(tour.image)}
                   alt={tour.title}
                   loading="lazy"
                   decoding="async"
