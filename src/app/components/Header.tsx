@@ -20,7 +20,7 @@ export function Header() {
   const navLinks = [
     { label: 'Home', to: '/' },
     { label: 'Tours', to: '/tours' },
-    { label: 'Explore', to: '/explore' },
+    { label: 'Ideas', to: '/explore' },
     { label: 'Gallery', to: '/gallery' },
     { label: 'Stories', to: '/blogs' },
     { label: 'Request', to: '/feedback' },
@@ -67,7 +67,7 @@ export function Header() {
                 data-track-event="header_custom_request_click"
                 data-track-label="Header custom request"
               >
-                Custom Request
+                Custom Trip
               </Link>
             </Button>
             <ThemeToggle />
@@ -116,7 +116,7 @@ export function Header() {
                     data-track-event="mobile_custom_request_click"
                     data-track-label="Mobile custom request"
                   >
-                    Custom Request
+                    Custom Trip
                   </Link>
                 </Button>
               </div>

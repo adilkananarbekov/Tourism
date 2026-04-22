@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { firebaseEnabled } from '../lib/firebase';
 import { fetchTours } from '../lib/firestore';
+import { fetchSupabaseTours } from '../lib/supabaseTours';
+import { supabaseClientEnabled } from '../lib/supabase';
 import { tours as fallbackTours, type Tour } from '../components/tour-data';
 
 function isPermissionError(err: unknown) {
@@ -19,12 +21,13 @@ function isPermissionError(err: unknown) {
 
 export function useToursData() {
   const [tours, setTours] = useState<Tour[]>(fallbackTours);
-  const [loading, setLoading] = useState(firebaseEnabled && fallbackTours.length === 0);
+  const [loading, setLoading] = useState(supabaseClientEnabled || (firebaseEnabled && fallbackTours.length === 0));
   const [error, setError] = useState<string | null>(null);
   const [usingFallback, setUsingFallback] = useState(true);
 
   useEffect(() => {
-    if (!firebaseEnabled) {
+    if (!supabaseClientEnabled && !firebaseEnabled) {
+      setLoading(false);
       return;
     }
 
@@ -32,7 +35,7 @@ export function useToursData() {
 
     const loadTours = async () => {
       try {
-        const data = await fetchTours();
+        const data = supabaseClientEnabled ? await fetchSupabaseTours() : await fetchTours();
         if (!isActive) {
           return;
         }

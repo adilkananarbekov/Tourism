@@ -8,6 +8,7 @@ import { GallerySection } from '../components/GallerySection';
 import { Highlights } from '../components/Highlights';
 import { HowItWorks } from '../components/HowItWorks';
 import { JourneyStory } from '../components/JourneyStory';
+import { LandingNavigation } from '../components/LandingNavigation';
 import { Reveal } from '../components/Reveal';
 import { SEO } from '../components/SEO';
 import { ToursGrid } from '../components/ToursGrid';
@@ -24,6 +25,9 @@ export function HomePage() {
       />
       <Hero />
       <Reveal>
+        <LandingNavigation />
+      </Reveal>
+      <Reveal delayMs={75}>
         <AboutMe />
       </Reveal>
       <Reveal delayMs={100}>
@@ -39,7 +43,7 @@ export function HomePage() {
         <GallerySection />
       </Reveal>
       <Reveal delayMs={300}>
-        <ToursGrid tours={tours} loading={loading} error={error} />
+        <ToursGrid tours={tours.slice(0, 3)} loading={loading} error={error} />
       </Reveal>
       <Reveal delayMs={350}>
         <HowItWorks />

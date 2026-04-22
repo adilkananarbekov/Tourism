@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist --dotfiles"
+    "deploy": "gh-pages -d dist --dotfiles",
+    "seed:tours:supabase": "node scripts/seed-supabase-tours.mjs",
+    "upload:assets:supabase": "node scripts/upload-supabase-assets.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

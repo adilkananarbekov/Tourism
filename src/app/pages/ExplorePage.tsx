@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import regions from '../../data/kyrgyz_region_places.json';
 import { SEO } from '../components/SEO';
+import { Button } from '../components/ui/button';
 import { withBasePath } from '../lib/assets';
 
 interface RegionPlace {
@@ -18,19 +20,51 @@ interface Region {
 const regionData = regions as Region[];
 
 export function ExplorePage() {
+  const ideaFilters = ['Weekend', 'Lakes', 'Mountains', 'Culture', 'Photo stops', 'Family'];
+
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <SEO
-        title="Explore"
-        description="Discover seven regions of Kyrgyzstan with highlights, landmarks, and cultural insights."
+        title="Trip Ideas"
+        description="Find ideas for where to go in Kyrgyzstan before requesting a ready or custom tour."
       />
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl text-foreground mb-4">Explore Kyrgyzstan</h1>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Discover seven distinct regions, each packed with legendary landscapes, cultural
-            heritage, and unforgettable adventures.
-          </p>
+        <div className="mb-12 grid gap-8 lg:grid-cols-[1fr_0.75fr] lg:items-end">
+          <div>
+            <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">
+              Where can we go?
+            </p>
+            <h1 className="text-3xl sm:text-4xl text-foreground mb-4">Trip Ideas in Kyrgyzstan</h1>
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl">
+              Use this page as inspiration before choosing a tour. If guests do not know the exact
+              route, they can pick places they like and send a custom request.
+            </p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-5">
+            <p className="text-sm text-muted-foreground">
+              Not sure what fits the season, dates, or group?
+            </p>
+            <Button asChild className="mt-4 w-full btn-micro btn-action">
+              <Link
+                to="/custom-tour"
+                data-track-event="ideas_custom_tour_click"
+                data-track-label="Ideas custom tour"
+              >
+                Build a Custom Route
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        <div className="mb-8 flex flex-wrap gap-2">
+          {ideaFilters.map((filter) => (
+            <span
+              key={filter}
+              className="rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground"
+            >
+              {filter}
+            </span>
+          ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
