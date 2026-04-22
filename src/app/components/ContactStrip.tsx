@@ -1,26 +1,24 @@
-import { Clock, Mail, Phone, Send } from 'lucide-react';
+import { Clock, Mail, MessageCircle, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 
 export function ContactStrip() {
   const contacts = [
     {
-      icon: Phone,
-      label: 'Phone / WhatsApp',
-      value: '+996 555 123 456',
-      href: 'tel:+996555123456',
+      icon: Send,
+      label: 'Trip request',
+      value: 'Use the short form for dates and route ideas',
+      to: '/feedback',
+    },
+    {
+      icon: MessageCircle,
+      label: 'Telegram bot',
+      value: 'Send /start or /contact in Telegram',
     },
     {
       icon: Mail,
-      label: 'Email',
-      value: 'info@kyrgyzriders.com',
-      href: 'mailto:info@kyrgyzriders.com',
-    },
-    {
-      icon: Send,
-      label: 'Telegram',
-      value: 't.me/yourhandle',
-      href: 'https://t.me/yourhandle',
+      label: 'Contact details',
+      value: 'Phone, WhatsApp, Telegram, or email all work',
     },
     {
       icon: Clock,
@@ -57,10 +55,10 @@ export function ContactStrip() {
               </div>
             );
 
-            return contact.href ? (
-              <a key={contact.label} href={contact.href} className="hover:opacity-90">
+            return contact.to ? (
+              <Link key={contact.label} to={contact.to} className="hover:opacity-90">
                 {content}
-              </a>
+              </Link>
             ) : (
               <div key={contact.label}>{content}</div>
             );

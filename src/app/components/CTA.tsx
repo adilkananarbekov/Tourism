@@ -37,7 +37,7 @@ export function CTA() {
           </Button>
         </div>
         <p className="mt-8 text-white/80 text-sm">
-          Have questions? Contact me at <a href="mailto:info@kyrgyzriders.com" className="underline hover:text-white">info@kyrgyzriders.com</a>
+          Have questions? <Link to="/feedback" className="underline hover:text-white">Send a trip request</Link>
         </p>
       </div>
     </section>

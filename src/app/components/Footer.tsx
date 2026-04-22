@@ -1,4 +1,4 @@
-import { Instagram, Mail, MapPin, Phone, Send } from 'lucide-react';
+import { Clock, MapPin, MessageCircle, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Footer() {
@@ -17,22 +17,13 @@ export function Footer() {
             <p className="text-primary-foreground/70 text-sm mb-4">
               Independent guide creating custom adventures across Kyrgyzstan.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="https://instagram.com/yourhandle"
-                className="text-primary-foreground/70 hover:text-primary-foreground transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="https://t.me/yourhandle"
-                className="text-primary-foreground/70 hover:text-primary-foreground transition-colors"
-                aria-label="Telegram"
-              >
-                <Send className="h-5 w-5" />
-              </a>
-            </div>
+            <Link
+              to="/feedback"
+              className="inline-flex items-center gap-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+            >
+              <Send className="h-4 w-4" />
+              Start a trip request
+            </Link>
           </div>
 
           {/* Quick Links */}
@@ -113,16 +104,18 @@ export function Footer() {
                 <span>Bishkek, Kyrgyzstan</span>
               </li>
               <li className="flex items-start gap-2">
-                <Phone className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                <span>+996 555 123 456</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Mail className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                <span>info@kyrgyzriders.com</span>
-              </li>
-              <li className="flex items-start gap-2">
                 <Send className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                <span>t.me/yourhandle</span>
+                <Link to="/feedback" className="hover:text-primary-foreground transition-colors">
+                  Trip request form
+                </Link>
+              </li>
+              <li className="flex items-start gap-2">
+                <MessageCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                <span>Telegram bot connected</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Clock className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                <span>Usually within 24 hours</span>
               </li>
             </ul>
           </div>
