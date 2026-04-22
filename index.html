@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="icon" type="image/svg+xml" href="/Tourism/favicon.svg" />
     <title>Kyrgyz Riders | Adventure Tours</title>
     <script type="text/javascript">
       (function (l) {
@@ -18,8 +20,22 @@
         }
       })(window.location);
     </script>
-    <script type="module" crossorigin src="/Tourism/assets/index-Dso_Te2v.js"></script>
-    <link rel="stylesheet" crossorigin href="/Tourism/assets/index-BYoYPhg9.css">
+    <script type="text/javascript">
+      (function () {
+        try {
+          var preference = localStorage.getItem('tourism-theme') || 'system';
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = preference === 'dark' || (preference === 'system' && systemDark) ? 'dark' : 'light';
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.dataset.themePreference = preference;
+          document.documentElement.style.colorScheme = theme;
+        } catch (error) {
+          document.documentElement.dataset.themePreference = 'system';
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/Tourism/assets/index-syHgDdXW.js"></script>
+    <link rel="stylesheet" crossorigin href="/Tourism/assets/index-HvDX4dNc.css">
   </head>
   <body>
     <div id="root"></div>
