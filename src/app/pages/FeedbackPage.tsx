@@ -30,7 +30,7 @@ const contactRequestSchema = z
     selectedTour: formString,
     groupSize: z.coerce.number().min(1, 'Add at least 1 guest.'),
     travelTime: formString,
-    message: formString,
+    message: requiredFormString('Add a short message so we know what you need.'),
   })
   .superRefine((values, ctx) => {
     if (!values.telegramUsername?.trim() && !values.phone?.trim()) {
@@ -259,13 +259,14 @@ export function FeedbackPage() {
           </div>
 
           <div>
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message">Message *</Label>
             <Textarea
               id="message"
               rows={4}
               placeholder="Tell me what you want to see, comfort level, budget, or questions..."
               {...register('message')}
             />
+            {errors.message && <p className="text-xs text-red-600">{errors.message.message}</p>}
           </div>
 
           <Button

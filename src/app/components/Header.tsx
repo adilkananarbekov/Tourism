@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Button } from './ui/button';
 import { ThemeToggle } from './ThemeToggle';
-import { AuthStatus } from './AuthStatus';
 import { cn } from './ui/utils';
 
 export function Header() {
@@ -22,8 +21,7 @@ export function Header() {
     { label: 'Tours', to: '/tours' },
     { label: 'Ideas', to: '/explore' },
     { label: 'Gallery', to: '/gallery' },
-    { label: 'Stories', to: '/blogs' },
-    { label: 'Request', to: '/feedback' },
+    { label: 'Contact', to: '/feedback' },
   ];
 
   return (
@@ -71,7 +69,6 @@ export function Header() {
               </Link>
             </Button>
             <ThemeToggle />
-            <AuthStatus />
           </div>
 
           {/* Mobile Menu Button */}
@@ -122,9 +119,6 @@ export function Header() {
               </div>
               <div className="px-4">
                 <ThemeToggle />
-              </div>
-              <div className="px-4">
-                <AuthStatus />
               </div>
             </div>
           </div>

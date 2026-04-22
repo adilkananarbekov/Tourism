@@ -1,9 +1,16 @@
+import { Map, MessageCircle, Route, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { withBasePath } from '../lib/assets';
 
 export function Hero() {
   const heroImage = withBasePath('/images/hero.jpg');
+  const trustItems = [
+    { icon: MessageCircle, label: 'Direct contact' },
+    { icon: Route, label: 'Flexible dates' },
+    { icon: Map, label: 'Local planning' },
+    { icon: Send, label: 'Telegram follow-up' },
+  ];
 
   return (
     <section className="relative min-h-[520px] sm:min-h-[600px] md:min-h-[680px] lg:min-h-[760px] flex items-center justify-center overflow-hidden">
@@ -36,8 +43,22 @@ export function Hero() {
             variant="outline"
             className="btn-micro bg-white/10 hover:bg-white/20 text-white border-white hover:border-white px-6 py-4 text-base sm:px-8 sm:py-6 sm:text-lg backdrop-blur-sm w-full sm:w-auto"
           >
-            <Link to="/explore">Get Trip Ideas</Link>
+            <Link to="/feedback">Send Quick Request</Link>
           </Button>
+        </div>
+        <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm text-white/85">
+          {trustItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <span
+                key={item.label}
+                className="inline-flex min-h-[36px] items-center gap-2 rounded-full border border-white/25 bg-black/20 px-3 backdrop-blur-sm"
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </span>
+            );
+          })}
         </div>
       </div>
     </section>

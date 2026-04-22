@@ -1,193 +1,143 @@
+import { Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ToursGrid } from '../components/ToursGrid';
-import { useToursData } from '../hooks/useTours';
+import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
+import { cn } from '../components/ui/utils';
 import { SEO } from '../components/SEO';
+import { useToursData } from '../hooks/useTours';
+
+const filters = [
+  'All',
+  'Mountains',
+  'Lakes',
+  'Culture',
+  'Adventure',
+  'Family',
+  'Short trips',
+  'Road trip',
+  'Weekend',
+];
+
+function tourMatchesFilter(tourText: string, duration: string, filter: string) {
+  if (filter === 'All') {
+    return true;
+  }
+
+  const lowerFilter = filter.toLowerCase();
+  if (lowerFilter === 'short trips') {
+    const days = Number(duration.replace(/[^0-9]/g, ''));
+    return Number.isFinite(days) && days > 0 && days <= 3;
+  }
+
+  if (lowerFilter === 'lakes') {
+    return tourText.includes('lake') || tourText.includes('kul') || tourText.includes('song-kul');
+  }
+
+  if (lowerFilter === 'mountains') {
+    return tourText.includes('mountain') || tourText.includes('peak') || tourText.includes('gorge') || tourText.includes('archa');
+  }
+
+  if (lowerFilter === 'road trip') {
+    return tourText.includes('road') || tourText.includes('circuit') || tourText.includes('drive');
+  }
+
+  if (lowerFilter === 'weekend') {
+    const days = Number(duration.replace(/[^0-9]/g, ''));
+    return Number.isFinite(days) && days > 0 && days <= 3;
+  }
+
+  return tourText.includes(lowerFilter);
+}
 
 export function ToursPage() {
   const { tours, loading, error } = useToursData();
   const [search, setSearch] = useState('');
-  const [seasonFilter, setSeasonFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [difficultyFilter, setDifficultyFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('featured');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-
-  const options = useMemo(() => {
-    const seasons = new Set<string>();
-    const types = new Set<string>();
-    const difficulties = new Set<string>();
-    tours.forEach((tour) => {
-      if (tour.season) {
-        seasons.add(tour.season);
-      }
-      if (tour.tourType) {
-        types.add(tour.tourType);
-      }
-      if (tour.practicalInfo?.difficulty) {
-        difficulties.add(tour.practicalInfo.difficulty);
-      }
-    });
-    return {
-      seasons: Array.from(seasons),
-      types: Array.from(types),
-      difficulties: Array.from(difficulties),
-    };
-  }, [tours]);
+  const [activeFilter, setActiveFilter] = useState('All');
 
   const filteredTours = useMemo(() => {
-    const normalizePrice = (price: string) => {
-      const parsed = Number(price.replace(/[^0-9.]/g, ''));
-      return Number.isFinite(parsed) ? parsed : 0;
-    };
-    const normalizeDuration = (duration: string) => {
-      const parsed = Number(duration.replace(/[^0-9]/g, ''));
-      return Number.isFinite(parsed) ? parsed : 0;
-    };
-
-    const min = minPrice ? Number(minPrice) : null;
-    const max = maxPrice ? Number(maxPrice) : null;
-
-    let result = tours.filter((tour) => {
-      const matchesSearch =
-        !search ||
-        tour.title.toLowerCase().includes(search.toLowerCase()) ||
-        tour.description.toLowerCase().includes(search.toLowerCase()) ||
-        tour.tourType.toLowerCase().includes(search.toLowerCase());
-      const matchesSeason = seasonFilter === 'all' || tour.season === seasonFilter;
-      const matchesType = typeFilter === 'all' || tour.tourType === typeFilter;
-      const matchesDifficulty =
-        difficultyFilter === 'all' || tour.practicalInfo.difficulty === difficultyFilter;
-      const priceValue = normalizePrice(tour.price);
-      const matchesMin = min === null || priceValue >= min;
-      const matchesMax = max === null || priceValue <= max;
-      return matchesSearch && matchesSeason && matchesType && matchesDifficulty && matchesMin && matchesMax;
+    return tours.filter((tour) => {
+      const tourText = [
+        tour.title,
+        tour.description,
+        tour.tourType,
+        tour.season,
+        ...tour.highlights,
+      ]
+        .join(' ')
+        .toLowerCase();
+      const query = search.trim().toLowerCase();
+      const matchesSearch = !query || tourText.includes(query);
+      const matchesFilter = tourMatchesFilter(tourText, tour.duration, activeFilter);
+      return matchesSearch && matchesFilter;
     });
-
-    if (sortBy === 'price-low') {
-      result = [...result].sort((a, b) => normalizePrice(a.price) - normalizePrice(b.price));
-    } else if (sortBy === 'price-high') {
-      result = [...result].sort((a, b) => normalizePrice(b.price) - normalizePrice(a.price));
-    } else if (sortBy === 'duration') {
-      result = [...result].sort((a, b) => normalizeDuration(a.duration) - normalizeDuration(b.duration));
-    }
-
-    return result;
-  }, [difficultyFilter, maxPrice, minPrice, search, seasonFilter, sortBy, tours, typeFilter]);
+  }, [activeFilter, search, tours]);
 
   return (
-    <div className="py-12">
+    <div className="bg-background pb-20 md:pb-0">
       <SEO
         title="Tours"
-        description="Browse Kyrgyzstan tours by season, difficulty, and price."
+        description="Choose a ready Kyrgyzstan route, then send a request with Telegram or phone contact."
       />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div>
-          <h1 className="text-3xl sm:text-4xl text-foreground mb-3">Tours</h1>
-          <p className="text-muted-foreground">
-            Filter tours by season, type, difficulty, and budget.
-          </p>
-        </div>
 
-        <div className="bg-card border border-border rounded-lg p-4 grid grid-cols-1 lg:grid-cols-6 gap-4">
-          <div className="lg:col-span-2">
-            <Label htmlFor="search">Search</Label>
-            <Input
-              id="search"
-              placeholder="Search tours"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
+      <section className="border-b border-border bg-muted px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-3xl">
+            <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">
+              Ready routes
+            </p>
+            <h1 className="mb-4 text-3xl text-foreground sm:text-4xl lg:text-5xl">Tours</h1>
+            <p className="text-base leading-7 text-muted-foreground sm:text-lg">
+              Choose a curated route first. Dates, pace, and stops can still be adjusted after we
+              receive your request.
+            </p>
           </div>
-          <div>
-            <Label htmlFor="season">Season</Label>
-            <select
-              id="season"
-              className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm"
-              value={seasonFilter}
-              onChange={(event) => setSeasonFilter(event.target.value)}
-            >
-              <option value="all">All</option>
-              {options.seasons.map((season) => (
-                <option key={season} value={season}>
-                  {season}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <Label htmlFor="tourType">Type</Label>
-            <select
-              id="tourType"
-              className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm"
-              value={typeFilter}
-              onChange={(event) => setTypeFilter(event.target.value)}
-            >
-              <option value="all">All</option>
-              {options.types.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <Label htmlFor="difficulty">Difficulty</Label>
-            <select
-              id="difficulty"
-              className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm"
-              value={difficultyFilter}
-              onChange={(event) => setDifficultyFilter(event.target.value)}
-            >
-              <option value="all">All</option>
-              {options.difficulties.map((difficulty) => (
-                <option key={difficulty} value={difficulty}>
-                  {difficulty}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <Label htmlFor="sortBy">Sort</Label>
-            <select
-              id="sortBy"
-              className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm"
-              value={sortBy}
-              onChange={(event) => setSortBy(event.target.value)}
-            >
-              <option value="featured">Featured</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="duration">Duration</option>
-            </select>
-          </div>
-          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <Label htmlFor="minPrice">Min Price</Label>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
               <Input
-                id="minPrice"
-                type="number"
-                min="0"
-                placeholder="0"
-                value={minPrice}
-                onChange={(event) => setMinPrice(event.target.value)}
+                placeholder="Search by route, region, lake, mountain, culture..."
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                className="h-12 pl-10"
               />
             </div>
-            <div>
-              <Label htmlFor="maxPrice">Max Price</Label>
-              <Input
-                id="maxPrice"
-                type="number"
-                min="0"
-                placeholder="2000"
-                value={maxPrice}
-                onChange={(event) => setMaxPrice(event.target.value)}
-              />
-            </div>
+            <Button asChild className="btn-micro btn-action">
+              <Link
+                to="/custom-tour"
+                data-track-event="tours_custom_request_click"
+                data-track-label="Tours custom request"
+              >
+                Need a Custom Route?
+              </Link>
+            </Button>
           </div>
         </div>
+      </section>
+
+      <section className="sticky top-14 z-30 border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto py-4">
+          {filters.map((filter) => (
+            <button
+              key={filter}
+              type="button"
+              onClick={() => setActiveFilter(filter)}
+              className={cn(
+                'min-h-[38px] whitespace-nowrap rounded-full border px-4 text-sm transition-colors',
+                activeFilter === filter
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border bg-card text-muted-foreground hover:border-primary hover:text-foreground'
+              )}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
         <p className="text-sm text-muted-foreground">
           Showing {filteredTours.length} of {tours.length} tours
         </p>

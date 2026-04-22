@@ -12,8 +12,8 @@ export function ContactStrip() {
     },
     {
       icon: MessageCircle,
-      label: 'Telegram bot',
-      value: 'Requests also work through /start or /contact',
+      label: 'Telegram notification',
+      value: 'Every website lead is sent to the admin chat',
     },
     {
       icon: Mail,

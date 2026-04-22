@@ -11,8 +11,6 @@ type TelegramUser = {
 type TelegramChat = {
   id?: number | string;
   type?: string;
-  title?: string;
-  username?: string;
 };
 
 type TelegramMessage = {
@@ -25,7 +23,6 @@ type TelegramMessage = {
 type TelegramCallbackQuery = {
   id?: string;
   data?: string;
-  from?: TelegramUser;
   message?: TelegramMessage;
 };
 
@@ -35,87 +32,13 @@ type TelegramUpdate = {
   callback_query?: TelegramCallbackQuery;
 };
 
-type SurveyOption = {
-  label: string;
-  value: string;
-};
-
-type SurveyQuestion = {
-  key: string;
-  text: string;
-  options: SurveyOption[];
-};
-
-type SurveySession = {
-  chat_id: string;
-  current_step: number;
-  answers: Record<string, string>;
-  completed: boolean;
-};
-
-const botCommandsVersion = 'telegram-menu-v4';
-const botCommands = [
-  { command: 'start', description: '👋 Начать мини-опрос' },
-  { command: 'survey', description: '🧭 Пройти опрос заново' },
-  { command: 'tours', description: '🏔️ Открыть туры на сайте' },
-  { command: 'photos', description: '📸 Показать фото туров' },
-  { command: 'contact', description: '💬 Связаться с гидом' },
-  { command: 'help', description: 'ℹ️ Помощь и команды' },
-  { command: 'chatid', description: 'Показать chat id' },
-];
-
+const botCommandsVersion = 'website-leads-admin-v1';
 const siteUrl = 'https://adilkan.com/Tourism/';
 
-const tourPhotos = [
-  {
-    url: 'https://adilkan.com/Tourism/images/tour-songkul.jpg',
-    caption: 'Song-Kul Lake Expedition',
-  },
-  {
-    url: 'https://adilkan.com/Tourism/images/tour-ala-archa.jpg',
-    caption: 'Ala-Archa Gorge Adventure',
-  },
-  {
-    url: 'https://adilkan.com/Tourism/images/tour-horseback.jpg',
-    caption: 'Horseback Riding Expedition',
-  },
-  {
-    url: 'https://adilkan.com/Tourism/images/tour-issyk-kul.jpg',
-    caption: 'Issyk-Kul Circuit',
-  },
-];
-
-const surveyQuestions: SurveyQuestion[] = [
-  {
-    key: 'tour_interest',
-    text: '1/3 Какой формат тура вам интересен?',
-    options: [
-      { label: '🥾 Треккинг', value: 'trekking' },
-      { label: '🐎 Конные туры', value: 'horseback' },
-      { label: '🏕️ Культура', value: 'culture' },
-      { label: '✨ Свой маршрут', value: 'custom' },
-    ],
-  },
-  {
-    key: 'group_size',
-    text: '2/3 Сколько человек примерно будет в поездке?',
-    options: [
-      { label: '🙋 1 человек', value: '1' },
-      { label: '👥 2-3 человека', value: '2-3' },
-      { label: '👨‍👩‍👧‍👦 4+ человека', value: '4+' },
-      { label: '🤔 Пока не знаю', value: 'unknown' },
-    ],
-  },
-  {
-    key: 'travel_time',
-    text: '3/3 Когда хотите поехать?',
-    options: [
-      { label: '🌿 Май - Июнь', value: 'may_june' },
-      { label: '☀️ Июль - Август', value: 'july_august' },
-      { label: '🍂 Сентябрь', value: 'september' },
-      { label: '🗓️ Даты гибкие', value: 'flexible' },
-    ],
-  },
+const botCommands = [
+  { command: 'start', description: 'Website lead notifications' },
+  { command: 'help', description: 'How this admin bot works' },
+  { command: 'chatid', description: 'Show this chat id' },
 ];
 
 function json(body: Record<string, unknown>, status = 200) {
@@ -152,10 +75,6 @@ async function readSecret(supabase: ReturnType<typeof createClient>, name: strin
   return data?.value as string | undefined;
 }
 
-async function readTelegramToken(supabase: ReturnType<typeof createClient>) {
-  return Deno.env.get('TELEGRAM_BOT_TOKEN') || (await readSecret(supabase, 'telegram_bot_token'));
-}
-
 async function writeSecret(supabase: ReturnType<typeof createClient>, name: string, value: string) {
   const { error } = await supabase.from('app_secrets').upsert(
     {
@@ -171,112 +90,8 @@ async function writeSecret(supabase: ReturnType<typeof createClient>, name: stri
   }
 }
 
-function getOptionLabel(question: SurveyQuestion, value: string) {
-  return question.options.find((option) => option.value === value)?.label || value;
-}
-
-function keyboardForStep(step: number) {
-  const question = surveyQuestions[step];
-  return {
-    inline_keyboard: question.options.map((option) => [
-      {
-        text: option.label,
-        callback_data: `survey|${step}|${option.value}`,
-      },
-    ]),
-  };
-}
-
-function introText() {
-  return [
-    'Привет! 👋 Я бот Kyrgyz Riders.',
-    'Помогу выбрать тур и передам заявку владельцу 🏔️',
-    'Оставьте короткие ответы, а затем владелец или менеджер свяжется с вами лично.',
-    'Начнем короткий опрос 🧭',
-  ].join('\n');
-}
-
-function helpText() {
-  return [
-    'Команды бота:',
-    '/start - 👋 начать мини-опрос',
-    '/survey - 🧭 пройти опрос заново',
-    '/tours - 🏔️ открыть туры на сайте',
-    '/photos - 📸 получить несколько фото туров',
-    '/contact - 💬 как связаться с гидом',
-    '/help - ℹ️ показать помощь',
-    '',
-    'Также можно написать обычное сообщение. Я сохраню контекст, а менеджер сможет связаться с вами по Telegram.',
-  ].join('\n');
-}
-
-function siteKeyboard() {
-  return {
-    inline_keyboard: [
-      [
-        { text: '🏔️ Смотреть туры', url: `${siteUrl}tours` },
-        { text: '✨ Создать маршрут', url: `${siteUrl}custom-tour` },
-      ],
-      [
-        { text: '📸 Галерея', url: `${siteUrl}gallery` },
-        { text: '💬 Заявка', url: `${siteUrl}feedback` },
-      ],
-    ],
-  };
-}
-
-function contactText() {
-  return [
-    'Можно оставить заявку через этот бот или через сайт 💬',
-    '',
-    'Заявка уходит владельцу Kyrgyz Riders. Дальше он или менеджер свяжется с вами лично.',
-    '',
-    'Для быстрого старта укажите:',
-    '- примерные даты',
-    '- сколько человек',
-    '- что хотите увидеть',
-    '',
-    'Если удобнее, нажмите кнопку и заполните короткую форму.',
-  ].join('\n');
-}
-
-function summaryText(answers: Record<string, string>) {
-  const rows = surveyQuestions.map((question) => {
-    const answer = answers[question.key] || 'not answered';
-    return `- ${question.text.replace(/^\d\/3\s*/, '')}: ${getOptionLabel(question, answer)}`;
-  });
-
-  return [
-    'Спасибо! Заявка принята ✅',
-    '',
-    'Ваши ответы:',
-    ...rows,
-    '',
-    'Я передал ответы владельцу. Он или менеджер свяжется с вами лично 💬',
-  ].join('\n');
-}
-
-function ownerSummaryText(
-  chatId: string,
-  user: TelegramUser | undefined,
-  answers: Record<string, string>,
-) {
-  const username = user?.username ? `@${user.username}` : 'not provided';
-  const name = [user?.first_name, user?.last_name].filter(Boolean).join(' ') || 'not provided';
-  const rows = surveyQuestions.map((question) => {
-    const answer = answers[question.key] || 'not answered';
-    return `- ${question.text.replace(/^\d\/3\s*/, '')}: ${getOptionLabel(question, answer)}`;
-  });
-
-  return [
-    'New Telegram tour lead',
-    `Name: ${name}`,
-    `Username: ${username}`,
-    `Chat ID: ${chatId}`,
-    '',
-    'Answers:',
-    ...rows,
-  ].join('\n');
+async function readTelegramToken(supabase: ReturnType<typeof createClient>) {
+  return Deno.env.get('TELEGRAM_BOT_TOKEN') || (await readSecret(supabase, 'telegram_bot_token'));
 }
 
 async function telegramApi(
@@ -322,20 +137,11 @@ async function sendMessage(
   });
 }
 
-async function clearInlineKeyboard(token: string, chatId: string, messageId?: number) {
-  if (!messageId) {
-    return;
-  }
-
-  try {
-    await telegramApi(token, 'editMessageReplyMarkup', {
-      chat_id: chatId,
-      message_id: messageId,
-      reply_markup: { inline_keyboard: [] },
-    });
-  } catch (error) {
-    console.error('Unable to clear inline keyboard', error);
-  }
+async function answerCallback(token: string, callbackId: string) {
+  return telegramApi(token, 'answerCallbackQuery', {
+    callback_query_id: callbackId,
+    text: 'This bot now receives website leads only.',
+  });
 }
 
 async function trackBotEvent(
@@ -356,170 +162,38 @@ async function trackBotEvent(
   }
 }
 
-async function sendTourPhotos(token: string, chatId: string) {
-  await telegramApi(token, 'sendMediaGroup', {
-    chat_id: chatId,
-    media: tourPhotos.map((photo, index) => ({
-      type: 'photo',
-      media: photo.url,
-      caption: index === 0
-        ? `Фото туров Kyrgyz Riders\n${tourPhotos.map((item) => `- ${item.caption}`).join('\n')}`
-        : undefined,
-    })),
-  });
-}
-
-async function notifyOwner(
-  supabase: ReturnType<typeof createClient>,
-  token: string,
-  guestChatId: string,
-  text: string,
-) {
-  const ownerChatId = await readSecret(supabase, 'telegram_chat_id');
-  if (!ownerChatId || ownerChatId === guestChatId) {
-    return;
-  }
-  await sendMessage(token, ownerChatId, text);
-}
-
-async function answerCallback(token: string, callbackId: string, text = 'Ответ сохранен') {
-  return telegramApi(token, 'answerCallbackQuery', {
-    callback_query_id: callbackId,
-    text,
-  });
-}
-
-async function upsertSession(
-  supabase: ReturnType<typeof createClient>,
-  chatId: string,
-  user?: TelegramUser,
-  values?: Partial<SurveySession>,
-) {
-  const { error } = await supabase.from('telegram_survey_sessions').upsert(
-    {
-      chat_id: chatId,
-      telegram_user_id: user?.id == null ? null : String(user.id),
-      username: user?.username || null,
-      first_name: user?.first_name || null,
-      last_name: user?.last_name || null,
-      ...(values || {}),
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: 'chat_id' },
-  );
-
-  if (error) {
-    throw new Error(error.message);
-  }
-}
-
-async function getSession(
-  supabase: ReturnType<typeof createClient>,
-  chatId: string,
-): Promise<SurveySession | null> {
-  const { data, error } = await supabase
-    .from('telegram_survey_sessions')
-    .select('chat_id,current_step,answers,completed')
-    .eq('chat_id', chatId)
-    .maybeSingle();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data as SurveySession | null;
-}
-
-async function startSurvey(
-  supabase: ReturnType<typeof createClient>,
-  token: string,
-  chatId: string,
-  user?: TelegramUser,
-) {
-  await upsertSession(supabase, chatId, user, {
-    current_step: 0,
-    answers: {},
-    completed: false,
-  });
-
-  await sendMessage(token, chatId, introText());
-  await sendMessage(token, chatId, surveyQuestions[0].text, keyboardForStep(0));
-}
-
-async function processSurveyAnswer(
-  supabase: ReturnType<typeof createClient>,
-  token: string,
-  chatId: string,
-  step: number,
-  value: string,
-  user?: TelegramUser,
-  callbackId?: string,
-  messageId?: number,
-) {
-  const question = surveyQuestions[step];
-  if (!question || !question.options.some((option) => option.value === value)) {
-    if (callbackId) {
-      await answerCallback(token, callbackId, 'Эта кнопка устарела. Запустите /survey заново.');
-    }
-    await clearInlineKeyboard(token, chatId, messageId);
-    await trackBotEvent(supabase, 'telegram_survey_stale_button', { step, value, reason: 'invalid_option' });
-    await sendMessage(token, chatId, 'Не понял этот вариант. Напишите /start, чтобы начать заново.');
-    return;
-  }
-
-  const session = await getSession(supabase, chatId);
-  if (!session || session.completed || session.current_step !== step) {
-    if (callbackId) {
-      await answerCallback(token, callbackId, 'Эта кнопка уже устарела. Нажмите /survey.');
-    }
-    await clearInlineKeyboard(token, chatId, messageId);
-    await trackBotEvent(supabase, 'telegram_survey_stale_button', {
-      step,
-      value,
-      currentStep: session?.current_step ?? 'none',
-      completed: session?.completed ?? false,
-    });
-    return;
-  }
-
-  if (callbackId) {
-    await answerCallback(token, callbackId, 'Ответ сохранен ✅');
-  }
-  await clearInlineKeyboard(token, chatId, messageId);
-
-  const answers = {
-    ...(session?.answers || {}),
-    [question.key]: value,
+function websiteKeyboard() {
+  return {
+    inline_keyboard: [
+      [{ text: 'Open website request form', url: `${siteUrl}feedback` }],
+      [{ text: 'View tours', url: `${siteUrl}tours` }],
+    ],
   };
-  const nextStep = step + 1;
-  await trackBotEvent(supabase, 'telegram_survey_answer', {
-    step,
-    question: question.key,
-    value,
-  });
+}
 
-  if (nextStep >= surveyQuestions.length) {
-    await upsertSession(supabase, chatId, user, {
-      current_step: nextStep,
-      answers,
-      completed: true,
-    });
-    await sendMessage(token, chatId, summaryText(answers));
-    try {
-      await notifyOwner(supabase, token, chatId, ownerSummaryText(chatId, user, answers));
-    } catch (error) {
-      console.error('Unable to notify owner about survey lead', error);
-    }
-    await trackBotEvent(supabase, 'telegram_survey_complete', { answersCount: Object.keys(answers).length });
-    return;
-  }
+function adminHelpText(chatId: string, ownerChatId?: string) {
+  const isConnected = ownerChatId === chatId;
+  return [
+    'Kyrgyz Riders admin bot',
+    '',
+    'This bot is now only for website lead notifications.',
+    'Guests should submit requests on the website. When they send a request, this chat receives their name, contact details, selected tour, dates, and message.',
+    '',
+    `This chat id: ${chatId}`,
+    `Admin chat connected: ${isConnected ? 'yes' : 'no'}`,
+    '',
+    'Useful commands:',
+    '/chatid - show this chat id',
+    '/help - show this message',
+  ].join('\n');
+}
 
-  await upsertSession(supabase, chatId, user, {
-    current_step: nextStep,
-    answers,
-    completed: false,
-  });
-  await sendMessage(token, chatId, surveyQuestions[nextStep].text, keyboardForStep(nextStep));
+function publicHelpText() {
+  return [
+    'Please send your tour request through the website.',
+    '',
+    'There you can choose a tour, leave your Telegram username or phone number, and write your message. The request goes directly to the admin chat.',
+  ].join('\n');
 }
 
 async function handleTextMessage(
@@ -534,74 +208,38 @@ async function handleTextMessage(
     return;
   }
 
-  if (text.startsWith('/start') || text.startsWith('/survey')) {
-    await trackBotEvent(supabase, 'telegram_command', {
-      command: text.startsWith('/start') ? 'start' : 'survey',
-    });
-    await startSurvey(supabase, token, chatId, message.from);
-    return;
-  }
+  const ownerChatId = await readSecret(supabase, 'telegram_chat_id');
+  const isOwnerChat = ownerChatId === chatId;
+  const command = text.split(/\s+/)[0]?.replace('/', '') || 'message';
 
-  if (text.startsWith('/help')) {
-    await trackBotEvent(supabase, 'telegram_command', { command: 'help' });
-    await sendMessage(token, chatId, helpText());
-    return;
-  }
-
-  if (text.startsWith('/tours')) {
-    await trackBotEvent(supabase, 'telegram_command', { command: 'tours' });
-    await sendMessage(
-      token,
-      chatId,
-      'Выберите готовый тур или оставьте custom-заявку на сайте Kyrgyz Riders.',
-      siteKeyboard(),
-    );
-    return;
-  }
-
-  if (text.startsWith('/photos')) {
-    await trackBotEvent(supabase, 'telegram_command', { command: 'photos' });
-    await sendMessage(token, chatId, 'Отправляю несколько фото туров.');
-    await sendTourPhotos(token, chatId);
-    return;
-  }
-
-  if (text.startsWith('/contact')) {
-    await trackBotEvent(supabase, 'telegram_command', { command: 'contact' });
-    await sendMessage(token, chatId, contactText(), siteKeyboard());
-    return;
-  }
+  await trackBotEvent(supabase, 'telegram_admin_bot_message', {
+    command,
+    isOwnerChat,
+    hasUsername: Boolean(message.from?.username),
+  });
 
   if (text.startsWith('/chatid')) {
     await sendMessage(token, chatId, `Chat ID: ${chatId}`);
     return;
   }
 
-  if (!text) {
-    return;
-  }
-
-  const session = await getSession(supabase, chatId);
-  if (session && !session.completed) {
-    const step = Math.max(0, Math.min(session.current_step, surveyQuestions.length - 1));
+  if (text.startsWith('/start') || text.startsWith('/help')) {
     await sendMessage(
       token,
       chatId,
-      'Пожалуйста, выберите один из вариантов кнопками ниже.',
-      keyboardForStep(step),
+      isOwnerChat ? adminHelpText(chatId, ownerChatId) : publicHelpText(),
+      isOwnerChat ? undefined : websiteKeyboard(),
     );
     return;
   }
 
-  await upsertSession(supabase, chatId, message.from, {});
-  await trackBotEvent(supabase, 'telegram_text_message', { hasUsername: Boolean(message.from?.username) });
   await sendMessage(
     token,
     chatId,
-    [
-      'Сообщение получил.',
-      'Если хотите оставить заявку, отправьте /survey или откройте форму на сайте через /tours.',
-    ].join('\n'),
+    isOwnerChat
+      ? 'Lead notification bot is active. Website requests will appear here automatically.'
+      : publicHelpText(),
+    isOwnerChat ? undefined : websiteKeyboard(),
   );
 }
 
@@ -633,34 +271,12 @@ Deno.serve(async (req) => {
     const update = (await req.json()) as TelegramUpdate;
 
     if (update.callback_query) {
-      const callback = update.callback_query;
-      let chatId = '';
-      if (callback.message?.chat?.id != null) {
-        chatId = String(callback.message.chat.id);
-      } else if (callback.from?.id != null) {
-        chatId = String(callback.from.id);
+      if (update.callback_query.id) {
+        await answerCallback(telegramToken, update.callback_query.id);
       }
-      const [scope, stepText, value] = String(callback.data || '').split('|');
-
-      if (chatId && scope === 'survey') {
-        await processSurveyAnswer(
-          supabase,
-          telegramToken,
-          chatId,
-          Number(stepText),
-          value,
-          callback.from,
-          callback.id,
-          callback.message?.message_id,
-        );
-      } else {
-        if (callback.id) {
-          await answerCallback(telegramToken, callback.id, 'Эта кнопка устарела.');
-        }
-        await clearInlineKeyboard(telegramToken, chatId, callback.message?.message_id);
-        await trackBotEvent(supabase, 'telegram_unknown_callback', { scope });
-      }
-
+      await trackBotEvent(supabase, 'telegram_admin_bot_callback', {
+        data: update.callback_query.data || '',
+      });
       return json({ ok: true });
     }
 

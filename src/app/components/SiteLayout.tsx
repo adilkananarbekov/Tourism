@@ -5,6 +5,7 @@ import { ScrollToTop } from './ScrollToTop';
 import { AppToaster } from './AppToaster';
 import { PageTransition } from './PageTransition';
 import { EventTracker } from './EventTracker';
+import { StickyLeadCTA } from './StickyLeadCTA';
 
 export function SiteLayout() {
   const { pathname } = useLocation();
@@ -20,6 +21,7 @@ export function SiteLayout() {
         </PageTransition>
       </main>
       <Footer />
+      <StickyLeadCTA />
       <AppToaster />
     </div>
   );
