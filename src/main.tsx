@@ -5,6 +5,15 @@ import { HelmetProvider } from 'react-helmet-async';
 import './styles/index.css';
 import { AuthProvider } from './app/context/AuthContext';
 
+if (window.location.search.startsWith('?/')) {
+  const restoredPath = window.location.search.slice(1).replace(/~and~/g, '&');
+  window.history.replaceState(
+    null,
+    '',
+    `${window.location.pathname.replace(/\/$/, '')}${restoredPath}${window.location.hash}`
+  );
+}
+
 const root = document.getElementById('root');
 
 if (!root) {
