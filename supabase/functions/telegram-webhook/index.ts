@@ -53,6 +53,34 @@ type SurveySession = {
   completed: boolean;
 };
 
+const botCommandsVersion = 'telegram-menu-v1';
+const botCommands = [
+  { command: 'start', description: 'Начать мини-опрос' },
+  { command: 'survey', description: 'Пройти опрос заново' },
+  { command: 'photos', description: 'Показать фото туров' },
+  { command: 'help', description: 'Помощь и команды' },
+  { command: 'chatid', description: 'Показать chat id' },
+];
+
+const tourPhotos = [
+  {
+    url: 'https://adilkan.com/Tourism/images/tour-songkul.jpg',
+    caption: 'Song-Kul Lake Expedition',
+  },
+  {
+    url: 'https://adilkan.com/Tourism/images/tour-ala-archa.jpg',
+    caption: 'Ala-Archa Gorge Adventure',
+  },
+  {
+    url: 'https://adilkan.com/Tourism/images/tour-horseback.jpg',
+    caption: 'Horseback Riding Expedition',
+  },
+  {
+    url: 'https://adilkan.com/Tourism/images/tour-issyk-kul.jpg',
+    caption: 'Issyk-Kul Circuit',
+  },
+];
+
 const surveyQuestions: SurveyQuestion[] = [
   {
     key: 'tour_interest',
@@ -124,6 +152,21 @@ async function readTelegramToken(supabase: ReturnType<typeof createClient>) {
   return Deno.env.get('TELEGRAM_BOT_TOKEN') || (await readSecret(supabase, 'telegram_bot_token'));
 }
 
+async function writeSecret(supabase: ReturnType<typeof createClient>, name: string, value: string) {
+  const { error } = await supabase.from('app_secrets').upsert(
+    {
+      name,
+      value,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'name' },
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 function getOptionLabel(question: SurveyQuestion, value: string) {
   return question.options.find((option) => option.value === value)?.label || value;
 }
@@ -144,7 +187,20 @@ function introText() {
   return [
     'Привет! Я бот Kyrgyz Riders.',
     'Я могу принять короткий тестовый опрос и ответить на ваше сообщение.',
+    'Команды доступны через меню Telegram.',
     'Начнем мини-опрос.',
+  ].join('\n');
+}
+
+function helpText() {
+  return [
+    'Команды бота:',
+    '/start - начать мини-опрос',
+    '/survey - пройти опрос заново',
+    '/photos - получить несколько фото туров',
+    '/help - показать помощь',
+    '',
+    'Также можно написать обычное сообщение, и бот ответит тестовым автоответом.',
   ].join('\n');
 }
 
@@ -182,6 +238,18 @@ async function telegramApi(
   return response.json();
 }
 
+async function ensureBotCommands(supabase: ReturnType<typeof createClient>, token: string) {
+  const currentVersion = await readSecret(supabase, 'telegram_bot_commands_version');
+  if (currentVersion === botCommandsVersion) {
+    return;
+  }
+
+  await telegramApi(token, 'setMyCommands', {
+    commands: botCommands,
+  });
+  await writeSecret(supabase, 'telegram_bot_commands_version', botCommandsVersion);
+}
+
 async function sendMessage(
   token: string,
   chatId: string,
@@ -192,6 +260,19 @@ async function sendMessage(
     chat_id: chatId,
     text,
     ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
+  });
+}
+
+async function sendTourPhotos(token: string, chatId: string) {
+  await telegramApi(token, 'sendMediaGroup', {
+    chat_id: chatId,
+    media: tourPhotos.map((photo, index) => ({
+      type: 'photo',
+      media: photo.url,
+      caption: index === 0
+        ? `Фото туров Kyrgyz Riders\n${tourPhotos.map((item) => `- ${item.caption}`).join('\n')}`
+        : undefined,
+    })),
   });
 }
 
@@ -315,6 +396,17 @@ async function handleTextMessage(
     return;
   }
 
+  if (text.startsWith('/help')) {
+    await sendMessage(token, chatId, helpText());
+    return;
+  }
+
+  if (text.startsWith('/photos')) {
+    await sendMessage(token, chatId, 'Отправляю несколько фото туров.');
+    await sendTourPhotos(token, chatId);
+    return;
+  }
+
   if (text.startsWith('/chatid')) {
     await sendMessage(token, chatId, `Chat ID: ${chatId}`);
     return;
@@ -365,6 +457,8 @@ Deno.serve(async (req) => {
     if (!telegramToken) {
       throw new Error('Telegram bot token is not configured.');
     }
+
+    await ensureBotCommands(supabase, telegramToken);
 
     const update = (await req.json()) as TelegramUpdate;
 
