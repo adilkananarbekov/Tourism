@@ -1,15 +1,45 @@
-# Tourism (React + Firebase + Supabase)
+# Kyrgyz Travel
 
-This project is built from the provided tourism design and wired to Firebase
-for the existing admin/auth features. Guest booking and custom tour requests
-can also be stored in Supabase and forwarded to Telegram.
+Kyrgyz Travel is a production-oriented tourism website for selling tours in
+Kyrgyzstan. Guests can browse tours, explore route ideas, view real media, and
+send a quick request with their name plus Telegram or phone contact. Website
+leads are stored in Supabase and forwarded to the admin through Telegram.
+
+## Technology stack
+
+### Frontend
+
+- React 18 for the user interface
+- TypeScript for typed application code
+- Vite for local development and production builds
+- React Router for page routing
+- Tailwind CSS for responsive styling and theme support
+- Radix UI primitives for accessible UI components
+- Lucide React for interface icons
+- React Helmet Async for SEO metadata
+- Leaflet and OpenStreetMap tiles for map previews
+
+### Backend and data
+
+- Supabase PostgreSQL for guest requests, tours, content data, and event tracking
+- Supabase Edge Functions for guest request handling, Telegram notifications, and event tracking
+- Supabase Storage for managed tourism media assets
+- Supabase Row Level Security policies for protecting private lead and admin data
+- Firebase Auth and Firestore for the existing account/admin flows
+- Telegram Bot API for sending website lead notifications to the admin chat
+
+### Deployment and tooling
+
+- GitHub for source control
+- GitHub Pages for the static website deployment
+- Supabase hosted Edge Functions for backend endpoints
+- npm scripts for development, build, deployment, and data/media upload helpers
 
 ## Launching the project
 
 From the project folder:
 
 ```bash
-cd tourism_design
 npm install
 ```
 
@@ -71,6 +101,13 @@ The Telegram notification Edge Functions are:
 
 The bot token, chat ID, and webhook secret are stored in `app_secrets`; do not
 put them in `.env` or commit them to the repo.
+
+## Security notes
+
+- Do not commit `.env`, service account files, private keys, bot tokens, or service role keys.
+- Keep `SUPABASE_SERVICE_ROLE_KEY`, `TELEGRAM_BOT_TOKEN`, and webhook secrets only in Supabase secrets or protected local environment variables.
+- Do not expose admin passwords through `VITE_` variables because Vite bundles them into public JavaScript.
+- Firebase and Supabase public client keys can appear in the frontend, but database access must be protected with Firebase rules and Supabase RLS policies.
 
 ## Admin panel
 
