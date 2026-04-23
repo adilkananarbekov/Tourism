@@ -84,7 +84,7 @@ export function AuthPage() {
     <section className="min-h-screen auth-shell bg-background text-foreground px-4 py-12">
       <SEO
         title={mode === 'signin' ? 'Sign In' : 'Sign Up'}
-        description="Access your Kyrgyz Riders account to manage bookings, submit tours, and connect with guides."
+        description="Access your Kyrgyz Travel account to manage bookings, submit tours, and connect with guides."
       />
       <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-6 lg:gap-8 items-stretch">
         <div className="hidden lg:flex relative overflow-hidden rounded-3xl border border-border bg-card/60 auth-hero">
@@ -101,7 +101,7 @@ export function AuthPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-black/65 via-black/35 to-transparent" />
           <div className="relative z-10 p-10 flex flex-col justify-between text-white">
             <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-white/70">Kyrgyz Riders</p>
+              <p className="text-xs uppercase tracking-[0.4em] text-white/70">Kyrgyz Travel</p>
               <h1 className="text-4xl mt-4 mb-4">Begin your next mountain story</h1>
               <p className="text-white/75">
                 Save itineraries, manage bookings, and unlock curated journeys across Kyrgyzstan.

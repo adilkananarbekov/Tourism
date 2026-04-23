@@ -48,7 +48,7 @@ export function BlogsPage() {
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <SEO
         title="Blogs"
-        description="Read Kyrgyz Riders travel stories, guides, and the latest tourism news."
+        description="Read Kyrgyz Travel stories, guides, and the latest tourism news."
       />
       <div className="max-w-6xl mx-auto space-y-12">
         <div className="text-center">

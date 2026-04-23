@@ -17,7 +17,7 @@ export function CTA() {
           Ready to Request Your Kyrgyz Tour?
         </h2>
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-10 leading-relaxed">
-          Choose a signature tour or describe your route. Your request goes to Kyrgyz Riders, then I or my managers contact you directly.
+          Choose a signature tour or describe your route. Your request goes to Kyrgyz Travel, then I or my managers contact you directly.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button

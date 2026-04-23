@@ -127,7 +127,7 @@ export function FeedbackPage() {
     <section className="bg-background px-4 py-16 sm:px-6 lg:px-8">
       <SEO
         title="Send a Tour Request"
-        description="Choose a tour or send a custom request. Kyrgyz Riders will contact you directly by Telegram or phone."
+        description="Choose a tour or send a custom request. Kyrgyz Travel will contact you directly by Telegram or phone."
       />
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
         <div className="space-y-6">
@@ -276,7 +276,7 @@ export function FeedbackPage() {
             data-track-event="request_form_submit_click"
             data-track-label="Direct request form"
           >
-            {isSubmitting ? 'Sending...' : 'Send to Kyrgyz Riders'}
+            {isSubmitting ? 'Sending...' : 'Send to Kyrgyz Travel'}
           </Button>
         </form>
       </div>

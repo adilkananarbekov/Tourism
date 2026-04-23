@@ -249,7 +249,7 @@ export function CustomTourForm() {
                 Request Sent!
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Your request went directly to Kyrgyz Riders. I or my managers will contact you
+                Your request went directly to Kyrgyz Travel. I or my managers will contact you
                 through Telegram, WhatsApp, or phone to confirm the route, timing, and price.
               </p>
               <div className="bg-accent rounded-lg p-6 mb-8 text-left">
@@ -269,7 +269,7 @@ export function CustomTourForm() {
                   </li>
                   <li className="flex items-start gap-3">
                     <Check className="h-5 w-5 text-secondary flex-shrink-0 mt-1" />
-                    <span>After confirmation, Kyrgyz Riders handles the logistics for your trip</span>
+                    <span>After confirmation, Kyrgyz Travel handles the logistics for your trip</span>
                   </li>
                 </ul>
               </div>

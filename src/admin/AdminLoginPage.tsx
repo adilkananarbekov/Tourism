@@ -49,7 +49,7 @@ export function AdminLoginPage() {
           <div className="relative z-10 p-10 flex flex-col justify-between text-white">
             <div>
               <p className="text-xs uppercase tracking-[0.4em] text-white/60">Admin Console</p>
-              <h1 className="text-4xl mt-4 mb-4">Control the Kyrgyz Riders experience</h1>
+              <h1 className="text-4xl mt-4 mb-4">Control the Kyrgyz Travel experience</h1>
               <p className="text-white/70">
                 Review bookings, update tours, and publish news with a focused control center.
               </p>

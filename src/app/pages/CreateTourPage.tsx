@@ -162,7 +162,7 @@ export function CreateTourPage() {
       <>
         <SEO
           title="Submit Tour"
-          description="Submit a tour proposal to the Kyrgyz Riders marketplace."
+          description="Submit a tour proposal to the Kyrgyz Travel marketplace."
         />
         <div className="min-h-[70vh] flex items-center justify-center px-4 bg-muted">
           <div className="bg-card rounded-lg shadow-md p-6 sm:p-8 max-w-lg text-center">

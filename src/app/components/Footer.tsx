@@ -10,9 +10,9 @@ export function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-primary-foreground/10 rounded-full flex items-center justify-center">
-                <span className="text-primary-foreground">KR</span>
+                <span className="text-primary-foreground">KT</span>
               </div>
-              <span className="text-xl">Kyrgyz Riders</span>
+              <span className="text-xl">Kyrgyz Travel</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-4">
               Independent guide creating custom adventures across Kyrgyzstan.
@@ -122,7 +122,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/70 text-sm">
-          <p>&copy; 2025 Kyrgyz Riders. All rights reserved.</p>
+          <p>&copy; 2025 Kyrgyz Travel. All rights reserved.</p>
         </div>
       </div>
     </footer>

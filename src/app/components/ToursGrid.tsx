@@ -49,7 +49,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
             Signature Tours
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose a route, send your contact details, and Kyrgyz Riders will follow up personally.
+            Choose a route, send your contact details, and Kyrgyz Travel will follow up personally.
           </p>
         </div>
 

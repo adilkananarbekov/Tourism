@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { withBasePath } from '../lib/assets';
 
-const DEFAULT_TITLE = 'Tourism | Kyrgyz Riders';
+const DEFAULT_TITLE = 'Kyrgyz Travel | Tours in Kyrgyzstan';
 const DEFAULT_DESCRIPTION =
   'Plan Kyrgyzstan tours with curated itineraries, cultural experiences, and mountain adventures.';
 const DEFAULT_IMAGE = '/images/hero.jpg';
@@ -14,7 +14,7 @@ type SEOProps = {
 };
 
 export function SEO({ title, description, image, url }: SEOProps) {
-  const metaTitle = title ? `${title} | Kyrgyz Riders` : DEFAULT_TITLE;
+  const metaTitle = title ? `${title} | Kyrgyz Travel` : DEFAULT_TITLE;
   const metaDescription = description || DEFAULT_DESCRIPTION;
   const metaImage = withBasePath(image || DEFAULT_IMAGE);
 

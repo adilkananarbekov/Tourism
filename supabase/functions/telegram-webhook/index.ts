@@ -174,7 +174,7 @@ function websiteKeyboard() {
 function adminHelpText(chatId: string, ownerChatId?: string) {
   const isConnected = ownerChatId === chatId;
   return [
-    'Kyrgyz Riders admin bot',
+    'Kyrgyz Travel admin bot',
     '',
     'This bot is now only for website lead notifications.',
     'Guests should submit requests on the website. When they send a request, this chat receives their name, contact details, selected tour, dates, and message.',

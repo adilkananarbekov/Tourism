@@ -548,7 +548,7 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
         <Check className="h-12 w-12 text-secondary mx-auto mb-4" />
         <h4 className="text-lg text-foreground mb-2">Thank you!</h4>
         <p className="text-sm text-muted-foreground mb-4">
-          Your request was sent to Kyrgyz Riders. I or my managers will contact you directly using
+          Your request was sent to Kyrgyz Travel. I or my managers will contact you directly using
           your Telegram username or phone number.
         </p>
         <Button onClick={onCancel} variant="outline" size="sm">

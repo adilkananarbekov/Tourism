@@ -31,7 +31,7 @@ export function AdminLayout() {
       <header className="bg-card/90 border-b border-border/80 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="text-lg text-foreground font-medium">
-            Kyrgyz Riders Admin
+            Kyrgyz Travel Admin
           </Link>
           <Button variant="outline" onClick={handleLogout}>
             Sign Out

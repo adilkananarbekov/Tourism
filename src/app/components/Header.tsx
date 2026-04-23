@@ -38,9 +38,9 @@ export function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 via-emerald-700 to-orange-700 text-white shadow-md ring-1 ring-white/25">
-              <span className="text-sm font-semibold">KR</span>
+              <span className="text-sm font-semibold">KT</span>
             </div>
-            <span className="text-xl font-medium text-foreground">Kyrgyz Riders</span>
+            <span className="text-xl font-medium text-foreground">Kyrgyz Travel</span>
           </Link>
 
           {/* Desktop Navigation */}
