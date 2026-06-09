@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { withBasePath } from '../lib/assets';
 
 export function Hero() {
-  const heroImage = withBasePath('/images/hero.jpg');
+  const heroImage = withBasePath('/images/go-kyrgyzstan-hero.webp');
   const trustItems = [
     { icon: MessageCircle, label: 'Direct contact' },
     { icon: Route, label: 'Flexible dates' },
@@ -13,23 +13,24 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[500px] sm:min-h-[540px] md:min-h-[600px] lg:min-h-[640px] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[560px] sm:min-h-[600px] md:min-h-[660px] lg:min-h-[720px] flex items-center justify-center overflow-hidden">
       <div
-        className="absolute inset-0 hero-parallax"
+        className="absolute inset-0 hero-parallax hero-main-photo"
         style={{
           backgroundImage: `url('${heroImage}')`,
         }}
         aria-hidden="true"
       />
-      <div className="absolute inset-0 bg-black/45" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/30 to-black/65" />
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-up">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white mb-6">
-          Private Tours in Kyrgyzstan
+          Private Kyrgyzstan Tours & Mountain Trips
         </h1>
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-8 max-w-2xl mx-auto">
-          A local seller for flexible mountain, lake, culture, and road-trip routes. Choose a tour or send a quick request, then we contact you on Telegram or by phone.
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+          Flexible tours for international travelers: mountain lakes, nomad culture,
+          horse riding, Silk Road routes, and road trips from Bishkek or Osh.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button

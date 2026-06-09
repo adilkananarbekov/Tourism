@@ -166,11 +166,11 @@ export function JourneyStory() {
               className="btn-micro btn-action"
             >
               <Link
-                to="/custom-tour"
-                data-track-event="story_custom_request_click"
-                data-track-label="Story custom request"
+                to="/feedback"
+                data-track-event="story_request_click"
+                data-track-label="Story request"
               >
-                Start With a Flexible Request
+                Send a Request
               </Link>
             </Button>
           </div>

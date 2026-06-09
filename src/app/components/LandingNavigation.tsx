@@ -1,4 +1,4 @@
-import { Images, Lightbulb, MapPinned, MessageCircle } from 'lucide-react';
+import { Images, MapPinned, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 
@@ -9,13 +9,6 @@ const landingLinks = [
     to: '/tours',
     action: 'View tours',
     icon: MapPinned,
-  },
-  {
-    title: 'Trip ideas',
-    description: 'Find places and route inspiration.',
-    to: '/explore',
-    action: 'Get ideas',
-    icon: Lightbulb,
   },
   {
     title: 'Real gallery',
@@ -47,12 +40,12 @@ export function LandingNavigation() {
             </h2>
           </div>
           <p className="text-base text-muted-foreground sm:text-lg">
-            The homepage stays short like a business card. Detailed tours, route ideas,
-            photos, and contact live on separate pages.
+            Browse ready routes, check the real photo gallery, or send a direct request if
+            you already know your dates and travel style.
           </p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-3">
           {landingLinks.map((item) => {
             const Icon = item.icon;
             return (

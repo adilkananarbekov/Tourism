@@ -1,8 +1,8 @@
-import type { BookingRequest, SellerSubmission } from './firestore';
+import type { BookingRequest, SellerSubmission } from './dataStore';
 
-const PROFILE_KEY = 'tourism_profile';
-const BOOKINGS_KEY = 'tourism_bookings';
-const SUBMISSIONS_KEY = 'tourism_seller_submissions';
+const PROFILE_KEY = 'go_kyrgyzstan_travel_profile';
+const BOOKINGS_KEY = 'go_kyrgyzstan_travel_bookings';
+const SUBMISSIONS_KEY = 'go_kyrgyzstan_travel_seller_submissions';
 
 export type LocalProfile = {
   name: string;

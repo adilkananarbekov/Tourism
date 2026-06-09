@@ -3,6 +3,7 @@ import { galleryItems, galleryVideo } from '../data/gallery';
 import { SEO } from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { withBasePath } from '../lib/assets';
+import { breadcrumbJsonLd } from '../lib/seo';
 
 const INITIAL_GALLERY_COUNT = 12;
 const GALLERY_BATCH_SIZE = 12;
@@ -15,9 +16,14 @@ export function GalleryPage() {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <SEO
-        title="Gallery"
-        description="Browse real photos and videos from Kyrgyzstan tours, hikes, and cultural experiences."
+        title="Kyrgyzstan Travel Photos & Videos"
+        description="See real Kyrgyzstan travel photos and videos from mountain tours, horse riding routes, yurt camps, hikes, and cultural experiences."
         image="/images/hero.jpg"
+        path="/gallery"
+        jsonLd={breadcrumbJsonLd([
+          { name: 'Home', path: '/' },
+          { name: 'Gallery', path: '/gallery' },
+        ])}
       />
       <div className="max-w-7xl mx-auto space-y-12">
         <div className="text-center">

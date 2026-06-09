@@ -1,12 +1,14 @@
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from './firebase';
+import { apiEnabled, uploadApiImage } from './api';
 
-export async function uploadImage(file: File, pathPrefix: string) {
-  if (!storage) {
-    throw new Error('Storage is not configured.');
+export async function uploadImage(file: File, _pathPrefix: string) {
+  if (apiEnabled) {
+    return uploadApiImage(file, _pathPrefix);
   }
-  const safeName = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
-  const storageRef = ref(storage, `${pathPrefix}/${Date.now()}-${safeName}`);
-  await uploadBytes(storageRef, file);
-  return getDownloadURL(storageRef);
+
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () => reject(new Error('Unable to read image file.'));
+    reader.readAsDataURL(file);
+  });
 }

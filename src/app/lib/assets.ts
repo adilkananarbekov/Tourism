@@ -1,6 +1,4 @@
-import { supabaseProjectUrl } from './supabase';
-
-const supabaseAssetBucket = import.meta.env.VITE_SUPABASE_ASSET_BUCKET as string | undefined;
+const assetBaseUrl = (import.meta.env.VITE_ASSET_BASE_URL as string | undefined)?.replace(/\/$/, '') || '';
 
 export const withBasePath = (path: string) => {
   if (!path) {
@@ -13,12 +11,8 @@ export const withBasePath = (path: string) => {
 
   const normalized = path.startsWith('/') ? path.slice(1) : path;
 
-  if (
-    supabaseProjectUrl &&
-    supabaseAssetBucket &&
-    /^(images|videos)\//.test(normalized)
-  ) {
-    return `${supabaseProjectUrl.replace(/\/$/, '')}/storage/v1/object/public/${supabaseAssetBucket}/${normalized}`;
+  if (assetBaseUrl && /^(images|videos)\//.test(normalized)) {
+    return `${assetBaseUrl}/${normalized}`;
   }
 
   const base = import.meta.env.BASE_URL || '/';

@@ -1,15 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { useAuth } from '../context/AuthContext';
-import { firebaseEnabled } from '../lib/firebase';
 
 export function AuthStatus() {
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
-
-  if (!firebaseEnabled) {
-    return null;
-  }
 
   if (!user) {
     return (

@@ -1,6 +1,14 @@
-import { Clock, Mail, MessageCircle, Send } from 'lucide-react';
+import { Instagram, MessageCircle, Phone, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
+import {
+  FOUNDER_NAME,
+  INSTAGRAM_URL,
+  TELEGRAM_URL,
+  TELEGRAM_USERNAME,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_URL,
+} from '../lib/contact';
 
 export function ContactStrip() {
   const contacts = [
@@ -12,18 +20,21 @@ export function ContactStrip() {
     },
     {
       icon: MessageCircle,
-      label: 'Telegram notification',
-      value: 'Every website lead is sent to the admin chat',
+      label: 'Telegram',
+      value: TELEGRAM_USERNAME,
+      href: TELEGRAM_URL,
     },
     {
-      icon: Mail,
-      label: 'Contact details',
-      value: 'Managers follow up through Telegram, WhatsApp, or phone',
+      icon: Phone,
+      label: 'WhatsApp',
+      value: WHATSAPP_DISPLAY,
+      href: WHATSAPP_URL,
     },
     {
-      icon: Clock,
-      label: 'Response time',
-      value: 'Usually within 24 hours',
+      icon: Instagram,
+      label: 'Instagram',
+      value: '@jakypbekovv1',
+      href: INSTAGRAM_URL,
     },
   ];
 
@@ -33,8 +44,8 @@ export function ContactStrip() {
         <div className="space-y-3">
           <h2 className="text-2xl sm:text-3xl text-foreground">Send a Tour Request</h2>
           <p className="text-muted-foreground">
-            Guests choose a tour or custom route, leave contact details, and my team follows up
-            personally.
+            Guests choose an available tour, share travel details, and {FOUNDER_NAME} or the team
+            follows up personally.
           </p>
           <div>
             <Button asChild className="btn-micro btn-action">
@@ -66,6 +77,18 @@ export function ContactStrip() {
               <Link key={contact.label} to={contact.to} className="hover:opacity-90">
                 {content}
               </Link>
+            ) : contact.href ? (
+              <a
+                key={contact.label}
+                href={contact.href}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:opacity-90"
+                data-track-event="contact_strip_direct_link_click"
+                data-track-label={contact.label}
+              >
+                {content}
+              </a>
             ) : (
               <div key={contact.label}>{content}</div>
             );

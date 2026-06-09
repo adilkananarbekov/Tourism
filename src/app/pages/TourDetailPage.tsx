@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { TourDetail } from '../components/TourDetail';
 import { SEO } from '../components/SEO';
 import { useToursData } from '../hooks/useTours';
+import { breadcrumbJsonLd, tourJsonLd } from '../lib/seo';
 
 export function TourDetailPage() {
   const { tourId } = useParams();
@@ -23,9 +24,27 @@ export function TourDetailPage() {
   return (
     <>
       <SEO
-        title={selectedTour?.title || 'Tour'}
-        description={selectedTour?.description}
+        title={selectedTour ? `${selectedTour.title} Tour` : 'Tour'}
+        description={
+          selectedTour
+            ? `${selectedTour.description} Duration: ${selectedTour.duration}. Starting from ${selectedTour.price}.`
+            : 'Kyrgyzstan tour details and booking request.'
+        }
         image={selectedTour?.image}
+        path={selectedTour ? `/tours/${selectedTour.id}` : undefined}
+        noindex={!selectedTour}
+        jsonLd={
+          selectedTour
+            ? [
+                tourJsonLd(selectedTour),
+                breadcrumbJsonLd([
+                  { name: 'Home', path: '/' },
+                  { name: 'Tours', path: '/tours' },
+                  { name: selectedTour.title, path: `/tours/${selectedTour.id}` },
+                ]),
+              ]
+            : undefined
+        }
       />
       <TourDetail tour={selectedTour} />
     </>

@@ -32,6 +32,8 @@ export function AdminLoginPage() {
       <SEO
         title="Admin Login"
         description="Sign in to manage tours, news, and bookings."
+        path="/admin/login"
+        noindex
       />
       <div className="w-full max-w-5xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-stretch">
         <div className="hidden lg:flex relative overflow-hidden rounded-2xl border border-border bg-card/60 auth-hero">
@@ -49,7 +51,7 @@ export function AdminLoginPage() {
           <div className="relative z-10 p-10 flex flex-col justify-between text-white">
             <div>
               <p className="text-xs uppercase tracking-[0.4em] text-white/60">Admin Console</p>
-              <h1 className="text-4xl mt-4 mb-4">Control the Kyrgyz Travel experience</h1>
+              <h1 className="text-4xl mt-4 mb-4">Control the Go Kyrgyzstan Travel experience</h1>
               <p className="text-white/70">
                 Review bookings, update tours, and publish news with a focused control center.
               </p>
@@ -99,7 +101,7 @@ export function AdminLoginPage() {
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="Firebase admin password"
+                placeholder="Admin password"
                 className="h-11"
                 required
               />

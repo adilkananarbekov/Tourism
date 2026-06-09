@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 export type ThemeMode = 'light' | 'dark';
 export type ThemePreference = 'system' | ThemeMode;
 
-const THEME_STORAGE_KEY = 'tourism-theme';
-const THEME_CHANGE_EVENT = 'tourism-theme-change';
+const THEME_STORAGE_KEY = 'go-kyrgyzstan-travel-theme';
+const THEME_CHANGE_EVENT = 'go-kyrgyzstan-travel-theme-change';
 
 function getSystemTheme(): ThemeMode {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';

@@ -1,15 +1,16 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import {
-  type User,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  updateProfile,
-} from 'firebase/auth';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase';
-import { type UserRecord, upsertUserProfile } from '../lib/firestore';
+import { type UserRecord, upsertUserProfile } from '../lib/dataStore';
+
+type AppUser = {
+  uid: string;
+  email: string;
+  displayName?: string;
+};
+
+type StoredAccount = AppUser & {
+  password: string;
+  role: 'buyer' | 'seller';
+};
 
 type SignUpPayload = {
   name: string;
@@ -19,7 +20,7 @@ type SignUpPayload = {
 };
 
 type AuthContextValue = {
-  user: User | null;
+  user: AppUser | null;
   profile: UserRecord | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
@@ -28,93 +29,137 @@ type AuthContextValue = {
   updateRole: (role: 'buyer' | 'seller') => Promise<void>;
 };
 
+const ACCOUNTS_KEY = 'go_kyrgyzstan_travel_accounts';
+const SESSION_KEY = 'go_kyrgyzstan_travel_auth_session';
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function safeParse<T>(raw: string | null, fallback: T): T {
+  if (!raw) {
+    return fallback;
+  }
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function readAccounts() {
+  const accounts = safeParse<StoredAccount[]>(localStorage.getItem(ACCOUNTS_KEY), []);
+  return Array.isArray(accounts) ? accounts : [];
+}
+
+function writeAccounts(accounts: StoredAccount[]) {
+  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+}
+
+function userIdFromEmail(email: string) {
+  return email.trim().toLowerCase().replace(/\//g, '_');
+}
+
+function accountToProfile(account: StoredAccount): UserRecord {
+  return {
+    id: account.uid,
+    name: account.displayName,
+    email: account.email,
+    role: account.role,
+  };
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [profile, setProfile] = useState<UserRecord | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!auth || !db) {
-      setLoading(false);
-      return;
-    }
+    const session = safeParse<{ uid?: string } | null>(localStorage.getItem(SESSION_KEY), null);
+    const account = session?.uid
+      ? readAccounts().find((item) => item.uid === session.uid) || null
+      : null;
 
-    let profileUnsubscribe: (() => void) | null = null;
-
-    const unsubscribe = onAuthStateChanged(auth, async (nextUser) => {
-      setUser(nextUser);
-      if (profileUnsubscribe) {
-        profileUnsubscribe();
-        profileUnsubscribe = null;
-      }
-
-      if (!nextUser) {
-        setProfile(null);
-        setLoading(false);
-        return;
-      }
-
-      const profileRef = doc(db, 'users', nextUser.uid);
-      profileUnsubscribe = onSnapshot(profileRef, async (snapshot) => {
-        if (snapshot.exists()) {
-          setProfile({ id: snapshot.id, ...snapshot.data() });
-          return;
-        }
-
-        const fallbackProfile = {
-          name: nextUser.displayName || '',
-          email: nextUser.email || '',
-          role: 'buyer',
-        };
-        await upsertUserProfile({ ...fallbackProfile, uid: nextUser.uid });
-        setProfile({ id: nextUser.uid, ...fallbackProfile });
+    if (account) {
+      setUser({
+        uid: account.uid,
+        email: account.email,
+        displayName: account.displayName,
       });
-
-      setLoading(false);
-    });
-
-    return () => {
-      if (profileUnsubscribe) {
-        profileUnsubscribe();
-      }
-      unsubscribe();
-    };
+      setProfile(accountToProfile(account));
+    }
+    setLoading(false);
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    if (!auth) {
-      throw new Error('Authentication is not configured.');
+    const normalizedEmail = email.trim().toLowerCase();
+    const account = readAccounts().find(
+      (item) => item.email.trim().toLowerCase() === normalizedEmail && item.password === password
+    );
+
+    if (!account) {
+      throw new Error('Invalid email or password.');
     }
-    await signInWithEmailAndPassword(auth, email, password);
+
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ uid: account.uid }));
+    setUser({
+      uid: account.uid,
+      email: account.email,
+      displayName: account.displayName,
+    });
+    setProfile(accountToProfile(account));
   };
 
   const signUp = async ({ name, email, password, role }: SignUpPayload) => {
-    if (!auth) {
-      throw new Error('Authentication is not configured.');
+    const normalizedEmail = email.trim().toLowerCase();
+    const accounts = readAccounts();
+    if (accounts.some((account) => account.email.trim().toLowerCase() === normalizedEmail)) {
+      throw new Error('An account with this email already exists.');
     }
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(result.user, { displayName: name });
-    await upsertUserProfile({ name, email, role, uid: result.user.uid });
+
+    const account: StoredAccount = {
+      uid: userIdFromEmail(email),
+      email,
+      password,
+      displayName: name,
+      role,
+    };
+    writeAccounts([account, ...accounts]);
+    await upsertUserProfile({ name, email, role, uid: account.uid });
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ uid: account.uid }));
+    setUser({
+      uid: account.uid,
+      email: account.email,
+      displayName: account.displayName,
+    });
+    setProfile(accountToProfile(account));
   };
 
   const signOut = async () => {
-    if (!auth) {
-      throw new Error('Authentication is not configured.');
-    }
-    await firebaseSignOut(auth);
+    localStorage.removeItem(SESSION_KEY);
+    setUser(null);
+    setProfile(null);
   };
 
   const updateRole = async (role: 'buyer' | 'seller') => {
-    if (!auth || !auth.currentUser) {
+    if (!user) {
       throw new Error('No authenticated user.');
     }
-    const email = auth.currentUser.email || profile?.email || '';
-    if (!email) {
-      throw new Error('Email address is required to update role.');
-    }
-    await upsertUserProfile({ email, role, uid: auth.currentUser.uid });
+
+    const accounts = readAccounts();
+    const updatedAccounts = accounts.map((account) =>
+      account.uid === user.uid ? { ...account, role } : account
+    );
+    writeAccounts(updatedAccounts);
+    await upsertUserProfile({
+      name: user.displayName,
+      email: user.email,
+      role,
+      uid: user.uid,
+    });
+    setProfile((current) => ({
+      id: user.uid,
+      name: current?.name || user.displayName,
+      email: user.email,
+      role,
+    }));
   };
 
   const value = useMemo<AuthContextValue>(

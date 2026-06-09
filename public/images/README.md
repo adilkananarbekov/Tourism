@@ -1,7 +1,7 @@
 Image placeholders (optional):
 
-This project now uses stock image URLs from Unsplash for hero, admin login, and explore
-content. If you prefer local images, place them in this folder and update:
+This project uses local images for hero, admin login, gallery, and tour content.
+If you prefer replacement images, place them in this folder and update:
 
 - `src/app/components/Hero.tsx`
 - `src/admin/AdminLoginPage.tsx`

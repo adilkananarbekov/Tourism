@@ -1,7 +1,6 @@
 import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Button } from './ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { cn } from './ui/utils';
 
@@ -19,7 +18,6 @@ export function Header() {
   const navLinks = [
     { label: 'Home', to: '/' },
     { label: 'Tours', to: '/tours' },
-    { label: 'Ideas', to: '/explore' },
     { label: 'Gallery', to: '/gallery' },
     { label: 'Contact', to: '/feedback' },
   ];
@@ -40,7 +38,7 @@ export function Header() {
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 via-emerald-700 to-orange-700 text-white shadow-md ring-1 ring-white/25">
               <span className="text-sm font-semibold">KT</span>
             </div>
-            <span className="text-xl font-medium text-foreground">Kyrgyz Travel</span>
+            <span className="text-xl font-medium text-foreground">Go Kyrgyzstan Travel</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -56,18 +54,6 @@ export function Header() {
                 {link.label}
               </NavLink>
             ))}
-            <Button
-              asChild
-              className="btn-micro btn-action"
-            >
-              <Link
-                to="/custom-tour"
-                data-track-event="header_custom_request_click"
-                data-track-label="Header custom request"
-              >
-                Custom Trip
-              </Link>
-            </Button>
             <ThemeToggle />
           </div>
 
@@ -102,21 +88,6 @@ export function Header() {
                   {link.label}
                 </NavLink>
               ))}
-              <div className="px-4 pt-2">
-                <Button
-                  asChild
-                  className="w-full btn-micro btn-action"
-                >
-                  <Link
-                    to="/custom-tour"
-                    onClick={() => setMobileMenuOpen(false)}
-                    data-track-event="mobile_custom_request_click"
-                    data-track-label="Mobile custom request"
-                  >
-                    Custom Trip
-                  </Link>
-                </Button>
-              </div>
               <div className="px-4">
                 <ThemeToggle />
               </div>

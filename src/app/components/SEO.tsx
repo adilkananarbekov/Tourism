@@ -1,36 +1,67 @@
 import { Helmet } from 'react-helmet-async';
 import { withBasePath } from '../lib/assets';
+import {
+  DEFAULT_SOCIAL_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+  absoluteUrl,
+  type JsonLd,
+} from '../lib/seo';
 
-const DEFAULT_TITLE = 'Kyrgyz Travel | Tours in Kyrgyzstan';
-const DEFAULT_DESCRIPTION =
-  'Plan Kyrgyzstan tours with curated itineraries, cultural experiences, and mountain adventures.';
-const DEFAULT_IMAGE = '/images/hero.jpg';
+const DEFAULT_TITLE = `${SITE_NAME} | Kyrgyzstan Tours & Private Trips`;
 
 type SEOProps = {
   title?: string;
   description?: string;
   image?: string;
+  path?: string;
   url?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  jsonLd?: JsonLd | JsonLd[];
 };
 
-export function SEO({ title, description, image, url }: SEOProps) {
-  const metaTitle = title ? `${title} | Kyrgyz Travel` : DEFAULT_TITLE;
-  const metaDescription = description || DEFAULT_DESCRIPTION;
-  const metaImage = withBasePath(image || DEFAULT_IMAGE);
+export function SEO({
+  title,
+  description,
+  image,
+  path,
+  url,
+  type = 'website',
+  noindex = false,
+  jsonLd,
+}: SEOProps) {
+  const metaTitle = title ? `${title} | ${SITE_NAME}` : DEFAULT_TITLE;
+  const metaDescription = description || SITE_DESCRIPTION;
+  const metaImage = absoluteUrl(withBasePath(image || DEFAULT_SOCIAL_IMAGE));
+  const canonicalUrl = url || absoluteUrl(path || (typeof window !== 'undefined' ? window.location.pathname : '/'));
+  const robots = noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+  const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 
   return (
     <Helmet>
       <title>{metaTitle}</title>
       <meta name="description" content={metaDescription} />
+      <meta name="robots" content={robots} />
+      <link rel="canonical" href={canonicalUrl} />
       <meta property="og:title" content={metaTitle} />
       <meta property="og:description" content={metaDescription} />
       <meta property="og:image" content={metaImage} />
-      <meta property="og:type" content="website" />
-      {url && <meta property="og:url" content={url} />}
+      <meta property="og:type" content={type} />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content="en_US" />
+      <meta property="og:url" content={canonicalUrl} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={metaImage} />
+      <meta name="theme-color" content="#0f766e" />
+      {jsonLdItems.map((item, index) => (
+        <script key={index} type="application/ld+json">
+          {JSON.stringify(item)}
+        </script>
+      ))}
     </Helmet>
   );
 }

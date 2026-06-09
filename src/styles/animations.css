@@ -311,10 +311,42 @@
   transform: translateY(0);
 }
 
+.admin-mobile-nav {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.admin-mobile-nav::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .admin-mobile-nav {
+    display: block;
+    overflow: visible;
+  }
+}
+
+.admin-upload-preview {
+  aspect-ratio: 4 / 3;
+  min-height: 120px;
+}
+
+.admin-sticky-action {
+  min-height: 44px;
+}
+
 .hero-parallax {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+}
+
+.hero-main-photo {
+  background-position: center 52%;
 }
 
 .admin-section {
@@ -392,6 +424,40 @@
     transform: none;
     transition: none;
     animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-shell input,
+  .admin-shell textarea,
+  .admin-shell select {
+    font-size: 16px;
+  }
+
+  .admin-nav-link::before {
+    left: 10px;
+    right: 10px;
+    top: auto;
+    bottom: 4px;
+    width: auto;
+    height: 2px;
+  }
+
+  .admin-row-actions {
+    opacity: 1;
+    transform: none;
+  }
+
+  .admin-row {
+    overflow-wrap: anywhere;
+  }
+
+  .admin-sticky-action {
+    position: sticky;
+    bottom: 0.75rem;
+    z-index: 10;
+    width: 100%;
+    box-shadow: 0 14px 30px color-mix(in srgb, var(--primary) 22%, transparent);
   }
 }
 

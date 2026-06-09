@@ -1,17 +1,8 @@
-import { supabaseProjectUrl } from './supabase';
+import { apiEnabled, fetchApiEventSummary, postApiEvent } from './api';
 
 type TrackMetadata = Record<string, string | number | boolean | null | undefined>;
 
-const EVENT_FUNCTION =
-  (import.meta.env.VITE_SUPABASE_EVENT_TRACK_FUNCTION as string | undefined) || 'event-track';
-const LOCAL_EVENTS_KEY = 'tourism_site_events';
-
-function getEventUrl() {
-  if (!supabaseProjectUrl) {
-    return '';
-  }
-  return `${supabaseProjectUrl.replace(/\/$/, '')}/functions/v1/${EVENT_FUNCTION}`;
-}
+const LOCAL_EVENTS_KEY = 'go_kyrgyzstan_travel_site_events';
 
 function safeMetadata(metadata: TrackMetadata = {}) {
   return Object.fromEntries(
@@ -30,6 +21,21 @@ function appendLocalEvent(payload: Record<string, unknown>) {
     );
   } catch {
     // Tracking must never break the user flow.
+  }
+}
+
+function readLocalEvents() {
+  try {
+    const existing = JSON.parse(localStorage.getItem(LOCAL_EVENTS_KEY) || '[]') as Array<{
+      source?: string;
+      eventName?: string;
+      path?: string;
+      label?: string;
+      createdAt?: string;
+    }>;
+    return Array.isArray(existing) ? existing : [];
+  } catch {
+    return [];
   }
 }
 
@@ -54,42 +60,34 @@ export function trackEvent(
     },
   };
 
-  const url = getEventUrl();
-  if (!url) {
+  if (!apiEnabled) {
     appendLocalEvent(payload);
     return;
   }
 
-  const body = JSON.stringify(payload);
-  fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body,
-    credentials: 'omit',
-    keepalive: true,
-  }).catch(() => appendLocalEvent(payload));
+  postApiEvent(payload).catch(() => appendLocalEvent(payload));
 }
 
 export async function fetchEventSummary() {
-  const url = getEventUrl();
-  if (!url) {
-    return { totals: {}, recent: [] };
+  if (apiEnabled) {
+    return fetchApiEventSummary();
   }
 
-  const response = await fetch(url, { credentials: 'omit' });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(String(result.error || 'Unable to load event tracker.'));
-  }
+  const events = readLocalEvents();
+  const totals = events.reduce<Record<string, number>>((acc, event) => {
+    const name = event.eventName || 'unknown';
+    acc[name] = (acc[name] || 0) + 1;
+    return acc;
+  }, {});
 
-  return result as {
-    totals: Record<string, number>;
-    recent: Array<{
-      source: string;
-      event_name: string;
-      path: string;
-      label: string;
-      created_at: string;
-    }>;
+  return {
+    totals,
+    recent: events.slice(0, 40).map((event) => ({
+      source: event.source || 'web',
+      event_name: event.eventName || 'unknown',
+      path: event.path || '',
+      label: event.label || '',
+      created_at: event.createdAt || '',
+    })),
   };
 }

@@ -1,27 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://tourism-a4457.web.app/</loc>
+    <loc>https://kyrgyz.tours/</loc>
+    <lastmod>2026-05-01</lastmod>
   </url>
   <url>
-    <loc>https://tourism-a4457.web.app/tours</loc>
+    <loc>https://kyrgyz.tours/tours</loc>
+    <lastmod>2026-05-01</lastmod>
   </url>
   <url>
-    <loc>https://tourism-a4457.web.app/explore</loc>
+    <loc>https://kyrgyz.tours/tours/1</loc>
+    <lastmod>2026-05-01</lastmod>
   </url>
   <url>
-    <loc>https://tourism-a4457.web.app/join-tour</loc>
+    <loc>https://kyrgyz.tours/tours/2</loc>
+    <lastmod>2026-05-01</lastmod>
   </url>
   <url>
-    <loc>https://tourism-a4457.web.app/custom-tour</loc>
+    <loc>https://kyrgyz.tours/tours/3</loc>
+    <lastmod>2026-05-01</lastmod>
   </url>
   <url>
-    <loc>https://tourism-a4457.web.app/blogs</loc>
+    <loc>https://kyrgyz.tours/tours/4</loc>
+    <lastmod>2026-05-01</lastmod>
   </url>
   <url>
-    <loc>https://tourism-a4457.web.app/feedback</loc>
+    <loc>https://kyrgyz.tours/tours/5</loc>
+    <lastmod>2026-05-01</lastmod>
   </url>
   <url>
-    <loc>https://tourism-a4457.web.app/auth</loc>
+    <loc>https://kyrgyz.tours/tours/6</loc>
+    <lastmod>2026-05-01</lastmod>
+  </url>
+  <url>
+    <loc>https://kyrgyz.tours/join-tour</loc>
+    <lastmod>2026-05-01</lastmod>
+  </url>
+  <url>
+    <loc>https://kyrgyz.tours/gallery</loc>
+    <lastmod>2026-05-01</lastmod>
+  </url>
+  <url>
+    <loc>https://kyrgyz.tours/blogs</loc>
+    <lastmod>2026-05-01</lastmod>
+  </url>
+  <url>
+    <loc>https://kyrgyz.tours/feedback</loc>
+    <lastmod>2026-05-01</lastmod>
   </url>
 </urlset>

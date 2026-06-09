@@ -1,5 +1,13 @@
-import { Clock, MapPin, MessageCircle, Send } from 'lucide-react';
+import { Clock, Instagram, MapPin, MessageCircle, Phone, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import {
+  FOUNDER_NAME,
+  INSTAGRAM_URL,
+  TELEGRAM_URL,
+  TELEGRAM_USERNAME,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_URL,
+} from '../lib/contact';
 
 export function Footer() {
   return (
@@ -12,10 +20,10 @@ export function Footer() {
               <div className="w-8 h-8 bg-primary-foreground/10 rounded-full flex items-center justify-center">
                 <span className="text-primary-foreground">KT</span>
               </div>
-              <span className="text-xl">Kyrgyz Travel</span>
+              <span className="text-xl">Go Kyrgyzstan Travel</span>
             </div>
             <p className="text-primary-foreground/70 text-sm mb-4">
-              Independent guide creating custom adventures across Kyrgyzstan.
+              Private Kyrgyzstan tours planned by {FOUNDER_NAME}.
             </p>
             <Link
               to="/feedback"
@@ -36,23 +44,18 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/explore" className="hover:text-primary-foreground transition-colors">
-                  Explore Kyrgyzstan
-                </Link>
-              </li>
-              <li>
                 <Link to="/gallery" className="hover:text-primary-foreground transition-colors">
                   Gallery
                 </Link>
               </li>
               <li>
-                <Link to="/blogs" className="hover:text-primary-foreground transition-colors">
-                  Travel Stories
-                </Link>
+                <a href="/#founder" className="hover:text-primary-foreground transition-colors">
+                  Founder
+                </a>
               </li>
               <li>
-                <Link to="/custom-tour" className="hover:text-primary-foreground transition-colors">
-                  Custom Tour Request
+                <Link to="/blogs" className="hover:text-primary-foreground transition-colors">
+                  Travel Stories
                 </Link>
               </li>
               <li>
@@ -111,7 +114,36 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <MessageCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                <span>Telegram bot connected</span>
+                <a
+                  href={TELEGRAM_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-primary-foreground transition-colors"
+                >
+                  Telegram {TELEGRAM_USERNAME}
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
+                <Phone className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-primary-foreground transition-colors"
+                >
+                  WhatsApp {WHATSAPP_DISPLAY}
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
+                <Instagram className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-primary-foreground transition-colors"
+                >
+                  Instagram @jakypbekovv1
+                </a>
               </li>
               <li className="flex items-start gap-2">
                 <Clock className="h-5 w-5 flex-shrink-0 mt-0.5" />
@@ -122,7 +154,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/70 text-sm">
-          <p>&copy; 2025 Kyrgyz Travel. All rights reserved.</p>
+          <p>&copy; 2025 Go Kyrgyzstan Travel. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -1,7 +1,17 @@
-import { BadgeCheck, Languages, MapPin, Shield } from 'lucide-react';
+import { BadgeCheck, Instagram, Languages, MapPin, MessageCircle, Phone, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { withBasePath } from '../lib/assets';
+import {
+  FOUNDER_IMAGE,
+  FOUNDER_NAME,
+  FOUNDER_ROLE,
+  INSTAGRAM_URL,
+  TELEGRAM_URL,
+  TELEGRAM_USERNAME,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_URL,
+} from '../lib/contact';
 
 export function AboutMe() {
   const highlights = [
@@ -28,31 +38,34 @@ export function AboutMe() {
   ];
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
+    <section id="founder" className="py-16 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
       <div className="max-w-7xl mx-auto grid gap-10 lg:grid-cols-[1fr_1.2fr] items-center">
         <div className="relative">
           <div className="aspect-[4/5] overflow-hidden rounded-2xl shadow-lg">
             <img
-              src={withBasePath('/images/about-me.jpg')}
-              alt="Local guide with eagle in Kyrgyzstan"
-              className="h-full w-full object-cover"
+              src={withBasePath(FOUNDER_IMAGE)}
+              alt={`${FOUNDER_NAME}, founder of Go Kyrgyzstan Travel`}
+              className="h-full w-full object-cover object-[center_38%]"
               loading="lazy"
               decoding="async"
             />
           </div>
           <div className="absolute -bottom-6 left-6 right-6 rounded-xl border border-border bg-card p-4 shadow-lg">
-            <p className="text-sm text-muted-foreground">Solo guide and trip designer</p>
-            <p className="text-lg text-foreground">Custom routes for every season</p>
+            <p className="text-sm text-muted-foreground">{FOUNDER_ROLE}</p>
+            <p className="text-lg text-foreground">{FOUNDER_NAME}</p>
           </div>
         </div>
 
         <div className="space-y-6">
           <div>
-            <h2 className="text-3xl sm:text-4xl text-foreground mb-4">About Me</h2>
+            <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">
+              Founder
+            </p>
+            <h2 className="text-3xl sm:text-4xl text-foreground mb-4">{FOUNDER_NAME}</h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              I am a local guide and tour seller based in Kyrgyzstan. Guests choose a ready route
-              or send a custom request, then I or my managers contact them directly to confirm the
-              tour details.
+              I am the founder of Go Kyrgyzstan Travel and a local trip planner based in
+              Kyrgyzstan. Guests choose a ready route or send a request, then I or my managers
+              contact them directly to confirm the details.
             </p>
           </div>
 
@@ -83,19 +96,57 @@ export function AboutMe() {
                 Send a Request
               </Link>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="btn-micro btn-action-outline"
-            >
-              <Link
-                to="/custom-tour"
-                data-track-event="about_custom_tour_click"
-                data-track-label="About custom tour"
+            <Button asChild variant="outline" className="btn-micro btn-action-outline">
+              <a
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                data-track-event="founder_telegram_click"
+                data-track-label={TELEGRAM_USERNAME}
               >
-                Custom Tour
-              </Link>
+                <MessageCircle className="h-4 w-4" />
+                Telegram
+              </a>
             </Button>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent"
+              data-track-event="founder_instagram_click"
+              data-track-label="jakypbekovv1"
+            >
+              <Instagram className="mb-3 h-5 w-5 text-secondary" />
+              <p className="text-sm text-muted-foreground">Instagram</p>
+              <p className="text-sm text-foreground">@jakypbekovv1</p>
+            </a>
+            <a
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent"
+              data-track-event="founder_telegram_card_click"
+              data-track-label={TELEGRAM_USERNAME}
+            >
+              <MessageCircle className="mb-3 h-5 w-5 text-secondary" />
+              <p className="text-sm text-muted-foreground">Telegram</p>
+              <p className="text-sm text-foreground">{TELEGRAM_USERNAME}</p>
+            </a>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent"
+              data-track-event="founder_whatsapp_click"
+              data-track-label={WHATSAPP_DISPLAY}
+            >
+              <Phone className="mb-3 h-5 w-5 text-secondary" />
+              <p className="text-sm text-muted-foreground">WhatsApp</p>
+              <p className="text-sm text-foreground">{WHATSAPP_DISPLAY}</p>
+            </a>
           </div>
         </div>
       </div>

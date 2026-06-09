@@ -1,20 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { SEO } from '../components/SEO';
 import {
-  fetchBookingsByEmail,
-  fetchBookingsByUserId,
-  fetchSellerSubmissionsByEmail,
-  fetchSellerSubmissionsByOwnerId,
   subscribeBookingsByUserId,
   subscribeSellerSubmissionsByOwnerId,
   type BookingRequest,
   type SellerSubmission,
   upsertUserProfile,
-} from '../lib/firestore';
+} from '../lib/dataStore';
 import {
   loadLocalBookings,
   loadLocalProfile,
@@ -23,8 +20,6 @@ import {
   type LocalProfile,
 } from '../lib/localStorage';
 import { useAuth } from '../context/AuthContext';
-import { firebaseEnabled } from '../lib/firebase';
-import { toast } from 'sonner';
 
 type BookingItem = BookingRequest & {
   id?: string;
@@ -46,24 +41,14 @@ function formatDate(value: unknown) {
   }
   if (typeof value === 'string') {
     const parsed = Date.parse(value);
-    if (!Number.isNaN(parsed)) {
-      return new Date(parsed).toLocaleDateString();
-    }
-    return value;
+    return Number.isNaN(parsed) ? value : new Date(parsed).toLocaleDateString();
   }
-  if (value instanceof Date) {
-    return value.toLocaleDateString();
-  }
-  if (typeof (value as { toDate?: () => Date }).toDate === 'function') {
-    return (value as { toDate: () => Date }).toDate().toLocaleDateString();
-  }
-  return 'N/A';
+  return value instanceof Date ? value.toLocaleDateString() : 'N/A';
 }
 
 export function UserDashboardPage() {
   const { user, profile: authProfile, loading, updateRole } = useAuth();
   const [profile, setProfile] = useState<LocalProfile>({ name: '', email: '', role: 'buyer' });
-  const [profileLoaded, setProfileLoaded] = useState(false);
   const [profileMessage, setProfileMessage] = useState<string | null>(null);
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [bookingMessage, setBookingMessage] = useState<string | null>(null);
@@ -73,134 +58,30 @@ export function UserDashboardPage() {
   const bookingStatusRef = useRef<Record<string, string>>({});
   const submissionStatusRef = useRef<Record<string, string>>({});
 
-  if (firebaseEnabled && loading) {
-    return <p className="text-muted-foreground">Loading your dashboard...</p>;
-  }
-
-  useEffect(() => {
-    if (!firebaseEnabled) {
-      const stored = loadLocalProfile();
-      if (stored) {
-        setProfile(stored);
-      }
-      setProfileLoaded(true);
-      return;
-    }
-
-    if (!loading) {
-      setProfile({
-        name: authProfile?.name || user?.displayName || '',
-        email: authProfile?.email || user?.email || '',
-        role: (authProfile?.role as LocalProfile['role']) || 'buyer',
-      });
-      setProfileLoaded(true);
-    }
-  }, [authProfile?.email, authProfile?.name, authProfile?.role, loading, user?.displayName, user?.email]);
-
   const localBookings = useMemo(() => {
     const items = loadLocalBookings();
-    if (!profile.email) {
-      return items;
-    }
-    return items.filter((item) => item.email === profile.email);
+    return profile.email ? items.filter((item) => item.email === profile.email) : items;
   }, [profile.email]);
 
   const localSubmissions = useMemo(() => {
     const items = loadLocalSubmissions();
-    if (!profile.email) {
-      return items;
-    }
-    return items.filter((item) => item.contactEmail === profile.email);
+    return profile.email ? items.filter((item) => item.contactEmail === profile.email) : items;
   }, [profile.email]);
 
-  const loadBuyerData = async () => {
-    if (!firebaseEnabled) {
-      if (!profile.email) {
-        setBookings(localBookings);
-        setBookingMessage('Add your email to sync bookings from Firestore.');
-        return;
-      }
-      try {
-        const remote = await fetchBookingsByEmail(profile.email);
-        setBookings(remote.length ? remote : localBookings);
-        setBookingMessage(remote.length ? 'Synced from Firestore.' : 'Showing locally saved bookings.');
-      } catch (err) {
-        setBookings(localBookings);
-        setBookingMessage('Showing locally saved bookings. Firestore sync unavailable.');
-      }
+  useEffect(() => {
+    if (loading) {
       return;
     }
-
-    if (!user) {
-      setBookings(localBookings);
-      setBookingMessage('Sign in to sync bookings from Firestore.');
-      return;
-    }
-
-    try {
-      const remote = await fetchBookingsByUserId(user.uid);
-      if (remote.length || localBookings.length === 0) {
-        setBookings(remote);
-        setBookingMessage('Synced from Firestore.');
-      } else {
-        setBookings(localBookings);
-        setBookingMessage('Showing locally saved bookings.');
-      }
-    } catch (err) {
-      setBookings(localBookings);
-      setBookingMessage('Showing locally saved bookings. Firestore sync unavailable.');
-    }
-  };
-
-  const loadSellerData = async () => {
-    if (!firebaseEnabled) {
-      if (!profile.email) {
-        setSubmissions(localSubmissions);
-        setSubmissionMessage('Add your email to sync submissions from Firestore.');
-        return;
-      }
-      try {
-        const remote = await fetchSellerSubmissionsByEmail(profile.email);
-        setSubmissions(remote.length ? remote : localSubmissions);
-        setSubmissionMessage(remote.length ? 'Synced from Firestore.' : 'Showing locally saved submissions.');
-      } catch (err) {
-        setSubmissions(localSubmissions);
-        setSubmissionMessage('Showing locally saved submissions. Firestore sync unavailable.');
-      }
-      return;
-    }
-
-    if (!user) {
-      setSubmissions(localSubmissions);
-      setSubmissionMessage('Sign in to sync submissions from Firestore.');
-      return;
-    }
-
-    try {
-      const remote = await fetchSellerSubmissionsByOwnerId(user.uid);
-      if (remote.length || localSubmissions.length === 0) {
-        setSubmissions(remote);
-        setSubmissionMessage('Synced from Firestore.');
-      } else {
-        setSubmissions(localSubmissions);
-        setSubmissionMessage('Showing locally saved submissions.');
-      }
-    } catch (err) {
-      setSubmissions(localSubmissions);
-      setSubmissionMessage('Showing locally saved submissions. Firestore sync unavailable.');
-    }
-  };
+    const stored = loadLocalProfile();
+    setProfile({
+      name: authProfile?.name || user?.displayName || stored?.name || '',
+      email: authProfile?.email || user?.email || stored?.email || '',
+      role: (authProfile?.role as LocalProfile['role']) || stored?.role || 'buyer',
+    });
+  }, [authProfile?.email, authProfile?.name, authProfile?.role, loading, user?.displayName, user?.email]);
 
   useEffect(() => {
-    if (!profileLoaded) {
-      return;
-    }
-    if (!firebaseEnabled || !user) {
-      if (profile.role === 'buyer') {
-        void loadBuyerData();
-      } else {
-        void loadSellerData();
-      }
+    if (loading || !user) {
       return;
     }
 
@@ -208,8 +89,9 @@ export function UserDashboardPage() {
       const unsubscribe = subscribeBookingsByUserId(
         user.uid,
         (data) => {
-          setBookings(data);
-          data.forEach((booking) => {
+          const nextBookings = data.length ? data : localBookings;
+          setBookings(nextBookings);
+          nextBookings.forEach((booking) => {
             if (!booking.id) {
               return;
             }
@@ -219,7 +101,7 @@ export function UserDashboardPage() {
             }
             bookingStatusRef.current[booking.id] = booking.status || 'pending';
           });
-          setBookingMessage('Synced from Firestore.');
+          setBookingMessage(data.length ? 'Synced from local data store.' : 'Showing locally saved bookings.');
         },
         (error) => setBookingMessage(error.message)
       );
@@ -229,8 +111,9 @@ export function UserDashboardPage() {
     const unsubscribe = subscribeSellerSubmissionsByOwnerId(
       user.uid,
       (data) => {
-        setSubmissions(data);
-        data.forEach((submission) => {
+        const nextSubmissions = data.length ? data : localSubmissions;
+        setSubmissions(nextSubmissions);
+        nextSubmissions.forEach((submission) => {
           if (!submission.id) {
             return;
           }
@@ -240,12 +123,12 @@ export function UserDashboardPage() {
           }
           submissionStatusRef.current[submission.id] = submission.status;
         });
-        setSubmissionMessage('Synced from Firestore.');
+        setSubmissionMessage(data.length ? 'Synced from local data store.' : 'Showing locally saved submissions.');
       },
       (error) => setSubmissionMessage(error.message)
     );
     return () => unsubscribe();
-  }, [profileLoaded, profile.email, profile.role, user?.uid]);
+  }, [loading, localBookings, localSubmissions, profile.role, user]);
 
   const handleSaveProfile = async () => {
     setProfileMessage(null);
@@ -253,47 +136,38 @@ export function UserDashboardPage() {
       setProfileMessage('Please add your name and email.');
       return;
     }
-    if (!firebaseEnabled) {
-      saveLocalProfile(profile);
-      setIsSyncing(true);
-      try {
-        await upsertUserProfile(profile);
-        setProfileMessage('Profile saved and synced to Firestore.');
-      } catch (err) {
-        setProfileMessage('Profile saved locally. Firestore sync failed.');
-      } finally {
-        setIsSyncing(false);
-      }
-      return;
-    }
-
-    if (!user) {
-      setProfileMessage('Sign in to save your profile.');
-      return;
-    }
 
     setIsSyncing(true);
     try {
+      saveLocalProfile(profile);
       await upsertUserProfile({
         name: profile.name,
         email: profile.email,
         role: profile.role,
-        uid: user.uid,
+        uid: user?.uid,
       });
-      await updateRole(profile.role);
-      setProfileMessage('Profile saved to Firestore.');
-    } catch (err) {
+      if (user) {
+        await updateRole(profile.role);
+      }
+      setProfileMessage('Profile saved.');
+    } catch {
       setProfileMessage('Unable to save profile right now.');
     } finally {
       setIsSyncing(false);
     }
   };
 
+  if (loading) {
+    return <p className="text-muted-foreground">Loading your dashboard...</p>;
+  }
+
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <SEO
         title="Dashboard"
         description="Manage your bookings, submissions, and traveler profile."
+        path="/dashboard"
+        noindex
       />
       <div className="max-w-6xl mx-auto space-y-10">
         <div className="text-center space-y-3">
@@ -328,7 +202,7 @@ export function UserDashboardPage() {
                 value={profile.email}
                 onChange={(event) => setProfile({ ...profile, email: event.target.value })}
                 placeholder="you@example.com"
-                disabled={firebaseEnabled && !!user}
+                disabled={Boolean(user)}
               />
             </div>
             <div>

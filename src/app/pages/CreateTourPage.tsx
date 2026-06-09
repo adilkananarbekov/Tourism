@@ -9,10 +9,9 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { SEO } from '../components/SEO';
-import { submitSellerTour } from '../lib/firestore';
+import { submitSellerTour } from '../lib/dataStore';
 import { appendLocalSubmission, loadLocalProfile, saveLocalProfile } from '../lib/localStorage';
 import { useAuth } from '../context/AuthContext';
-import { firebaseEnabled } from '../lib/firebase';
 import { uploadImage } from '../lib/storage';
 
 const sellerTourSchema = z.object({
@@ -69,9 +68,6 @@ export function CreateTourPage() {
   const formValues = watch();
 
   useEffect(() => {
-    if (!firebaseEnabled) {
-      return;
-    }
     if (!formValues.contactName && profile?.name) {
       setValue('contactName', profile.name, { shouldDirty: false });
     }
@@ -117,24 +113,19 @@ export function CreateTourPage() {
     try {
       let imageUrl = values.image || '';
       if (imageFile) {
-        if (!firebaseEnabled) {
-          throw new Error('Storage is not configured.');
-        }
         imageUrl = await uploadImage(imageFile, 'seller-submissions');
       }
 
-      if (firebaseEnabled) {
-        if (!user) {
-          throw new Error('Please sign in to submit a tour.');
-        }
-        await submitSellerTour({
-          ...values,
-          image: imageUrl,
-          highlights: (values.highlights || '').split('\n').filter(Boolean),
-          itinerary: (values.itinerary || '').split('\n').filter(Boolean),
-          ownerId: user.uid,
-        });
+      if (!user) {
+        throw new Error('Please sign in to submit a tour.');
       }
+      await submitSellerTour({
+        ...values,
+        image: imageUrl,
+        highlights: (values.highlights || '').split('\n').filter(Boolean),
+        itinerary: (values.itinerary || '').split('\n').filter(Boolean),
+        ownerId: user.uid,
+      });
       appendLocalSubmission({
         ...values,
         image: imageUrl,
@@ -162,7 +153,9 @@ export function CreateTourPage() {
       <>
         <SEO
           title="Submit Tour"
-          description="Submit a tour proposal to the Kyrgyz Travel marketplace."
+          description="Submit a tour proposal to the Go Kyrgyzstan Travel marketplace."
+          path="/create-tour"
+          noindex
         />
         <div className="min-h-[70vh] flex items-center justify-center px-4 bg-muted">
           <div className="bg-card rounded-lg shadow-md p-6 sm:p-8 max-w-lg text-center">
@@ -190,6 +183,8 @@ export function CreateTourPage() {
       <SEO
         title="Submit Tour"
         description="Create a tour listing and submit it for admin approval."
+        path="/create-tour"
+        noindex
       />
       <div className="max-w-4xl mx-auto space-y-8">
         <div>

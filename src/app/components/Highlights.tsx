@@ -91,7 +91,7 @@ export function Highlights() {
 
         <div className="mt-10 text-center">
           <Button asChild className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link to="/explore">See More Places</Link>
+            <Link to="/tours">See Tour Routes</Link>
           </Button>
         </div>
       </div>

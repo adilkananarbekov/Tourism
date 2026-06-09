@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /auth
+Disallow: /create-tour
 
-Sitemap: https://tourism-a4457.web.app/sitemap.xml
+Sitemap: https://kyrgyz.tours/sitemap.xml

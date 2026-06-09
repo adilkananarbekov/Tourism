@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SEO } from '../components/SEO';
-import { fetchBlogPosts } from '../lib/firestore';
+import { fetchBlogPosts } from '../lib/dataStore';
+import { breadcrumbJsonLd } from '../lib/seo';
 
 interface BlogPost {
   id: string;
@@ -19,7 +20,7 @@ const travelVideos = [
   },
   {
     id: 'u6v8T3q7wPc',
-    title: 'Kyrgyzstan Travel Guide',
+    title: 'Go Kyrgyzstan Travel Guide',
     description: 'Highlights from Issyk-Kul, Ala-Archa, and the Silk Road heritage.',
   },
 ];
@@ -47,8 +48,14 @@ export function BlogsPage() {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <SEO
-        title="Blogs"
-        description="Read Kyrgyz Travel stories, guides, and the latest tourism news."
+        title="Kyrgyzstan Travel Guide"
+        description="Read Kyrgyzstan travel guides, route ideas, culture notes, and trip planning stories for foreign travelers visiting Kyrgyzstan."
+        path="/blogs"
+        type="article"
+        jsonLd={breadcrumbJsonLd([
+          { name: 'Home', path: '/' },
+          { name: 'Blogs', path: '/blogs' },
+        ])}
       />
       <div className="max-w-6xl mx-auto space-y-12">
         <div className="text-center">
@@ -94,7 +101,7 @@ export function BlogsPage() {
           <div>
             <h2 className="text-2xl sm:text-3xl text-foreground mb-2">Travel Videos</h2>
             <p className="text-muted-foreground">
-              Watch Kyrgyzstan travel vlogs and get inspired for your next adventure.
+              Watch Go Kyrgyzstan Travel vlogs and get inspired for your next adventure.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

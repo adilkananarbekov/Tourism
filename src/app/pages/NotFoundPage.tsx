@@ -5,7 +5,7 @@ import { SEO } from '../components/SEO';
 export function NotFoundPage() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
-      <SEO title="Page Not Found" description="The requested page could not be found." />
+      <SEO title="Page Not Found" description="The requested page could not be found." noindex />
       <div className="text-center max-w-md">
         <h1 className="text-3xl sm:text-4xl mb-3">Page Not Found</h1>
         <p className="text-muted-foreground mb-6">

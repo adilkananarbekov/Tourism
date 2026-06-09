@@ -1,7 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SiteLayout } from './components/SiteLayout';
-import { CustomTourForm } from './components/CustomTourForm';
 import { AuthRoute } from './components/AuthRoute';
 import { AdminRoute } from '../admin/components/AdminRoute';
 
@@ -12,7 +11,6 @@ const HomePage = lazy(() => import('./pages/HomePage').then((module) => ({ defau
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 const TourDetailPage = lazy(() => import('./pages/TourDetailPage').then((module) => ({ default: module.TourDetailPage })));
 const ToursPage = lazy(() => import('./pages/ToursPage').then((module) => ({ default: module.ToursPage })));
-const ExplorePage = lazy(() => import('./pages/ExplorePage').then((module) => ({ default: module.ExplorePage })));
 const GalleryPage = lazy(() => import('./pages/GalleryPage').then((module) => ({ default: module.GalleryPage })));
 const BlogsPage = lazy(() => import('./pages/BlogsPage').then((module) => ({ default: module.BlogsPage })));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
@@ -37,9 +35,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/tours" element={<ToursPage />} />
             <Route path="/tours/:tourId" element={<TourDetailPage />} />
-            <Route path="/custom-tour" element={<CustomTourForm />} />
             <Route path="/join-tour" element={<JoinTourPage />} />
-            <Route path="/explore" element={<ExplorePage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />

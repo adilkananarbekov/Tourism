@@ -17,7 +17,8 @@ export function CTA() {
           Ready to Request Your Kyrgyz Tour?
         </h2>
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-10 leading-relaxed">
-          Choose a signature tour or describe your route. Your request goes to Kyrgyz Travel, then I or my managers contact you directly.
+          Choose a signature tour or send your contact details. Your request goes to Go Kyrgyzstan Travel,
+          then I or my managers contact you directly.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
@@ -36,11 +37,11 @@ export function CTA() {
             className="btn-micro bg-transparent hover:bg-white/10 text-white border-2 border-white hover:border-white px-6 py-4 text-base sm:px-8 sm:py-6 sm:text-lg w-full sm:w-auto"
           >
             <Link
-              to="/custom-tour"
-              data-track-event="cta_custom_request_click"
-              data-track-label="CTA custom request"
+              to="/feedback"
+              data-track-event="cta_request_click"
+              data-track-label="CTA request"
             >
-              Custom Request
+              Send Request
             </Link>
           </Button>
         </div>

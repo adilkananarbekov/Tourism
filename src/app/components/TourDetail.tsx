@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import {
@@ -16,11 +16,10 @@ import type { Tour } from './tour-data';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { submitBookingRequest } from '../lib/firestore';
+import { submitBookingRequest } from '../lib/dataStore';
 import { appendLocalBooking, loadLocalProfile, saveLocalProfile } from '../lib/localStorage';
 import { useAuth } from '../context/AuthContext';
 import { guestSubmissionBackendEnabled } from '../lib/backend';
-import { supabaseEnabled } from '../lib/supabase';
 import { MapSection } from './MapSection';
 import { withBasePath } from '../lib/assets';
 import { trackEvent } from '../lib/eventTracker';
@@ -448,7 +447,6 @@ export function TourDetail({ tour }: TourDetailProps) {
 
 function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
   const { user, profile } = useAuth();
-  const location = useLocation();
   const [step, setStep] = useState<'details' | 'done'>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -494,11 +492,6 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
 
     if (!guestSubmissionBackendEnabled) {
       setErrorMessage('Backend is not configured. Please update your .env file.');
-      return;
-    }
-
-    if (!supabaseEnabled && !user) {
-      setErrorMessage('Please sign in to submit a booking request.');
       return;
     }
 
@@ -548,7 +541,7 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
         <Check className="h-12 w-12 text-secondary mx-auto mb-4" />
         <h4 className="text-lg text-foreground mb-2">Thank you!</h4>
         <p className="text-sm text-muted-foreground mb-4">
-          Your request was sent to Kyrgyz Travel. I or my managers will contact you directly using
+          Your request was sent to Go Kyrgyzstan Travel. I or my managers will contact you directly using
           your Telegram username or phone number.
         </p>
         <Button onClick={onCancel} variant="outline" size="sm">
@@ -560,19 +553,6 @@ function BookingFlow({ tour, onCancel }: { tour: Tour; onCancel: () => void }) {
 
   return (
     <div className="space-y-5">
-      {!user && !supabaseEnabled && (
-        <div className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground">
-          <p className="text-foreground font-medium mb-2">Sign in required</p>
-          <p className="mb-3">
-            Create an account to submit a request and track status updates.
-          </p>
-          <Button asChild variant="outline">
-            <Link to={`/auth?next=${encodeURIComponent(location.pathname + location.search)}`}>
-              Sign In
-            </Link>
-          </Button>
-        </div>
-      )}
       {step === 'details' && (
         <form onSubmit={detailsForm.handleSubmit(handleDetailsSubmit)} className="space-y-4">
           <div>

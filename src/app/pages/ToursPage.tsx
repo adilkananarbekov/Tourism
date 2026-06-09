@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { cn } from '../components/ui/utils';
 import { SEO } from '../components/SEO';
 import { useToursData } from '../hooks/useTours';
+import { breadcrumbJsonLd, tourListJsonLd } from '../lib/seo';
 
 const filters = [
   'All',
@@ -73,12 +74,24 @@ export function ToursPage() {
       return matchesSearch && matchesFilter;
     });
   }, [activeFilter, search, tours]);
+  const seoJsonLd = useMemo(
+    () => [
+      breadcrumbJsonLd([
+        { name: 'Home', path: '/' },
+        { name: 'Tours', path: '/tours' },
+      ]),
+      tourListJsonLd(tours),
+    ],
+    [tours]
+  );
 
   return (
     <div className="bg-background pb-20 md:pb-0">
       <SEO
-        title="Tours"
-        description="Choose a ready Kyrgyzstan route, then send a request with Telegram or phone contact."
+        title="Kyrgyzstan Tour Packages"
+        description="Compare Kyrgyzstan tour packages for Song-Kul, Issyk-Kul, Ala-Archa, Silk Road heritage, horse riding, trekking, and private road trips."
+        path="/tours"
+        jsonLd={seoJsonLd}
       />
 
       <section className="border-b border-border bg-muted px-4 py-12 sm:px-6 lg:px-8">
@@ -87,10 +100,12 @@ export function ToursPage() {
             <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">
               Ready routes
             </p>
-            <h1 className="mb-4 text-3xl text-foreground sm:text-4xl lg:text-5xl">Tours</h1>
+            <h1 className="mb-4 text-3xl text-foreground sm:text-4xl lg:text-5xl">
+              Kyrgyzstan Tour Packages
+            </h1>
             <p className="text-base leading-7 text-muted-foreground sm:text-lg">
-              Choose a curated route first. Dates, pace, and stops can still be adjusted after we
-              receive your request.
+              Choose a curated Kyrgyzstan route first. Dates, pace, and stops can still be
+              adjusted after we receive your request.
             </p>
           </div>
 
@@ -106,11 +121,11 @@ export function ToursPage() {
             </div>
             <Button asChild className="btn-micro btn-action">
               <Link
-                to="/custom-tour"
-                data-track-event="tours_custom_request_click"
-                data-track-label="Tours custom request"
+                to="/feedback"
+                data-track-event="tours_request_click"
+                data-track-label="Tours request"
               >
-                Need a Custom Route?
+                Send Trip Request
               </Link>
             </Button>
           </div>

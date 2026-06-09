@@ -1,4 +1,4 @@
-import { Check, MessageCircle, Send } from 'lucide-react';
+import { Check, Instagram, MessageCircle, Phone, Send } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -9,9 +9,19 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { SEO } from '../components/SEO';
-import { submitCustomTourRequest } from '../lib/firestore';
+import { submitCustomTourRequest } from '../lib/dataStore';
 import { guestSubmissionBackendEnabled } from '../lib/backend';
+import { useAuth } from '../context/AuthContext';
 import { trackEvent } from '../lib/eventTracker';
+import { breadcrumbJsonLd } from '../lib/seo';
+import {
+  FOUNDER_NAME,
+  INSTAGRAM_URL,
+  TELEGRAM_URL,
+  TELEGRAM_USERNAME,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_URL,
+} from '../lib/contact';
 
 const formString = z.preprocess((value) => (value == null ? '' : value), z.string());
 const requiredFormString = (message: string) => formString.pipe(z.string().trim().min(1, message));
@@ -53,6 +63,7 @@ function normalizeTelegramUsername(value: string) {
 }
 
 export function FeedbackPage() {
+  const { user } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const {
@@ -108,6 +119,7 @@ export function FeedbackPage() {
           values.travelTime.trim() ? `Travel time: ${values.travelTime.trim()}` : '',
           message ? `Guest message: ${message}` : '',
         ].filter(Boolean).join('\n'),
+        userId: user?.uid,
       });
 
       trackEvent('request_form_submit_success', {
@@ -126,8 +138,13 @@ export function FeedbackPage() {
   return (
     <section className="bg-background px-4 py-16 sm:px-6 lg:px-8">
       <SEO
-        title="Send a Tour Request"
-        description="Choose a tour or send a custom request. Kyrgyz Travel will contact you directly by Telegram or phone."
+        title="Request a Kyrgyzstan Tour"
+        description="Request a private Kyrgyzstan tour or small-group trip. Send dates, group size, and contact details for personal follow-up from Go Kyrgyzstan Travel."
+        path="/feedback"
+        jsonLd={breadcrumbJsonLd([
+          { name: 'Home', path: '/' },
+          { name: 'Request a Tour', path: '/feedback' },
+        ])}
       />
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
         <div className="space-y-6">
@@ -136,12 +153,12 @@ export function FeedbackPage() {
               Direct request
             </p>
             <h1 className="mb-5 text-3xl text-foreground sm:text-4xl lg:text-5xl">
-              Choose a tour, leave your contact, and I will write to you directly.
+              Choose a tour, leave your contact, and {FOUNDER_NAME} will write to you directly.
             </h1>
             <p className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
               This is my author site for Kyrgyzstan tours. The form does not confirm payment
-              automatically. It sends your request to me, then I or my managers contact you in
-              Telegram, WhatsApp, or by phone to confirm details.
+              automatically. It sends your request to the team, then we contact you in Telegram,
+              WhatsApp, or by phone to confirm details.
             </p>
           </div>
 
@@ -150,15 +167,55 @@ export function FeedbackPage() {
               <Send className="mb-3 h-5 w-5 text-secondary" />
               <h2 className="mb-2 text-lg text-foreground">Website request</h2>
               <p className="text-sm leading-6 text-muted-foreground">
-                Tour and contact details go to the owner Telegram chat through Supabase.
+                Tour and contact details go to the site owner through the configured backend.
               </p>
             </div>
             <div className="rounded-md border border-border bg-card p-4">
               <MessageCircle className="mb-3 h-5 w-5 text-secondary" />
               <h2 className="mb-2 text-lg text-foreground">Personal follow-up</h2>
               <p className="text-sm leading-6 text-muted-foreground">
-                A manager contacts the guest personally before any final confirmation.
+                {FOUNDER_NAME} or a manager contacts the guest personally before any final
+                confirmation.
               </p>
+            </div>
+          </div>
+
+          <div className="rounded-md border border-border bg-card p-4">
+            <h2 className="mb-3 text-lg text-foreground">Direct founder contacts</h2>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <a
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-3 text-sm text-foreground transition-colors hover:bg-accent"
+                data-track-event="request_page_telegram_click"
+                data-track-label={TELEGRAM_USERNAME}
+              >
+                <MessageCircle className="h-4 w-4" />
+                Telegram
+              </a>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-3 text-sm text-foreground transition-colors hover:bg-accent"
+                data-track-event="request_page_whatsapp_click"
+                data-track-label={WHATSAPP_DISPLAY}
+              >
+                <Phone className="h-4 w-4" />
+                WhatsApp
+              </a>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-3 text-sm text-foreground transition-colors hover:bg-accent"
+                data-track-event="request_page_instagram_click"
+                data-track-label="jakypbekovv1"
+              >
+                <Instagram className="h-4 w-4" />
+                Instagram
+              </a>
             </div>
           </div>
 
@@ -231,7 +288,7 @@ export function FeedbackPage() {
               <Label htmlFor="selectedTour">Tour or route</Label>
               <Input
                 id="selectedTour"
-                placeholder="Song-Kul, Ala-Archa, custom route..."
+                placeholder="Song-Kul, Ala-Archa, Issyk-Kul..."
                 {...register('selectedTour')}
               />
             </div>
@@ -276,7 +333,7 @@ export function FeedbackPage() {
             data-track-event="request_form_submit_click"
             data-track-label="Direct request form"
           >
-            {isSubmitting ? 'Sending...' : 'Send to Kyrgyz Travel'}
+            {isSubmitting ? 'Sending...' : 'Send to Go Kyrgyzstan Travel'}
           </Button>
         </form>
       </div>

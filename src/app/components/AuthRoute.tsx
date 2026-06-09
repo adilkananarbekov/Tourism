@@ -1,6 +1,5 @@
 import { Navigate, Outlet, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { firebaseEnabled } from '../lib/firebase';
 import { Button } from './ui/button';
 
 type AuthRouteProps = {
@@ -10,10 +9,6 @@ type AuthRouteProps = {
 export function AuthRoute({ requiredRole }: AuthRouteProps) {
   const location = useLocation();
   const { user, profile, loading } = useAuth();
-
-  if (!firebaseEnabled) {
-    return <Outlet />;
-  }
 
   if (loading) {
     return <p className="text-muted-foreground">Checking your account...</p>;

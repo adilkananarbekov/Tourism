@@ -1,9 +1,6 @@
-import { firebaseEnabled } from './firebase';
-import { supabaseEnabled } from './supabase';
+import { apiEnabled } from './api';
 
-export const guestSubmissionBackendEnabled = supabaseEnabled || firebaseEnabled;
-export const guestSubmissionBackendName = supabaseEnabled
-  ? 'Supabase'
-  : firebaseEnabled
-    ? 'Firebase'
-    : 'local';
+export const guestSubmissionBackendEnabled = true;
+export const guestSubmissionBackendName = apiEnabled
+  ? 'API'
+  : 'local';

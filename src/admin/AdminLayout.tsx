@@ -28,23 +28,23 @@ export function AdminLayout() {
 
   return (
     <div className="min-h-screen admin-shell bg-background text-foreground">
-      <header className="bg-card/90 border-b border-border/80 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="text-lg text-foreground font-medium">
-            Kyrgyz Travel Admin
+      <header className="sticky top-0 z-40 bg-card/95 border-b border-border/80 backdrop-blur">
+        <div className="max-w-7xl mx-auto px-3 py-3 sm:px-4 sm:py-4 flex items-center justify-between gap-3">
+          <Link to="/" className="min-w-0 text-base text-foreground font-medium sm:text-lg">
+            Go Kyrgyzstan Travel Admin
           </Link>
-          <Button variant="outline" onClick={handleLogout}>
+          <Button variant="outline" onClick={handleLogout} className="shrink-0">
             Sign Out
           </Button>
         </div>
       </header>
-      <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6">
-        <aside className="bg-card/80 border border-border rounded-lg p-4 space-y-2">
+      <div className="max-w-7xl mx-auto px-3 py-4 sm:px-4 sm:py-6 lg:py-8 grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-4 lg:gap-6">
+        <aside className="admin-mobile-nav bg-card/80 border border-border rounded-lg p-2 lg:p-4 lg:space-y-2">
           {navItems.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className={`admin-nav-link block px-3 py-2 rounded-md text-sm ${
+              className={`admin-nav-link block min-h-11 whitespace-nowrap px-3 py-3 rounded-md text-sm lg:min-h-0 lg:py-2 ${
                 activeTab === item.tab ? 'admin-nav-link-active' : ''
               }`}
             >
@@ -52,7 +52,7 @@ export function AdminLayout() {
             </Link>
           ))}
         </aside>
-        <main className="bg-card/90 border border-border rounded-lg p-6">
+        <main className="min-w-0 bg-card/90 border border-border rounded-lg p-3 sm:p-5 lg:p-6">
           <PageTransition key={location.pathname}>
             <Outlet />
           </PageTransition>

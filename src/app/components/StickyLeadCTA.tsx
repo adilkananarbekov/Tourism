@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 
 export function StickyLeadCTA() {
   const { pathname } = useLocation();
-  const hiddenRoutes = ['/feedback', '/custom-tour', '/admin', '/auth', '/dashboard'];
+  const hiddenRoutes = ['/feedback', '/admin', '/auth', '/dashboard'];
   const shouldHide = hiddenRoutes.some((route) => pathname.startsWith(route));
 
   if (shouldHide) {

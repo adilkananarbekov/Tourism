@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { FileImage, UploadCloud, X } from 'lucide-react';
 import { Button } from '../app/components/ui/button';
 import { Input } from '../app/components/ui/input';
 import { Label } from '../app/components/ui/label';
@@ -9,6 +10,7 @@ import { Textarea } from '../app/components/ui/textarea';
 import type { Tour } from '../app/components/tour-data';
 import { toast } from 'sonner';
 import { uploadImage } from '../app/lib/storage';
+import { withBasePath } from '../app/lib/assets';
 import {
   BlogPost,
   ContentSettings,
@@ -40,7 +42,7 @@ import {
   updateSight,
   updateTour,
   updateUserRole,
-} from '../app/lib/firestore';
+} from '../app/lib/dataStore';
 import { fetchEventSummary } from '../app/lib/eventTracker';
 
 type TourFormState = {
@@ -85,6 +87,115 @@ const EMPTY_TOUR_FORM: TourFormState = {
 
 const statusOptions = ['pending', 'approved', 'rejected', 'completed'];
 
+type ImageUploadPanelProps = {
+  id: string;
+  label: string;
+  value: string;
+  file: File | null;
+  onFileChange: (file: File | null) => void;
+  description?: string;
+};
+
+function formatFileSize(file: File) {
+  if (file.size < 1024 * 1024) {
+    return `${Math.max(1, Math.round(file.size / 1024))} KB`;
+  }
+  return `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function resolveImagePreview(value: string) {
+  if (!value) {
+    return '';
+  }
+  if (/^(https?:|data:|blob:)/i.test(value)) {
+    return value;
+  }
+  return withBasePath(value);
+}
+
+function ImageUploadPanel({
+  id,
+  label,
+  value,
+  file,
+  onFileChange,
+  description = 'JPG, PNG, WebP, AVIF. Лучше загружать горизонтальные фото до 10-12 MB.',
+}: ImageUploadPanelProps) {
+  const [filePreview, setFilePreview] = useState('');
+
+  useEffect(() => {
+    if (!file) {
+      setFilePreview('');
+      return undefined;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    setFilePreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [file]);
+
+  const preview = filePreview || resolveImagePreview(value);
+
+  return (
+    <div className="rounded-lg border border-border bg-muted/30 p-3 sm:p-4">
+      <div className="grid gap-3 sm:grid-cols-[140px_1fr] sm:items-center">
+        <div className="admin-upload-preview overflow-hidden rounded-md border border-border bg-card">
+          {preview ? (
+            <img
+              src={preview}
+              alt={`${label} preview`}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+              <FileImage className="h-6 w-6" />
+              <span className="text-xs">No image</span>
+            </div>
+          )}
+        </div>
+        <div className="space-y-3">
+          <div>
+            <p className="text-sm font-medium text-foreground">{label}</p>
+            <p className="text-xs leading-5 text-muted-foreground">{description}</p>
+          </div>
+          {file && (
+            <div className="rounded-md border border-border bg-card px-3 py-2 text-xs text-muted-foreground">
+              <span className="text-foreground">{file.name}</span> · {formatFileSize(file)}
+            </div>
+          )}
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <label
+              htmlFor={id}
+              className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              <UploadCloud className="h-4 w-4" />
+              Choose photo
+            </label>
+            <Input
+              id={id}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/avif"
+              className="sr-only"
+              onChange={(event) => onFileChange(event.target.files?.[0] || null)}
+            />
+            {file && (
+              <Button type="button" variant="outline" onClick={() => onFileChange(null)}>
+                <X className="h-4 w-4" />
+                Remove selected
+              </Button>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            После выбора нажмите Save. Фото сохранится на сервере, а URL подставится автоматически.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 type EventSummary = {
   totals: Record<string, number>;
   recent: Array<{
@@ -112,6 +223,7 @@ export function AdminDashboardPage() {
   const [eventSummary, setEventSummary] = useState<EventSummary>({ totals: {}, recent: [] });
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [savingTarget, setSavingTarget] = useState<string | null>(null);
 
   const [tourForm, setTourForm] = useState<TourFormState>(EMPTY_TOUR_FORM);
   const [tourEditId, setTourEditId] = useState<number | null>(null);
@@ -167,7 +279,7 @@ export function AdminDashboardPage() {
       (data) => {
         setCustomRequests(data);
         if (requestCountRef.current !== null && data.length > requestCountRef.current) {
-          toast('New custom tour request received.');
+          toast('New tour request received.');
         }
         requestCountRef.current = data.length;
       },
@@ -217,7 +329,7 @@ export function AdminDashboardPage() {
     return [
       { label: 'Tours', value: tours.length },
       { label: 'Bookings', value: bookings.length },
-      { label: 'Custom Requests', value: customRequests.length },
+      { label: 'Requests', value: customRequests.length },
       { label: 'Events', value: eventCount },
     ];
   }, [tours, bookings, customRequests, eventSummary.totals]);
@@ -287,17 +399,12 @@ export function AdminDashboardPage() {
     }
 
     let imageUrl = tourForm.image;
+    setSavingTarget('tour');
     try {
       if (tourImageFile) {
         imageUrl = await uploadImage(tourImageFile, 'tours');
       }
-    } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : 'Unable to upload tour image.');
-      return;
-    }
-
-    const tour = { ...buildTourFromForm(), image: imageUrl };
-    try {
+      const tour = { ...buildTourFromForm(), image: imageUrl };
       if (tourEditId) {
         await updateTour(tourEditId, tour);
       } else {
@@ -307,8 +414,11 @@ export function AdminDashboardPage() {
       setTourForm(EMPTY_TOUR_FORM);
       setTourEditId(null);
       setTourImageFile(null);
+      toast.success(tourEditId ? 'Tour updated.' : 'Tour created.');
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : 'Unable to save tour.');
+    } finally {
+      setSavingTarget(null);
     }
   };
 
@@ -324,23 +434,26 @@ export function AdminDashboardPage() {
       return;
     }
     let imageUrl = sightForm.imageUrl;
+    setSavingTarget('sight');
     try {
       if (sightImageFile) {
         imageUrl = await uploadImage(sightImageFile, 'sights');
       }
+      if (sightEditId) {
+        await updateSight(sightEditId, { ...sightForm, imageUrl });
+        setSightEditId(null);
+      } else {
+        await createSight({ ...sightForm, imageUrl });
+      }
+      setSights(await fetchSights());
+      setSightForm({ name: '', region: '', description: '', imageUrl: '' });
+      setSightImageFile(null);
+      toast.success(sightEditId ? 'Sight updated.' : 'Sight added.');
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : 'Unable to upload sight image.');
-      return;
+      setErrorMessage(err instanceof Error ? err.message : 'Unable to save sight.');
+    } finally {
+      setSavingTarget(null);
     }
-    if (sightEditId) {
-      await updateSight(sightEditId, { ...sightForm, imageUrl });
-      setSightEditId(null);
-    } else {
-      await createSight({ ...sightForm, imageUrl });
-    }
-    setSights(await fetchSights());
-    setSightForm({ name: '', region: '', description: '', imageUrl: '' });
-    setSightImageFile(null);
   };
 
   const handleSaveBlogPost = async () => {
@@ -350,23 +463,26 @@ export function AdminDashboardPage() {
       return;
     }
     let coverImage = blogForm.coverImage;
+    setSavingTarget('blog');
     try {
       if (blogImageFile) {
         coverImage = await uploadImage(blogImageFile, 'blog-posts');
       }
+      if (blogEditId) {
+        await updateBlogPost(blogEditId, { ...blogForm, coverImage });
+        setBlogEditId(null);
+      } else {
+        await createBlogPost({ ...blogForm, coverImage });
+      }
+      setBlogPosts(await fetchBlogPosts());
+      setBlogForm({ title: '', excerpt: '', content: '', coverImage: '' });
+      setBlogImageFile(null);
+      toast.success(blogEditId ? 'Blog post updated.' : 'Blog post created.');
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : 'Unable to upload blog image.');
-      return;
+      setErrorMessage(err instanceof Error ? err.message : 'Unable to save blog post.');
+    } finally {
+      setSavingTarget(null);
     }
-    if (blogEditId) {
-      await updateBlogPost(blogEditId, { ...blogForm, coverImage });
-      setBlogEditId(null);
-    } else {
-      await createBlogPost({ ...blogForm, coverImage });
-    }
-    setBlogPosts(await fetchBlogPosts());
-    setBlogForm({ title: '', excerpt: '', content: '', coverImage: '' });
-    setBlogImageFile(null);
   };
 
   const handleDeleteSight = async (id: string) => {
@@ -494,7 +610,7 @@ export function AdminDashboardPage() {
               <h3 className="text-lg text-foreground">
                 {tourEditId ? 'Edit Tour' : 'Create Tour'}
               </h3>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <Label htmlFor="tourId">Tour ID</Label>
                   <Input
@@ -549,15 +665,17 @@ export function AdminDashboardPage() {
                 <Input
                   id="tourImage"
                   value={tourForm.image}
+                  placeholder="/uploads/tours/photo.webp or https://..."
                   onChange={(event) => setTourForm({ ...tourForm, image: event.target.value })}
                 />
-                <div className="mt-2">
-                  <Label htmlFor="tourImageFile">Or Upload Image</Label>
-                  <Input
+                <div className="mt-3">
+                  <ImageUploadPanel
                     id="tourImageFile"
-                    type="file"
-                    accept="image/*"
-                    onChange={(event) => setTourImageFile(event.target.files?.[0] || null)}
+                    label="Tour photo"
+                    value={tourForm.image}
+                    file={tourImageFile}
+                    onFileChange={setTourImageFile}
+                    description="Главное фото тура. Лучше горизонтальное фото 1600px+, JPG/WebP/PNG."
                   />
                 </div>
               </div>
@@ -588,7 +706,7 @@ export function AdminDashboardPage() {
                   onChange={(event) => setTourForm({ ...tourForm, itinerary: event.target.value })}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <Label htmlFor="tourPacking">Packing List</Label>
                   <Textarea
@@ -651,9 +769,10 @@ export function AdminDashboardPage() {
               </div>
               <Button
                 onClick={handleSaveTour}
-                className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+                disabled={savingTarget === 'tour'}
+                className="admin-sticky-action btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                {tourEditId ? 'Update Tour' : 'Create Tour'}
+                {savingTarget === 'tour' ? 'Saving tour...' : tourEditId ? 'Update Tour' : 'Create Tour'}
               </Button>
             </div>
           </div>
@@ -664,7 +783,7 @@ export function AdminDashboardPage() {
         <div className="space-y-6">
           <div>
             <h2 className="text-2xl text-foreground mb-2">Sight Management</h2>
-            <p className="text-muted-foreground text-sm">Add or update sights shown in the explore page.</p>
+            <p className="text-muted-foreground text-sm">Add or update featured sights for travel content.</p>
           </div>
           <div className="space-y-3">
             {sights.map((sight) => (
@@ -727,24 +846,27 @@ export function AdminDashboardPage() {
               <Input
                 id="sightImage"
                 value={sightForm.imageUrl}
+                placeholder="/uploads/sights/photo.webp or https://..."
                 onChange={(event) => setSightForm({ ...sightForm, imageUrl: event.target.value })}
               />
-              <div className="mt-2">
-                <Label htmlFor="sightImageFile">Or Upload Image</Label>
-                <Input
+              <div className="mt-3">
+                <ImageUploadPanel
                   id="sightImageFile"
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) => setSightImageFile(event.target.files?.[0] || null)}
+                  label="Sight photo"
+                  value={sightForm.imageUrl}
+                  file={sightImageFile}
+                  onFileChange={setSightImageFile}
+                  description="Фото места для карточек и контента. Можно загрузить прямо с телефона."
                 />
               </div>
             </div>
           </div>
           <Button
             onClick={handleSaveSight}
-            className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+            disabled={savingTarget === 'sight'}
+            className="admin-sticky-action btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            {sightEditId ? 'Update Sight' : 'Add Sight'}
+            {savingTarget === 'sight' ? 'Saving sight...' : sightEditId ? 'Update Sight' : 'Add Sight'}
           </Button>
         </div>
       )}
@@ -823,23 +945,30 @@ export function AdminDashboardPage() {
               <Input
                 id="blogCover"
                 value={blogForm.coverImage}
+                placeholder="/uploads/blog-posts/photo.webp or https://..."
                 onChange={(event) => setBlogForm({ ...blogForm, coverImage: event.target.value })}
               />
-              <div className="mt-2">
-                <Label htmlFor="blogCoverFile">Or Upload Image</Label>
-                <Input
+              <div className="mt-3">
+                <ImageUploadPanel
                   id="blogCoverFile"
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) => setBlogImageFile(event.target.files?.[0] || null)}
+                  label="Blog cover"
+                  value={blogForm.coverImage || ''}
+                  file={blogImageFile}
+                  onFileChange={setBlogImageFile}
+                  description="Обложка новости или статьи. Выберите фото, затем сохраните пост."
                 />
               </div>
             </div>
             <Button
               onClick={handleSaveBlogPost}
-              className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+              disabled={savingTarget === 'blog'}
+              className="admin-sticky-action btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              {blogEditId ? 'Update Blog Post' : 'Create Blog Post'}
+              {savingTarget === 'blog'
+                ? 'Saving post...'
+                : blogEditId
+                  ? 'Update Blog Post'
+                  : 'Create Blog Post'}
             </Button>
           </div>
         </div>
@@ -848,8 +977,8 @@ export function AdminDashboardPage() {
       {activeTab === 'requests' && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl text-foreground mb-2">Custom Requests</h2>
-            <p className="text-muted-foreground text-sm">Review custom tour requests and seller submissions.</p>
+            <h2 className="text-2xl text-foreground mb-2">Requests</h2>
+            <p className="text-muted-foreground text-sm">Review tour requests and seller submissions.</p>
           </div>
           <div className="space-y-3">
             {customRequests.map((request) => (
