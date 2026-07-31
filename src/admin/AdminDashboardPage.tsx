@@ -1,8 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { FileImage, UploadCloud, X } from 'lucide-react';
+import {
+  AlertTriangle,
+  Bot,
+  CheckCircle2,
+  ExternalLink,
+  FileImage,
+  RefreshCw,
+  Search,
+  UploadCloud,
+  X,
+} from 'lucide-react';
 import { Button } from '../app/components/ui/button';
 import { Input } from '../app/components/ui/input';
 import { Label } from '../app/components/ui/label';
@@ -13,8 +21,11 @@ import { uploadImage } from '../app/lib/storage';
 import { withBasePath } from '../app/lib/assets';
 import {
   BlogPost,
+  BookingRequest,
   ContentSettings,
+  CustomTourRequest,
   FeedbackEntry,
+  SellerSubmission,
   Sight,
   UserRecord,
   createBlogPost,
@@ -23,10 +34,10 @@ import {
   deleteBlogPost,
   deleteSight,
   deleteTour,
-  fetchBlogPosts,
+  fetchAdminBlogPosts,
+  fetchAdminSights,
   fetchContentSettings,
   fetchSellerSubmissions,
-  fetchSights,
   fetchTours,
   fetchUsers,
   subscribeBookings,
@@ -44,10 +55,17 @@ import {
   updateUserRole,
 } from '../app/lib/dataStore';
 import { fetchEventSummary } from '../app/lib/eventTracker';
+import {
+  TelegramAdminStatus,
+  fetchApiTelegramStatus,
+  retryApiTelegramRequests,
+  sendApiTelegramTest,
+} from '../app/lib/api';
 
 type TourFormState = {
   id: string;
   title: string;
+  isHot: boolean;
   duration: string;
   tourType: string;
   season: string;
@@ -68,6 +86,7 @@ type TourFormState = {
 const EMPTY_TOUR_FORM: TourFormState = {
   id: '',
   title: '',
+  isHot: false,
   duration: '',
   tourType: '',
   season: '',
@@ -85,7 +104,71 @@ const EMPTY_TOUR_FORM: TourFormState = {
   notIncluded: '',
 };
 
-const statusOptions = ['pending', 'approved', 'rejected', 'completed'];
+const leadStatusOptions = ['pending', 'contacted', 'approved', 'completed', 'cancelled', 'rejected'];
+const sellerStatusOptions = ['pending', 'approved', 'rejected'];
+
+type BlogFormState = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  category: string;
+  readTime: string;
+  status: 'draft' | 'published' | 'archived';
+  featured: boolean;
+  publishedAt: string;
+  seoTitle: string;
+  seoDescription: string;
+};
+
+const EMPTY_BLOG_FORM: BlogFormState = {
+  slug: '',
+  title: '',
+  excerpt: '',
+  content: '',
+  coverImage: '',
+  category: 'Travel guide',
+  readTime: '7 min read',
+  status: 'draft',
+  featured: false,
+  publishedAt: '',
+  seoTitle: '',
+  seoDescription: '',
+};
+
+function formatAdminDate(value?: string) {
+  if (!value) {
+    return 'Not specified';
+  }
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+}
+
+function StatusBadge({ status }: { status?: string }) {
+  const normalized = status || 'pending';
+  const color =
+    normalized === 'published' || normalized === 'approved' || normalized === 'completed' || normalized === 'sent'
+      ? 'bg-emerald-100 text-emerald-800'
+      : normalized === 'failed' || normalized === 'rejected' || normalized === 'cancelled'
+        ? 'bg-red-100 text-red-800'
+        : normalized === 'contacted'
+          ? 'bg-blue-100 text-blue-800'
+          : 'bg-amber-100 text-amber-800';
+  return (
+    <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ${color}`}>
+      {normalized.replace(/_/g, ' ')}
+    </span>
+  );
+}
+
+function EmptyState({ text }: { text: string }) {
+  return (
+    <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+      {text}
+    </div>
+  );
+}
 
 type ImageUploadPanelProps = {
   id: string;
@@ -119,7 +202,7 @@ function ImageUploadPanel({
   value,
   file,
   onFileChange,
-  description = 'JPG, PNG, WebP, AVIF. Лучше загружать горизонтальные фото до 10-12 MB.',
+  description = 'JPG, PNG, WebP, AVIF или HEIC/HEIF. HEIC автоматически преобразуется в JPG. Максимум 16 MB.',
 }: ImageUploadPanelProps) {
   const [filePreview, setFilePreview] = useState('');
 
@@ -176,7 +259,7 @@ function ImageUploadPanel({
             <Input
               id={id}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/avif"
+              accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.heic,.heif"
               className="sr-only"
               onChange={(event) => onFileChange(event.target.files?.[0] || null)}
             />
@@ -188,7 +271,7 @@ function ImageUploadPanel({
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            После выбора нажмите Save. Фото сохранится на сервере, а URL подставится автоматически.
+            После выбора нажмите Save. HEIC/HEIF автоматически станет JPG на сервере, а URL подставится автоматически.
           </p>
         </div>
       </div>
@@ -214,23 +297,26 @@ export function AdminDashboardPage() {
   const [tours, setTours] = useState<Tour[]>([]);
   const [sights, setSights] = useState<Sight[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [customRequests, setCustomRequests] = useState<Array<Record<string, unknown>>>([]);
-  const [bookings, setBookings] = useState<Array<Record<string, unknown>>>([]);
-  const [sellerSubmissions, setSellerSubmissions] = useState<Array<Record<string, unknown>>>([]);
+  const [customRequests, setCustomRequests] = useState<Array<CustomTourRequest & { id: string }>>([]);
+  const [bookings, setBookings] = useState<Array<BookingRequest & { id: string }>>([]);
+  const [sellerSubmissions, setSellerSubmissions] = useState<SellerSubmission[]>([]);
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>([]);
   const [contentSettings, setContentSettings] = useState<ContentSettings>({});
   const [eventSummary, setEventSummary] = useState<EventSummary>({ totals: {}, recent: [] });
+  const [telegramStatus, setTelegramStatus] = useState<TelegramAdminStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [savingTarget, setSavingTarget] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const [tourForm, setTourForm] = useState<TourFormState>(EMPTY_TOUR_FORM);
   const [tourEditId, setTourEditId] = useState<number | null>(null);
 
   const [sightForm, setSightForm] = useState({ name: '', region: '', description: '', imageUrl: '' });
   const [sightEditId, setSightEditId] = useState<string | null>(null);
-  const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', content: '', coverImage: '' });
+  const [blogForm, setBlogForm] = useState<BlogFormState>(EMPTY_BLOG_FORM);
   const [blogEditId, setBlogEditId] = useState<string | null>(null);
   const [tourImageFile, setTourImageFile] = useState<File | null>(null);
   const [sightImageFile, setSightImageFile] = useState<File | null>(null);
@@ -247,8 +333,8 @@ export function AdminDashboardPage() {
       try {
         const [toursData, sightsData, blogData, usersData, contentData, eventsData] = await Promise.all([
           fetchTours(),
-          fetchSights(),
-          fetchBlogPosts(),
+          fetchAdminSights(),
+          fetchAdminBlogPosts(),
           fetchUsers(),
           fetchContentSettings(),
           fetchEventSummary().catch(() => ({ totals: {}, recent: [] })),
@@ -262,6 +348,7 @@ export function AdminDashboardPage() {
         setUsers(usersData);
         setContentSettings(contentData || {});
         setEventSummary(eventsData);
+        fetchApiTelegramStatus().then(setTelegramStatus).catch(() => setTelegramStatus(null));
       } catch (err) {
         if (isActive) {
           setErrorMessage(err instanceof Error ? err.message : 'Unable to load admin data.');
@@ -324,20 +411,52 @@ export function AdminDashboardPage() {
     };
   }, []);
 
+  useEffect(() => {
+    setSearchQuery('');
+    setStatusFilter('all');
+  }, [activeTab]);
+
   const stats = useMemo(() => {
-    const eventCount = Object.values(eventSummary.totals).reduce((sum, value) => sum + value, 0);
+    const pendingLeads =
+      customRequests.filter((request) => (request.status || 'pending') === 'pending').length +
+      bookings.filter((booking) => (booking.status || 'pending') === 'pending').length;
     return [
-      { label: 'Tours', value: tours.length },
-      { label: 'Bookings', value: bookings.length },
-      { label: 'Requests', value: customRequests.length },
-      { label: 'Events', value: eventCount },
+      { label: 'Active tours', value: tours.length },
+      { label: 'Published guides', value: blogPosts.filter((post) => post.status !== 'draft' && post.status !== 'archived').length },
+      { label: 'Pending leads', value: pendingLeads },
+      { label: 'Pending seller tours', value: sellerSubmissions.filter((item) => (item.status || 'pending') === 'pending').length },
     ];
-  }, [tours, bookings, customRequests, eventSummary.totals]);
+  }, [tours, blogPosts, bookings, customRequests, sellerSubmissions]);
+
+  const matchesSearch = (...values: unknown[]) => {
+    const query = searchQuery.trim().toLowerCase();
+    return !query || values.some((value) => String(value || '').toLowerCase().includes(query));
+  };
+
+  const filteredTours = tours.filter((tour) => matchesSearch(tour.title, tour.tourType, tour.season));
+  const filteredSights = sights.filter((sight) => matchesSearch(sight.name, sight.region));
+  const filteredBlogPosts = blogPosts.filter(
+    (post) =>
+      matchesSearch(post.title, post.slug, post.category, post.excerpt) &&
+      (statusFilter === 'all' || (post.status || 'published') === statusFilter)
+  );
+  const filteredRequests = customRequests.filter(
+    (request) =>
+      matchesSearch(request.name, request.email, request.phone, request.telegramUsername) &&
+      (statusFilter === 'all' || (request.status || 'pending') === statusFilter)
+  );
+  const filteredBookings = bookings.filter(
+    (booking) =>
+      matchesSearch(booking.name, booking.email, booking.phone, booking.tourTitle) &&
+      (statusFilter === 'all' || (booking.status || 'pending') === statusFilter)
+  );
+  const filteredUsers = users.filter((user) => matchesSearch(user.name, user.email, user.role));
 
   const setTourFormFromTour = (tour: Tour) => {
     setTourForm({
       id: String(tour.id),
       title: tour.title,
+      isHot: Boolean(tour.isHot),
       duration: tour.duration,
       tourType: tour.tourType,
       season: tour.season,
@@ -362,6 +481,7 @@ export function AdminDashboardPage() {
     return {
       id: Number(tourForm.id),
       title: tourForm.title,
+      isHot: tourForm.isHot,
       duration: tourForm.duration,
       tourType: tourForm.tourType,
       season: tourForm.season,
@@ -423,8 +543,16 @@ export function AdminDashboardPage() {
   };
 
   const handleDeleteTour = async (id: number) => {
-    await deleteTour(id);
-    setTours(await fetchTours());
+    if (!window.confirm('Delete this tour? It will disappear from the public website.')) {
+      return;
+    }
+    try {
+      await deleteTour(id);
+      setTours(await fetchTours());
+      toast.success('Tour deleted.');
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Unable to delete tour.');
+    }
   };
 
   const handleSaveSight = async () => {
@@ -445,7 +573,7 @@ export function AdminDashboardPage() {
       } else {
         await createSight({ ...sightForm, imageUrl });
       }
-      setSights(await fetchSights());
+      setSights(await fetchAdminSights());
       setSightForm({ name: '', region: '', description: '', imageUrl: '' });
       setSightImageFile(null);
       toast.success(sightEditId ? 'Sight updated.' : 'Sight added.');
@@ -468,14 +596,30 @@ export function AdminDashboardPage() {
       if (blogImageFile) {
         coverImage = await uploadImage(blogImageFile, 'blog-posts');
       }
+      const slug =
+        blogForm.slug.trim() ||
+        blogForm.title
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      const post = {
+        ...blogForm,
+        slug,
+        coverImage,
+        publishedAt:
+          blogForm.status === 'published'
+            ? blogForm.publishedAt || new Date().toISOString()
+            : blogForm.publishedAt,
+      };
       if (blogEditId) {
-        await updateBlogPost(blogEditId, { ...blogForm, coverImage });
+        await updateBlogPost(blogEditId, post);
         setBlogEditId(null);
       } else {
-        await createBlogPost({ ...blogForm, coverImage });
+        await createBlogPost(post);
       }
-      setBlogPosts(await fetchBlogPosts());
-      setBlogForm({ title: '', excerpt: '', content: '', coverImage: '' });
+      setBlogPosts(await fetchAdminBlogPosts());
+      setBlogForm(EMPTY_BLOG_FORM);
       setBlogImageFile(null);
       toast.success(blogEditId ? 'Blog post updated.' : 'Blog post created.');
     } catch (err) {
@@ -486,16 +630,37 @@ export function AdminDashboardPage() {
   };
 
   const handleDeleteSight = async (id: string) => {
-    await deleteSight(id);
-    setSights(await fetchSights());
+    if (!window.confirm('Delete this sight?')) {
+      return;
+    }
+    try {
+      await deleteSight(id);
+      setSights(await fetchAdminSights());
+      toast.success('Sight deleted.');
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Unable to delete sight.');
+    }
   };
 
-  const handleApproveSubmission = async (submission: Record<string, unknown>) => {
+  const handleDeleteBlogPost = async (id: string) => {
+    if (!window.confirm('Delete this guide? This action cannot be undone.')) {
+      return;
+    }
+    try {
+      await deleteBlogPost(id);
+      setBlogPosts(await fetchAdminBlogPosts());
+      toast.success('Guide deleted.');
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Unable to delete guide.');
+    }
+  };
+
+  const handleApproveSubmission = async (submission: SellerSubmission) => {
     const submissionId = submission.id as string;
     await updateSellerSubmissionStatus(submissionId, 'approved');
 
     const newTour: Tour = {
-      id: Date.now(),
+      id: Math.max(0, ...tours.map((tour) => Number(tour.id) || 0)) + 1,
       title: String(submission.title || 'New Tour'),
       duration: String(submission.duration || 'TBD'),
       tourType: String(submission.tourType || 'Custom'),
@@ -522,6 +687,7 @@ export function AdminDashboardPage() {
     await createTour(newTour);
     setSellerSubmissions(await fetchSellerSubmissions());
     setTours(await fetchTours());
+    toast.success('Seller submission approved and added to tours.');
   };
 
   const handleCustomRequestStatusChange = async (id: string, status: string) => {
@@ -529,6 +695,7 @@ export function AdminDashboardPage() {
     setCustomRequests((prev) =>
       prev.map((request) => (request.id === id ? { ...request, status } : request))
     );
+    toast.success('Request status updated.');
   };
 
   const handleBookingStatusChange = async (id: string, status: string) => {
@@ -536,6 +703,7 @@ export function AdminDashboardPage() {
     setBookings((prev) =>
       prev.map((booking) => (booking.id === id ? { ...booking, status } : booking))
     );
+    toast.success('Booking status updated.');
   };
 
   const handleSellerStatusChange = async (id: string, status: string) => {
@@ -543,18 +711,73 @@ export function AdminDashboardPage() {
     setSellerSubmissions((prev) =>
       prev.map((submission) => (submission.id === id ? { ...submission, status } : submission))
     );
+    toast.success('Seller submission updated.');
   };
 
-  const handleFeedbackResponseChange = async (id: string, adminResponse: string) => {
-    await updateFeedbackResponse(id, adminResponse);
+  const handleFeedbackResponseChange = async (
+    id: string,
+    adminResponse: string,
+    isPublished?: boolean
+  ) => {
+    await updateFeedbackResponse(id, adminResponse, isPublished);
     setFeedbackEntries((prev) =>
-      prev.map((entry) => (entry.id === id ? { ...entry, adminResponse } : entry))
+      prev.map((entry) =>
+        entry.id === id
+          ? { ...entry, adminResponse, isPublished: isPublished ?? entry.isPublished }
+          : entry
+      )
     );
+    toast.success('Review updated.');
   };
 
   const handleUserRoleChange = async (id: string, role: string) => {
     await updateUserRole(id, role);
     setUsers((prev) => prev.map((user) => (user.id === id ? { ...user, role } : user)));
+    toast.success('User role updated.');
+  };
+
+  const handleSaveContent = async () => {
+    setSavingTarget('content');
+    try {
+      await updateContentSettings(contentSettings);
+      toast.success('Website content settings saved.');
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Unable to save content settings.');
+    } finally {
+      setSavingTarget(null);
+    }
+  };
+
+  const refreshTelegramStatus = async () => {
+    const status = await fetchApiTelegramStatus();
+    setTelegramStatus(status);
+    return status;
+  };
+
+  const handleTelegramTest = async () => {
+    setSavingTarget('telegram-test');
+    try {
+      const result = await sendApiTelegramTest();
+      await refreshTelegramStatus();
+      toast.success(`Telegram test sent to ${result.sent} chat(s).`);
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Unable to send Telegram test.');
+    } finally {
+      setSavingTarget(null);
+    }
+  };
+
+  const handleTelegramRetry = async () => {
+    setSavingTarget('telegram-retry');
+    try {
+      await retryApiTelegramRequests();
+      await refreshTelegramStatus();
+      toast.success('Undelivered requests were sent again.');
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Unable to retry Telegram delivery.');
+    } finally {
+      setSavingTarget(null);
+    }
   };
 
   if (loading) {
@@ -567,13 +790,115 @@ export function AdminDashboardPage() {
 
       <div key={activeTab} className="admin-section space-y-6">
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {stats.map((stat) => (
-              <div key={stat.label} className="bg-muted rounded-lg p-4">
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <p className="text-3xl text-foreground">{stat.value}</p>
-              </div>
-            ))}
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-2xl font-medium text-foreground">Operations overview</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Content, incoming leads, reviews, and notification health at a glance.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {stats.map((stat) => (
+                <div key={stat.label} className="rounded-lg border border-border bg-muted/50 p-4">
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="mt-1 text-3xl font-medium text-foreground">{stat.value}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-4 xl:grid-cols-2">
+              <section className="rounded-lg border border-border p-4 sm:p-5">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="font-medium text-foreground">Telegram delivery</h2>
+                    <p className="text-sm text-muted-foreground">Website lead notifications</p>
+                  </div>
+                  {telegramStatus?.configured && telegramStatus.registeredChatCount > 0 ? (
+                    <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                  ) : (
+                    <AlertTriangle className="h-5 w-5 text-amber-600" />
+                  )}
+                </div>
+                {telegramStatus ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div className="rounded-md bg-muted p-3">
+                        <p className="text-muted-foreground">Connected chats</p>
+                        <p className="mt-1 text-xl font-medium">{telegramStatus.registeredChatCount}</p>
+                      </div>
+                      <div className="rounded-md bg-muted p-3">
+                        <p className="text-muted-foreground">Undelivered</p>
+                        <p className="mt-1 text-xl font-medium">{telegramStatus.undeliveredRequestCount}</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Bot {telegramStatus.configured ? 'configured' : 'not configured'} ·{' '}
+                      {telegramStatus.pollingEnabled ? 'polling enabled' : 'polling disabled'}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={savingTarget === 'telegram-test'}
+                        onClick={handleTelegramTest}
+                      >
+                        <Bot className="h-4 w-4" />
+                        Send test
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={
+                          savingTarget === 'telegram-retry' ||
+                          telegramStatus.undeliveredRequestCount === 0
+                        }
+                        onClick={handleTelegramRetry}
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                        Retry undelivered
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Telegram status is available when the server API is connected.
+                  </p>
+                )}
+              </section>
+
+              <section className="rounded-lg border border-border p-4 sm:p-5">
+                <h2 className="font-medium text-foreground">Needs attention</h2>
+                <div className="mt-4 space-y-3">
+                  <a
+                    href="/admin/dashboard?tab=requests"
+                    className="flex items-center justify-between rounded-md bg-muted p-3 text-sm hover:bg-muted/80"
+                  >
+                    <span>New custom requests</span>
+                    <span className="font-medium">
+                      {customRequests.filter((item) => (item.status || 'pending') === 'pending').length}
+                    </span>
+                  </a>
+                  <a
+                    href="/admin/dashboard?tab=bookings"
+                    className="flex items-center justify-between rounded-md bg-muted p-3 text-sm hover:bg-muted/80"
+                  >
+                    <span>New bookings</span>
+                    <span className="font-medium">
+                      {bookings.filter((item) => (item.status || 'pending') === 'pending').length}
+                    </span>
+                  </a>
+                  <a
+                    href="/admin/dashboard?tab=blogs"
+                    className="flex items-center justify-between rounded-md bg-muted p-3 text-sm hover:bg-muted/80"
+                  >
+                    <span>Draft guides</span>
+                    <span className="font-medium">
+                      {blogPosts.filter((item) => item.status === 'draft').length}
+                    </span>
+                  </a>
+                </div>
+              </section>
+            </div>
           </div>
         )}
 
@@ -585,14 +910,26 @@ export function AdminDashboardPage() {
                 Create, edit, or delete tours. Keep highlights, images, and itinerary up to date.
               </p>
             </div>
+            <div className="relative max-w-md">
+              <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                aria-label="Search tours"
+                className="pl-9"
+                placeholder="Search by title, type, or season"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-3">
-                {tours.map((tour) => (
+                {filteredTours.map((tour) => (
                   <div key={tour.id} className="border border-border rounded-lg p-4 space-y-2 admin-row">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-foreground font-medium">{tour.title}</p>
-                        <p className="text-sm text-muted-foreground">{tour.price}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {tour.price}{tour.isHot ? ' · Hot tours' : ''}
+                        </p>
                       </div>
                       <div className="flex gap-2 admin-row-actions">
                         <Button size="sm" variant="outline" onClick={() => setTourFormFromTour(tour)}>
@@ -605,6 +942,7 @@ export function AdminDashboardPage() {
                     </div>
                   </div>
                 ))}
+                {filteredTours.length === 0 && <EmptyState text="No tours match this search." />}
               </div>
             <div className="space-y-4">
               <h3 className="text-lg text-foreground">
@@ -675,7 +1013,7 @@ export function AdminDashboardPage() {
                     value={tourForm.image}
                     file={tourImageFile}
                     onFileChange={setTourImageFile}
-                    description="Главное фото тура. Лучше горизонтальное фото 1600px+, JPG/WebP/PNG."
+                    description="Главное фото тура. Лучше горизонтальное 1600px+; JPG/WebP/PNG или HEIC — HEIC станет JPG автоматически."
                   />
                 </div>
               </div>
@@ -785,8 +1123,18 @@ export function AdminDashboardPage() {
             <h2 className="text-2xl text-foreground mb-2">Sight Management</h2>
             <p className="text-muted-foreground text-sm">Add or update featured sights for travel content.</p>
           </div>
+          <div className="relative max-w-md">
+            <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              aria-label="Search sights"
+              className="pl-9"
+              placeholder="Search by sight or region"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+            />
+          </div>
           <div className="space-y-3">
-            {sights.map((sight) => (
+            {filteredSights.map((sight) => (
               <div key={sight.id} className="border border-border rounded-lg p-4 flex justify-between admin-row">
                 <div>
                   <p className="text-foreground">{sight.name}</p>
@@ -814,6 +1162,7 @@ export function AdminDashboardPage() {
                 </div>
               </div>
             ))}
+            {filteredSights.length === 0 && <EmptyState text="No sights match this search." />}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -856,7 +1205,7 @@ export function AdminDashboardPage() {
                   value={sightForm.imageUrl}
                   file={sightImageFile}
                   onFileChange={setSightImageFile}
-                  description="Фото места для карточек и контента. Можно загрузить прямо с телефона."
+                  description="Фото места для карточек и контента. Можно загрузить прямо с телефона: HEIC будет автоматически преобразован в JPG."
                 />
               </div>
             </div>
@@ -874,70 +1223,204 @@ export function AdminDashboardPage() {
       {activeTab === 'blogs' && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl text-foreground mb-2">News & Blog Management</h2>
-            <p className="text-muted-foreground text-sm">Publish news updates and edit travel stories.</p>
+            <h2 className="mb-2 text-2xl text-foreground">Travel guide publishing</h2>
+            <p className="text-sm text-muted-foreground">
+              Create search-focused guides, prepare drafts, and control what is visible on the website.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                aria-label="Search travel guides"
+                className="pl-9"
+                placeholder="Search title, slug, or category"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
+            </div>
+            <select
+              aria-label="Filter guides by status"
+              className="h-10 rounded-md border border-border bg-card px-3 text-sm"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="all">All statuses</option>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="archived">Archived</option>
+            </select>
           </div>
           <div className="space-y-3">
-            {blogPosts.map((post) => (
-              <div key={post.id} className="border border-border rounded-lg p-4 flex justify-between admin-row">
-                <div>
-                  <p className="text-foreground">{post.title}</p>
-                  <p className="text-sm text-muted-foreground">{post.excerpt}</p>
-                </div>
-                <div className="flex gap-2 admin-row-actions">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setBlogForm({
-                        title: post.title,
-                        excerpt: post.excerpt,
-                        content: post.content,
-                        coverImage: post.coverImage || '',
-                      });
-                      setBlogEditId(post.id);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={async () => {
-                      await deleteBlogPost(post.id);
-                      setBlogPosts(await fetchBlogPosts());
-                    }}
-                  >
-                    Delete
-                  </Button>
+            {filteredBlogPosts.map((post) => (
+              <div key={post.id} className="rounded-lg border border-border p-4 admin-row">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <p className="font-medium text-foreground">{post.title}</p>
+                      <StatusBadge status={post.status || 'published'} />
+                      {post.featured && (
+                        <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary">
+                          Featured
+                        </span>
+                      )}
+                    </div>
+                    <p className="line-clamp-2 text-sm text-muted-foreground">{post.excerpt}</p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      /blogs/{post.slug || post.id} · {post.category || 'Uncategorized'} ·{' '}
+                      {post.readTime || 'Reading time not set'}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 flex-wrap gap-2 admin-row-actions">
+                    {post.slug && post.status !== 'draft' && (
+                      <Button size="sm" variant="outline" asChild>
+                        <a href={`/blogs/${post.slug}`} target="_blank" rel="noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                          View
+                        </a>
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setBlogForm({
+                          slug: post.slug || '',
+                          title: post.title,
+                          excerpt: post.excerpt,
+                          content: post.content,
+                          coverImage: post.coverImage || '',
+                          category: post.category || 'Travel guide',
+                          readTime: post.readTime || '7 min read',
+                          status: post.status || 'published',
+                          featured: Boolean(post.featured),
+                          publishedAt: post.publishedAt || '',
+                          seoTitle: post.seoTitle || '',
+                          seoDescription: post.seoDescription || '',
+                        });
+                        setBlogEditId(post.id);
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDeleteBlogPost(post.id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
+            {filteredBlogPosts.length === 0 && <EmptyState text="No guides match these filters." />}
           </div>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="blogTitle">Title</Label>
-              <Input
-                id="blogTitle"
-                value={blogForm.title}
-                onChange={(event) => setBlogForm({ ...blogForm, title: event.target.value })}
-              />
+
+          <div className="space-y-5 rounded-lg border border-border bg-muted/20 p-4 sm:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-medium text-foreground">
+                  {blogEditId ? 'Edit guide' : 'Create a new guide'}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Save as a draft until the text, SEO fields, and cover image are ready.
+                </p>
+              </div>
+              {blogEditId && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setBlogEditId(null);
+                    setBlogForm(EMPTY_BLOG_FORM);
+                    setBlogImageFile(null);
+                  }}
+                >
+                  Cancel editing
+                </Button>
+              )}
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <Label htmlFor="blogTitle">Title</Label>
+                <Input
+                  id="blogTitle"
+                  value={blogForm.title}
+                  onChange={(event) => setBlogForm({ ...blogForm, title: event.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="blogSlug">URL slug</Label>
+                <Input
+                  id="blogSlug"
+                  value={blogForm.slug}
+                  placeholder="song-kul-lake-travel-guide"
+                  onChange={(event) =>
+                    setBlogForm({
+                      ...blogForm,
+                      slug: event.target.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, ''),
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <Label htmlFor="blogCategory">Category</Label>
+                <Input
+                  id="blogCategory"
+                  value={blogForm.category}
+                  onChange={(event) => setBlogForm({ ...blogForm, category: event.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="blogReadTime">Reading time</Label>
+                <Input
+                  id="blogReadTime"
+                  value={blogForm.readTime}
+                  placeholder="7 min read"
+                  onChange={(event) => setBlogForm({ ...blogForm, readTime: event.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="blogStatus">Publication status</Label>
+                <select
+                  id="blogStatus"
+                  className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm"
+                  value={blogForm.status}
+                  onChange={(event) =>
+                    setBlogForm({
+                      ...blogForm,
+                      status: event.target.value as BlogFormState['status'],
+                    })
+                  }
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+              <label className="flex min-h-10 items-center gap-3 rounded-md border border-border bg-card px-3 text-sm md:col-span-2">
+                <input
+                  type="checkbox"
+                  checked={blogForm.featured}
+                  onChange={(event) =>
+                    setBlogForm({ ...blogForm, featured: event.target.checked })
+                  }
+                />
+                Feature this guide at the top of the blog page
+              </label>
             </div>
             <div>
-              <Label htmlFor="blogExcerpt">Excerpt</Label>
+              <Label htmlFor="blogExcerpt">Card excerpt</Label>
               <Textarea
                 id="blogExcerpt"
-                rows={2}
+                rows={3}
                 value={blogForm.excerpt}
                 onChange={(event) => setBlogForm({ ...blogForm, excerpt: event.target.value })}
-              />
-            </div>
-            <div>
-              <Label>Content</Label>
-              <ReactQuill
-                theme="snow"
-                value={blogForm.content}
-                onChange={(value) => setBlogForm({ ...blogForm, content: value })}
               />
             </div>
             <div>
@@ -955,21 +1438,69 @@ export function AdminDashboardPage() {
                   value={blogForm.coverImage || ''}
                   file={blogImageFile}
                   onFileChange={setBlogImageFile}
-                  description="Обложка новости или статьи. Выберите фото, затем сохраните пост."
+                  description="Обложка новости или статьи. HEIC с iPhone автоматически преобразуется в JPG после сохранения."
                 />
               </div>
             </div>
-            <Button
-              onClick={handleSaveBlogPost}
-              disabled={savingTarget === 'blog'}
-              className="admin-sticky-action btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              {savingTarget === 'blog'
-                ? 'Saving post...'
-                : blogEditId
-                  ? 'Update Blog Post'
-                  : 'Create Blog Post'}
-            </Button>
+            <div>
+              <Label htmlFor="blogContent">Article content (safe HTML supported)</Label>
+              <Textarea
+                id="blogContent"
+                rows={16}
+                value={blogForm.content}
+                placeholder="<h2>Section title</h2><p>Article text...</p>"
+                onChange={(event) => setBlogForm({ ...blogForm, content: event.target.value })}
+              />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <Label htmlFor="blogSeoTitle">SEO title</Label>
+                <Input
+                  id="blogSeoTitle"
+                  value={blogForm.seoTitle}
+                  placeholder="Up to about 60 characters"
+                  onChange={(event) => setBlogForm({ ...blogForm, seoTitle: event.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="blogPublishedAt">Publication date</Label>
+                <Input
+                  id="blogPublishedAt"
+                  type="date"
+                  value={blogForm.publishedAt.slice(0, 10)}
+                  onChange={(event) =>
+                    setBlogForm({ ...blogForm, publishedAt: event.target.value })
+                  }
+                />
+              </div>
+              <div className="md:col-span-2">
+                <Label htmlFor="blogSeoDescription">SEO description</Label>
+                <Textarea
+                  id="blogSeoDescription"
+                  rows={2}
+                  value={blogForm.seoDescription}
+                  placeholder="A specific summary of roughly 140–160 characters"
+                  onChange={(event) =>
+                    setBlogForm({ ...blogForm, seoDescription: event.target.value })
+                  }
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={handleSaveBlogPost}
+                disabled={savingTarget === 'blog'}
+                className="admin-sticky-action btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                {savingTarget === 'blog'
+                  ? 'Saving guide...'
+                  : blogEditId
+                    ? 'Update guide'
+                    : blogForm.status === 'published'
+                      ? 'Publish guide'
+                      : 'Save draft'}
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -977,54 +1508,155 @@ export function AdminDashboardPage() {
       {activeTab === 'requests' && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl text-foreground mb-2">Requests</h2>
-            <p className="text-muted-foreground text-sm">Review tour requests and seller submissions.</p>
+            <h2 className="mb-2 text-2xl text-foreground">Custom tour leads</h2>
+            <p className="text-sm text-muted-foreground">
+              Contact travelers, record progress, and check whether each lead reached Telegram.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                aria-label="Search custom requests"
+                className="pl-9"
+                placeholder="Search name, email, phone, or Telegram"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
+            </div>
+            <select
+              aria-label="Filter custom requests"
+              className="h-10 rounded-md border border-border bg-card px-3 text-sm"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="all">All statuses</option>
+              {leadStatusOptions.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="space-y-3">
-            {customRequests.map((request) => (
-              <div key={request.id as string} className="border border-border rounded-lg p-4 space-y-2 admin-row">
-                <p className="text-foreground font-medium">{request.name as string}</p>
-                <p className="text-sm text-muted-foreground">
-                  Dates: {request.startDate as string} to {request.endDate as string}
-                </p>
-                <div className="flex items-center gap-2">
+            {filteredRequests.map((request) => (
+              <article key={request.id} className="space-y-4 rounded-lg border border-border p-4 admin-row">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium text-foreground">{request.name}</p>
+                      <StatusBadge status={request.status} />
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Received {formatAdminDate(request.createdAt)} · ID {request.id}
+                    </p>
+                  </div>
                   <select
                     className="h-9 rounded-md border border-border bg-card px-2 text-sm"
-                    value={(request.status as string) || 'pending'}
+                    value={request.status || 'pending'}
                     onChange={(event) =>
-                      handleCustomRequestStatusChange(request.id as string, event.target.value)
+                      handleCustomRequestStatusChange(request.id, event.target.value)
                     }
                   >
-                    {statusOptions.map((status) => (
+                    {leadStatusOptions.map((status) => (
                       <option key={status} value={status}>
                         {status}
                       </option>
                     ))}
                   </select>
                 </div>
-              </div>
+                <div className="grid gap-3 text-sm md:grid-cols-2 xl:grid-cols-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Contact</p>
+                    <div className="mt-1 space-y-1">
+                      {request.email && <a className="block text-primary hover:underline" href={`mailto:${request.email}`}>{request.email}</a>}
+                      {request.phone && <a className="block text-primary hover:underline" href={`tel:${request.phone}`}>{request.phone}</a>}
+                      {request.telegramUsername && (
+                        <a
+                          className="block text-primary hover:underline"
+                          href={`https://t.me/${request.telegramUsername.replace(/^@/, '')}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {request.telegramUsername}
+                        </a>
+                      )}
+                      {request.countryOfResidence && <p className="text-muted-foreground">Country: {request.countryOfResidence}</p>}
+                      {request.contactPreference && <p className="text-muted-foreground">Preferred: {request.contactPreference}</p>}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Route & dates</p>
+                    <p className="mt-1">{request.startLocation} → {request.endLocation}</p>
+                    <p>{request.startDate || '?'} to {request.endDate || '?'}</p>
+                    <p>{request.groupSize} traveler(s) · {request.pace || 'Pace not set'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Preferences</p>
+                    <p className="mt-1">Budget: {request.budget || 'Not specified'}</p>
+                    <p>Stay: {request.accommodation || 'Not specified'}</p>
+                    <p>{request.activities?.join(', ') || 'No activities selected'}</p>
+                  </div>
+                </div>
+                {request.specialRequests && (
+                  <div className="rounded-md bg-muted p-3 text-sm">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Traveler notes</p>
+                    <p className="mt-1 whitespace-pre-wrap">{request.specialRequests}</p>
+                  </div>
+                )}
+                <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 text-xs text-muted-foreground">
+                  <span>Telegram delivery:</span>
+                  <StatusBadge status={request.telegramDeliveryStatus} />
+                  {request.telegramAttempts ? <span>{request.telegramAttempts} attempt(s)</span> : null}
+                  {request.telegramError && <span className="text-red-700">{request.telegramError}</span>}
+                </div>
+              </article>
             ))}
+            {filteredRequests.length === 0 && <EmptyState text="No custom requests match these filters." />}
           </div>
 
-          <div className="space-y-3">
-            <h3 className="text-lg text-foreground">Seller Submissions</h3>
+          <div className="space-y-3 border-t border-border pt-6">
+            <div>
+              <h3 className="text-lg font-medium text-foreground">Seller tour submissions</h3>
+              <p className="text-sm text-muted-foreground">
+                Review supplier content before adding it to the public tour catalog.
+              </p>
+            </div>
             {sellerSubmissions.map((submission) => (
-              <div key={submission.id as string} className="border border-border rounded-lg p-4 space-y-2 admin-row">
-                <p className="text-foreground font-medium">{submission.title as string}</p>
-                <p className="text-sm text-muted-foreground">
-                  Status: {(submission.status as string) || 'pending'}
-                </p>
-                <div className="flex gap-2 admin-row-actions">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleSellerStatusChange(submission.id as string, 'approved')}
+              <article key={submission.id} className="space-y-3 rounded-lg border border-border p-4 admin-row">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium text-foreground">{submission.title}</p>
+                      <StatusBadge status={submission.status} />
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {submission.duration} · {submission.price} · {submission.season}
+                    </p>
+                  </div>
+                  <select
+                    className="h-9 rounded-md border border-border bg-card px-2 text-sm"
+                    value={submission.status || 'pending'}
+                    onChange={(event) =>
+                      handleSellerStatusChange(submission.id, event.target.value)
+                    }
                   >
-                    Approve
-                  </Button>
+                    {sellerStatusOptions.map((status) => (
+                      <option key={status} value={status}>{status}</option>
+                    ))}
+                  </select>
+                </div>
+                <p className="text-sm text-foreground">{submission.description}</p>
+                <p className="text-sm text-muted-foreground">
+                  Supplier: {submission.contactName || 'Not specified'} ·{' '}
+                  <a className="text-primary hover:underline" href={`mailto:${submission.contactEmail}`}>
+                    {submission.contactEmail}
+                  </a>
+                </p>
+                <div className="flex flex-wrap gap-2 admin-row-actions">
                   <Button
                     size="sm"
-                    variant="outline"
+                    disabled={submission.status === 'approved'}
                     onClick={() => handleApproveSubmission(submission)}
                   >
                     Approve & Add to Tours
@@ -1032,13 +1664,14 @@ export function AdminDashboardPage() {
                   <Button
                     size="sm"
                     variant="destructive"
-                    onClick={() => handleSellerStatusChange(submission.id as string, 'rejected')}
+                    onClick={() => handleSellerStatusChange(submission.id, 'rejected')}
                   >
                     Reject
                   </Button>
                 </div>
-              </div>
+              </article>
             ))}
+            {sellerSubmissions.length === 0 && <EmptyState text="No seller submissions yet." />}
           </div>
         </div>
       )}
@@ -1046,29 +1679,103 @@ export function AdminDashboardPage() {
       {activeTab === 'bookings' && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl text-foreground mb-2">Bookings</h2>
-            <p className="text-muted-foreground text-sm">Update booking status after review.</p>
+            <h2 className="mb-2 text-2xl text-foreground">Booking leads</h2>
+            <p className="text-sm text-muted-foreground">
+              All requested tours, traveler contacts, dates, totals, and follow-up status.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                aria-label="Search bookings"
+                className="pl-9"
+                placeholder="Search traveler, tour, email, or phone"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
+            </div>
+            <select
+              aria-label="Filter bookings"
+              className="h-10 rounded-md border border-border bg-card px-3 text-sm"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="all">All statuses</option>
+              {leadStatusOptions.map((status) => (
+                <option key={status} value={status}>{status}</option>
+              ))}
+            </select>
           </div>
           <div className="space-y-3">
-            {bookings.map((booking) => (
-              <div key={booking.id as string} className="border border-border rounded-lg p-4 space-y-2 admin-row">
-                <p className="text-foreground font-medium">{booking.tourTitle as string}</p>
-                <p className="text-sm text-muted-foreground">
-                  {booking.name as string} - {booking.startDate as string} to {booking.endDate as string}
-                </p>
-                <select
-                  className="h-9 rounded-md border border-border bg-card px-2 text-sm"
-                  value={(booking.status as string) || 'pending'}
-                  onChange={(event) => handleBookingStatusChange(booking.id as string, event.target.value)}
-                >
-                  {statusOptions.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            {filteredBookings.map((booking) => (
+              <article key={booking.id} className="space-y-4 rounded-lg border border-border p-4 admin-row">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium text-foreground">{booking.tourTitle}</p>
+                      <StatusBadge status={booking.status} />
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Received {formatAdminDate(booking.createdAt)} · ID {booking.id}
+                    </p>
+                  </div>
+                  <select
+                    className="h-9 rounded-md border border-border bg-card px-2 text-sm"
+                    value={booking.status || 'pending'}
+                    onChange={(event) => handleBookingStatusChange(booking.id, event.target.value)}
+                  >
+                    {leadStatusOptions.map((status) => (
+                      <option key={status} value={status}>{status}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid gap-3 text-sm md:grid-cols-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Traveler</p>
+                    <p className="mt-1 font-medium">{booking.name}</p>
+                    {booking.email && <a className="block text-primary hover:underline" href={`mailto:${booking.email}`}>{booking.email}</a>}
+                    {booking.phone && <a className="block text-primary hover:underline" href={`tel:${booking.phone}`}>{booking.phone}</a>}
+                    {booking.telegramUsername && (
+                      <a
+                        className="block text-primary hover:underline"
+                        href={`https://t.me/${booking.telegramUsername.replace(/^@/, '')}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {booking.telegramUsername}
+                      </a>
+                    )}
+                    {booking.countryOfResidence && <p className="mt-1 text-muted-foreground">Country: {booking.countryOfResidence}</p>}
+                    {booking.contactPreference && <p className="text-muted-foreground">Preferred: {booking.contactPreference}</p>}
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Trip</p>
+                    <p className="mt-1">{booking.startDate || '?'} to {booking.endDate || '?'}</p>
+                    <p>{booking.participants} participant(s)</p>
+                    <p>{booking.dateFlexibility || 'Fixed dates'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Value</p>
+                    <p className="mt-1 text-lg font-medium">{booking.totalPrice || 'Not calculated'}</p>
+                    <p>{booking.pricePerPerson || 'Price not set'} per person</p>
+                  </div>
+                </div>
+                {booking.notes && (
+                  <div className="rounded-md bg-muted p-3 text-sm">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Notes</p>
+                    <p className="mt-1 whitespace-pre-wrap">{booking.notes}</p>
+                  </div>
+                )}
+                <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 text-xs text-muted-foreground">
+                  <span>Telegram delivery:</span>
+                  <StatusBadge status={booking.telegramDeliveryStatus} />
+                  {booking.telegramAttempts ? <span>{booking.telegramAttempts} attempt(s)</span> : null}
+                  {booking.telegramError && <span className="text-red-700">{booking.telegramError}</span>}
+                </div>
+              </article>
             ))}
+            {filteredBookings.length === 0 && <EmptyState text="No bookings match these filters." />}
           </div>
         </div>
       )}
@@ -1079,12 +1786,25 @@ export function AdminDashboardPage() {
             <h2 className="text-2xl text-foreground mb-2">User Management</h2>
             <p className="text-muted-foreground text-sm">Assign roles to buyers and sellers.</p>
           </div>
+          <div className="relative max-w-md">
+            <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              aria-label="Search users"
+              className="pl-9"
+              placeholder="Search name, email, or role"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+            />
+          </div>
           <div className="space-y-3">
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <div key={user.id} className="border border-border rounded-lg p-4 flex items-center justify-between admin-row">
                 <div>
                   <p className="text-foreground">{user.name || user.email || 'User'}</p>
                   <p className="text-sm text-muted-foreground">{user.email}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Joined {formatAdminDate(user.createdAt)}
+                  </p>
                 </div>
                 <select
                   className="h-9 rounded-md border border-border bg-card px-2 text-sm"
@@ -1096,6 +1816,7 @@ export function AdminDashboardPage() {
                 </select>
               </div>
             ))}
+            {filteredUsers.length === 0 && <EmptyState text="No users match this search." />}
           </div>
         </div>
       )}
@@ -1149,10 +1870,11 @@ export function AdminDashboardPage() {
               />
             </div>
             <Button
-              onClick={() => updateContentSettings(contentSettings)}
+              onClick={handleSaveContent}
+              disabled={savingTarget === 'content'}
               className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              Save Content
+              {savingTarget === 'content' ? 'Saving content...' : 'Save Content'}
             </Button>
           </div>
         </div>
@@ -1204,29 +1926,82 @@ export function AdminDashboardPage() {
       {activeTab === 'feedback' && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl text-foreground mb-2">Feedback Responses</h2>
-            <p className="text-muted-foreground text-sm">
-              Respond to traveler feedback and highlight helpful comments.
+            <h2 className="mb-2 text-2xl text-foreground">Review moderation</h2>
+            <p className="text-sm text-muted-foreground">
+              Reply to traveler reviews and choose which ones are published on the website.
             </p>
           </div>
           <div className="space-y-4">
             {feedbackEntries.map((entry) => (
               <div key={entry.id} className="border border-border rounded-lg p-4 space-y-3 admin-row">
-                <div>
-                  <p className="text-foreground font-medium">{entry.name}</p>
-                  <p className="text-sm text-muted-foreground">{entry.comments}</p>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium text-foreground">{entry.name}</p>
+                      <span className="text-amber-600">{'★'.repeat(Math.max(1, Math.min(5, entry.rating || 5)))}</span>
+                      <StatusBadge status={entry.isPublished ? 'published' : 'pending'} />
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Submitted {formatAdminDate(entry.createdAt)}
+                    </p>
+                  </div>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(entry.isPublished)}
+                      onChange={(event) =>
+                        handleFeedbackResponseChange(
+                          entry.id,
+                          entry.adminResponse || '',
+                          event.target.checked
+                        )
+                      }
+                    />
+                    Publish
+                  </label>
                 </div>
+                <p className="rounded-md bg-muted p-3 text-sm text-foreground">{entry.comments}</p>
                 <div>
                   <Label htmlFor={`feedback-${entry.id}`}>Admin Response</Label>
                   <Textarea
                     id={`feedback-${entry.id}`}
                     rows={2}
-                    defaultValue={entry.adminResponse || ''}
-                    onBlur={(event) => handleFeedbackResponseChange(entry.id, event.target.value)}
+                    value={entry.adminResponse || ''}
+                    placeholder="Write a public response from Go Kyrgyzstan Travel"
+                    onChange={(event) =>
+                      setFeedbackEntries((current) =>
+                        current.map((item) =>
+                          item.id === entry.id
+                            ? { ...item, adminResponse: event.target.value }
+                            : item
+                        )
+                      )
+                    }
+                    onBlur={(event) =>
+                      handleFeedbackResponseChange(
+                        entry.id,
+                        event.target.value,
+                        entry.isPublished
+                      )
+                    }
                   />
                 </div>
+                <label
+                  htmlFor="tourIsHot"
+                  className="flex min-h-11 items-center gap-3 rounded-md border border-border bg-muted/30 px-3 text-sm text-foreground"
+                >
+                  <input
+                    id="tourIsHot"
+                    type="checkbox"
+                    checked={tourForm.isHot}
+                    onChange={(event) => setTourForm({ ...tourForm, isHot: event.target.checked })}
+                    className="h-4 w-4 accent-primary"
+                  />
+                  Show in Hot tours on home
+                </label>
               </div>
             ))}
+            {feedbackEntries.length === 0 && <EmptyState text="No traveler reviews yet." />}
           </div>
         </div>
       )}

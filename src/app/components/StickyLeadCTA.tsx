@@ -1,11 +1,14 @@
 import { MessageCircle } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
+import { localizedPath, useSiteLocale } from '../lib/locale';
 
 export function StickyLeadCTA() {
   const { pathname } = useLocation();
+  const locale = useSiteLocale();
+  const isRussian = locale === 'ru';
   const hiddenRoutes = ['/feedback', '/admin', '/auth', '/dashboard'];
-  const shouldHide = hiddenRoutes.some((route) => pathname.startsWith(route));
+  const shouldHide = hiddenRoutes.some((route) => pathname === route || pathname.startsWith(`/ru${route}`));
 
   if (shouldHide) {
     return null;
@@ -19,17 +22,17 @@ export function StickyLeadCTA() {
             <MessageCircle className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-foreground">Need help choosing?</p>
-            <p className="truncate text-xs text-muted-foreground">Leave Telegram or phone.</p>
+            <p className="truncate text-sm font-medium text-foreground">{isRussian ? 'Нужна помощь с выбором?' : 'Need help choosing?'}</p>
+            <p className="truncate text-xs text-muted-foreground">{isRussian ? 'Оставьте Telegram или телефон.' : 'Leave Telegram or phone.'}</p>
           </div>
         </div>
         <Button asChild className="btn-micro btn-action shrink-0">
           <Link
-            to="/feedback"
+            to={localizedPath('/feedback', locale)}
             data-track-event="sticky_mobile_lead_click"
             data-track-label="Mobile sticky lead CTA"
           >
-            Request
+            {isRussian ? 'Заявка' : 'Request'}
           </Link>
         </Button>
       </div>

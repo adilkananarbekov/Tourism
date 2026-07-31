@@ -6,6 +6,7 @@
   --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --motion-lift: 6px;
+  --journey-cycle: 14s;
 }
 
 @keyframes fade-up {
@@ -48,13 +49,18 @@
 }
 
 .reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal.reveal-armed {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(18px);
   transition: opacity var(--motion-medium) var(--motion-ease-out),
     transform var(--motion-medium) var(--motion-ease-out);
 }
 
-.reveal-visible {
+.reveal.reveal-armed.reveal-visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -74,7 +80,7 @@
 
 .card-hover:hover {
   transform: translateY(calc(var(--motion-lift) * -1));
-  box-shadow: 0 20px 40px rgba(11, 60, 93, 0.18);
+  box-shadow: 0 20px 40px rgba(38, 76, 62, 0.18);
 }
 
 .card-hover .card-media {
@@ -105,7 +111,7 @@
 .btn-micro:hover {
   transform: translateY(-1px);
   filter: brightness(1.03);
-  box-shadow: 0 10px 24px rgba(11, 60, 93, 0.16);
+  box-shadow: 0 10px 24px rgba(38, 76, 62, 0.16);
 }
 
 .btn-micro:active {
@@ -113,40 +119,583 @@
   filter: brightness(0.98);
 }
 
+/* Decorative motion is intentionally limited to transform and opacity. This keeps it smooth
+   on ordinary mobile hardware and avoids a JavaScript animation runtime. */
+@keyframes atmosphere-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, -5%, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-3%, 3%, 0) scale(0.98);
+  }
+}
+
+@keyframes compass-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes compass-needle {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-18deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(18deg);
+  }
+}
+
+@keyframes journey-route {
+  0%,
+  100% {
+    transform: rotate(var(--route-tilt, -20deg)) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: rotate(var(--route-tilt, -20deg)) translate3d(2%, -8%, 0);
+  }
+}
+
+@keyframes journey-marker {
+  0%,
+  12% {
+    transform: translate3d(0, 0, 0) scale(0.9);
+    opacity: 0;
+  }
+  24% {
+    opacity: 1;
+  }
+  76% {
+    opacity: 1;
+  }
+  88%,
+  100% {
+    transform: translate3d(var(--marker-distance, 280px), -6px, 0) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes transition-breathe {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleX(0.92);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(-50%) scaleX(1.05);
+    opacity: 0.56;
+  }
+}
+
+@keyframes transition-dot {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.85);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate3d(12px, -3px, 0) scale(1.12);
+    opacity: 0.9;
+  }
+}
+
+.home-flow {
+  overflow: clip;
+}
+
+.hero-surface {
+  background: #e9ddc9;
+}
+
+.hero-main-photo {
+  filter: brightness(1.22) saturate(0.88) sepia(0.1);
+}
+
+.hero-wash {
+  background:
+    linear-gradient(124deg, rgba(38, 76, 62, 0.36) 0%, rgba(83, 112, 88, 0.16) 49%, rgba(185, 95, 66, 0.16) 100%),
+    linear-gradient(to bottom, rgba(255, 247, 231, 0.24), rgba(255, 247, 231, 0.04) 48%, rgba(255, 247, 231, 0.2));
+}
+
+.hero-content {
+  text-shadow: none;
+}
+
+.hero-copy {
+  margin-inline: auto;
+  max-width: 54rem;
+  padding: clamp(1.35rem, 3vw, 2.5rem);
+  border: 1px solid rgba(255, 253, 248, 0.8);
+  border-radius: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 253, 248, 0.9), rgba(246, 235, 215, 0.78));
+  box-shadow: 0 22px 52px rgba(38, 76, 62, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.hero-copy h1 {
+  color: var(--foreground) !important;
+}
+
+.hero-copy p {
+  color: color-mix(in srgb, var(--foreground) 78%, var(--muted-foreground)) !important;
+}
+
+.hero-copy .hero-eyebrow {
+  color: var(--secondary) !important;
+}
+
+.hero-search {
+  border: 1px solid rgba(255, 253, 248, 0.72);
+  background: rgba(255, 253, 248, 0.88);
+  box-shadow: 0 18px 40px rgba(25, 57, 41, 0.22);
+  backdrop-filter: blur(14px);
+}
+
+.hero-search-icon {
+  color: var(--primary);
+}
+
+.hero-search-input {
+  color: var(--foreground);
+}
+
+.hero-search-input::placeholder {
+  color: color-mix(in srgb, var(--muted-foreground) 84%, transparent);
+}
+
+.hero-trust-chip {
+  border: 1px solid rgba(255, 253, 248, 0.34);
+  background: rgba(29, 61, 46, 0.48);
+}
+
+.hero-outline-action {
+  border-color: rgba(255, 253, 248, 0.62);
+  background: rgba(255, 253, 248, 0.14);
+  color: #fffdf8;
+  text-shadow: none;
+}
+
+.hero-outline-action:hover {
+  border-color: rgba(255, 253, 248, 0.9);
+  background: rgba(255, 253, 248, 0.24);
+  color: #fffdf8;
+}
+
+.dark .hero-main-photo {
+  filter: brightness(0.84) saturate(0.84);
+}
+
+.dark .hero-wash {
+  background: linear-gradient(to bottom, rgba(7, 16, 11, 0.56), rgba(10, 24, 16, 0.28) 48%, rgba(7, 16, 11, 0.68));
+}
+
+.dark .hero-search {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(14, 26, 18, 0.62);
+}
+
+.dark .hero-content {
+  text-shadow: 0 2px 24px rgba(7, 16, 11, 0.42);
+}
+
+.dark .hero-copy {
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.dark .hero-copy h1 {
+  color: #ffffff !important;
+}
+
+.dark .hero-copy p {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.dark .hero-copy .hero-eyebrow {
+  color: #f1d09d !important;
+}
+
+.dark .hero-search-icon {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.dark .hero-search-input {
+  color: #fffdf8;
+}
+
+.dark .hero-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dark .hero-trust-chip {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.hero-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+.hero-atmosphere__orb {
+  position: absolute;
+  display: block;
+  width: clamp(16rem, 30vw, 34rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  opacity: 0.24;
+  will-change: transform;
+  animation: atmosphere-drift var(--journey-cycle) ease-in-out infinite alternate;
+}
+
+.hero-atmosphere__orb--teal {
+  top: -13rem;
+  left: -10rem;
+  background: radial-gradient(circle, rgba(154, 190, 139, 0.8) 0%, rgba(62, 105, 78, 0.25) 45%, transparent 72%);
+}
+
+.hero-atmosphere__orb--sunset {
+  right: -13rem;
+  bottom: -16rem;
+  background: radial-gradient(circle, rgba(229, 150, 105, 0.78) 0%, rgba(177, 85, 57, 0.23) 48%, transparent 74%);
+  animation-delay: -8s;
+  animation-duration: var(--journey-cycle);
+}
+
+.hero-atmosphere__compass {
+  position: absolute;
+  right: clamp(1.5rem, 8vw, 9rem);
+  top: clamp(2rem, 12vh, 7rem);
+  display: block;
+  width: clamp(8rem, 15vw, 13rem);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 11px rgba(255, 255, 255, 0.035), 0 0 0 1px rgba(237, 194, 145, 0.16);
+  opacity: 0.58;
+  will-change: transform;
+  animation: compass-orbit 48s linear infinite;
+}
+
+.hero-atmosphere__compass::before,
+.hero-atmosphere__compass::after {
+  position: absolute;
+  content: '';
+  top: 50%;
+  left: 50%;
+  display: block;
+  background: rgba(255, 255, 255, 0.32);
+  transform: translate(-50%, -50%);
+}
+
+.hero-atmosphere__compass::before {
+  width: 72%;
+  height: 1px;
+}
+
+.hero-atmosphere__compass::after {
+  width: 1px;
+  height: 72%;
+}
+
+.hero-atmosphere__needle {
+  position: absolute;
+  top: 16%;
+  left: 50%;
+  display: block;
+  width: 2px;
+  height: 37%;
+  transform-origin: 50% 100%;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.2), rgba(225, 137, 97, 0.96));
+  box-shadow: 0 0 16px rgba(225, 137, 97, 0.62);
+  will-change: transform;
+  animation: compass-needle 8s ease-in-out infinite;
+}
+
+.hero-atmosphere__route {
+  position: absolute;
+  left: clamp(-10rem, 4vw, 5rem);
+  bottom: clamp(2rem, 8vh, 5rem);
+  display: block;
+  width: min(43vw, 32rem);
+  height: 8rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  opacity: 0.62;
+  will-change: transform;
+  --route-tilt: -20deg;
+  animation: journey-route var(--journey-cycle) ease-in-out infinite;
+}
+
+.hero-atmosphere__marker,
+.cta-route__marker {
+  position: absolute;
+  display: block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  background: #c86b4a;
+  box-shadow: 0 0 0 5px rgba(200, 107, 74, 0.18), 0 0 18px rgba(229, 150, 105, 0.82);
+  will-change: transform, opacity;
+}
+
+.hero-atmosphere__marker {
+  top: -0.35rem;
+  left: 1.2rem;
+  animation: journey-marker var(--journey-cycle) ease-in-out infinite;
+}
+
+.section-transition {
+  position: relative;
+  z-index: 5;
+  height: 0;
+  pointer-events: none;
+}
+
+.section-transition__glow {
+  position: absolute;
+  top: -2.25rem;
+  left: 50%;
+  display: block;
+  width: min(70vw, 54rem);
+  height: 4.5rem;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--secondary) 32%, transparent), transparent 69%);
+  opacity: 0.42;
+  will-change: transform, opacity;
+  animation: transition-breathe var(--journey-cycle) ease-in-out infinite;
+}
+
+.section-transition__line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: min(72vw, 58rem);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--secondary) 62%, white), var(--primary), color-mix(in srgb, var(--secondary) 62%, white), transparent);
+  opacity: 0.62;
+}
+
+.section-transition__dot {
+  position: absolute;
+  top: -0.25rem;
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--secondary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--secondary) 20%, transparent), 0 0 14px color-mix(in srgb, var(--secondary) 58%, transparent);
+  will-change: transform, opacity;
+  animation: transition-dot var(--journey-cycle) ease-in-out infinite;
+}
+
+.section-transition__dot--left {
+  left: 18%;
+}
+
+.section-transition__dot--right {
+  right: 18%;
+  animation-delay: -3s;
+}
+
+.section-transition--reverse .section-transition__glow {
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--primary) 28%, transparent), transparent 69%);
+  animation-delay: -7s;
+}
+
+.section-transition--reverse .section-transition__dot {
+  background: var(--primary);
+}
+
+.cta-orb,
+.cta-route {
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cta-orb {
+  animation: atmosphere-drift var(--journey-cycle) ease-in-out infinite alternate;
+}
+
+.cta-orb--mist {
+  animation-delay: -7s;
+}
+
+.cta-route {
+  position: absolute;
+  right: -4rem;
+  bottom: 1rem;
+  z-index: 1;
+  width: min(34vw, 29rem);
+  height: 8rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.46);
+  border-radius: 50%;
+  opacity: 0.72;
+  --route-tilt: -13deg;
+  animation: journey-route var(--journey-cycle) ease-in-out infinite;
+}
+
+.cta-route__marker {
+  top: -0.35rem;
+  left: 1.2rem;
+  --marker-distance: 220px;
+  animation: journey-marker var(--journey-cycle) ease-in-out infinite;
+}
+
+/* The seam is part of its section: it starts only when the matching content enters. */
+.reveal-armed .section-transition__glow,
+.reveal-armed .section-transition__dot {
+  animation-play-state: paused;
+}
+
+.reveal-armed.reveal-visible .section-transition__glow,
+.reveal-armed.reveal-visible .section-transition__dot {
+  animation-play-state: running;
+}
+
+/* Applied by the shared Button component, so every meaningful action has the same feedback. */
+.btn-interactive {
+  transform: translateZ(0);
+  transition: transform var(--motion-short) var(--motion-spring),
+    box-shadow var(--motion-short) var(--motion-ease-out),
+    filter var(--motion-short) var(--motion-ease-out),
+    background-color var(--motion-short) var(--motion-ease-out),
+    border-color var(--motion-short) var(--motion-ease-out);
+}
+
+.btn-interactive svg {
+  transition: transform var(--motion-short) var(--motion-spring);
+}
+
+@media (hover: hover) {
+  .btn-interactive:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.01);
+    filter: brightness(1.04);
+    box-shadow: 0 12px 26px rgba(38, 76, 62, 0.2);
+  }
+
+  .btn-interactive:hover:not(:disabled) svg {
+    transform: translateX(2px);
+  }
+}
+
+.btn-interactive:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  filter: brightness(0.98);
+}
+
+.btn-interactive:focus-visible {
+  transform: translateY(-1px);
+}
+
+/* Use on cards that contain a clear route, guide, or next-step link. */
+.interactive-card {
+  border-color: var(--border);
+  transition: transform var(--motion-short) var(--motion-spring),
+    border-color var(--motion-short) var(--motion-ease-out),
+    box-shadow var(--motion-short) var(--motion-ease-out),
+    background-color var(--motion-short) var(--motion-ease-out);
+}
+
+@media (hover: hover) {
+  .interactive-card:hover {
+    border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+    box-shadow: 0 18px 36px rgba(38, 76, 62, 0.16);
+  }
+}
+
+.interactive-card:focus-within {
+  border-color: color-mix(in srgb, var(--primary) 58%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent),
+    0 18px 36px rgba(38, 76, 62, 0.12);
+}
+
+.card-title-link,
+.card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 0.25rem;
+  transition: color var(--motion-short) var(--motion-ease-out),
+    transform var(--motion-short) var(--motion-spring);
+}
+
+.card-title-link svg,
+.card-cta svg {
+  transition: transform var(--motion-short) var(--motion-spring);
+}
+
+@media (hover: hover) {
+  .card-title-link:hover,
+  .card-cta:hover {
+    color: var(--primary);
+  }
+
+  .interactive-card:hover .card-title-link svg,
+  .card-title-link:hover svg,
+  .card-cta:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+.card-title-link:focus-visible,
+.card-cta:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 30%, transparent);
+  outline-offset: 3px;
+}
+
 .btn-action {
   border: 0;
-  background: linear-gradient(135deg, #0f766e 0%, #c2410c 100%);
+  background: linear-gradient(135deg, #264c3e 0%, #b95f42 100%);
   color: #ffffff;
-  box-shadow: 0 12px 28px rgba(194, 65, 12, 0.2);
+  box-shadow: 0 12px 28px rgba(185, 95, 66, 0.22);
 }
 
 .btn-action:hover {
-  background: linear-gradient(135deg, #0d9488 0%, #b45309 100%);
+  background: linear-gradient(135deg, #315d4c 0%, #9f4f37 100%);
   color: #ffffff;
 }
 
 .btn-action-outline {
-  border-color: rgba(194, 65, 12, 0.42);
-  background: rgba(194, 65, 12, 0.08);
-  color: #9a3412;
+  border-color: rgba(185, 95, 66, 0.42);
+  background: rgba(185, 95, 66, 0.08);
+  color: #8d432e;
 }
 
 .btn-action-outline:hover {
-  border-color: rgba(15, 118, 110, 0.48);
-  background: rgba(15, 118, 110, 0.1);
-  color: #0f766e;
+  border-color: rgba(38, 76, 62, 0.48);
+  background: rgba(38, 76, 62, 0.1);
+  color: #264c3e;
 }
 
 .dark .btn-action-outline {
-  border-color: rgba(251, 146, 60, 0.42);
-  background: rgba(251, 146, 60, 0.1);
-  color: #fdba74;
+  border-color: rgba(221, 138, 100, 0.42);
+  background: rgba(221, 138, 100, 0.1);
+  color: #f0b18e;
 }
 
 .dark .btn-action-outline:hover {
-  border-color: rgba(45, 212, 191, 0.48);
-  background: rgba(45, 212, 191, 0.1);
-  color: #5eead4;
+  border-color: rgba(131, 173, 138, 0.5);
+  background: rgba(131, 173, 138, 0.12);
+  color: #b9d2ad;
 }
 
 .nav-link {
@@ -418,6 +967,25 @@
     background-attachment: scroll;
   }
 
+  .hero-atmosphere__compass {
+    right: -2.5rem;
+    top: 3rem;
+    opacity: 0.36;
+  }
+
+  .hero-atmosphere__route {
+    width: 60vw;
+    opacity: 0.45;
+  }
+
+  .section-transition__dot--left {
+    left: 9%;
+  }
+
+  .section-transition__dot--right {
+    right: 9%;
+  }
+
   .reveal,
   .stagger-item {
     opacity: 1;
@@ -428,6 +996,37 @@
 }
 
 @media (max-width: 640px) {
+  .hero-atmosphere__compass {
+    display: none;
+  }
+
+  .hero-atmosphere__orb {
+    opacity: 0.16;
+  }
+
+  .hero-atmosphere__route {
+    bottom: 1rem;
+    width: 74vw;
+  }
+
+  .section-transition__glow,
+  .section-transition__line {
+    width: 88vw;
+  }
+
+  .section-transition__dot--left {
+    left: 4%;
+  }
+
+  .section-transition__dot--right {
+    right: 4%;
+  }
+
+  .cta-route {
+    width: 62vw;
+    right: -7rem;
+  }
+
   .admin-shell input,
   .admin-shell textarea,
   .admin-shell select {
@@ -469,6 +1068,13 @@
   .card-hover,
   .card-hover .card-media,
   .btn-micro,
+  .btn-interactive,
+  .btn-interactive svg,
+  .interactive-card,
+  .card-title-link,
+  .card-title-link svg,
+  .card-cta,
+  .card-cta svg,
   .auth-hero,
   .auth-panel,
   .auth-input-icon,
@@ -478,6 +1084,20 @@
     animation: none !important;
     transition: none !important;
     transform: none !important;
+  }
+
+  .hero-atmosphere__orb,
+  .hero-atmosphere__compass,
+  .hero-atmosphere__needle,
+  .hero-atmosphere__route,
+  .hero-atmosphere__marker,
+  .section-transition__glow,
+  .section-transition__dot,
+  .cta-orb,
+  .cta-route,
+  .cta-route__marker {
+    animation: none !important;
+    transition: none !important;
   }
 
   .hero-parallax {

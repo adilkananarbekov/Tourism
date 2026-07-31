@@ -1,21 +1,33 @@
 import {
   apiEnabled,
   createApiBlogPost,
+  createApiFeedback,
+  createApiSellerSubmission,
   createApiSight,
   createApiTour,
   deleteApiBlogPost,
   deleteApiSight,
   deleteApiTour,
   fetchApiBlogPosts,
+  fetchApiAdminBlogPosts,
   fetchApiContentSettings,
   fetchApiAdminGuestRequests,
+  fetchApiAdminFeedback,
+  fetchApiAdminSellerSubmissions,
+  fetchApiAdminUsers,
   fetchApiAdminTours,
   fetchApiSights,
+  fetchApiAdminSights,
   fetchApiTours,
+  fetchApiUserBookings,
+  fetchApiSellerSubmissions,
   updateApiBlogPost,
   updateApiContentSettings,
   updateApiSight,
   updateApiAdminGuestRequestStatus,
+  updateApiAdminFeedback,
+  updateApiAdminSellerSubmissionStatus,
+  updateApiAdminUserRole,
   updateApiTour,
   submitApiBookingRequest,
   submitApiCustomTourRequest,
@@ -35,6 +47,8 @@ export interface CustomTourRequest {
   pace: string;
   accommodation: string;
   name: string;
+  countryOfResidence: string;
+  contactPreference: string;
   email: string;
   telegramUsername?: string;
   phone: string;
@@ -42,12 +56,20 @@ export interface CustomTourRequest {
   specialRequests: string;
   userId?: string;
   status?: string;
+  telegramDeliveryStatus?: string;
+  telegramAttempts?: number;
+  telegramSentAt?: string;
+  telegramError?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface BookingRequest {
   tourId: number;
   tourTitle: string;
   name: string;
+  countryOfResidence: string;
+  contactPreference: string;
   email: string;
   telegramUsername?: string;
   phone: string;
@@ -60,6 +82,12 @@ export interface BookingRequest {
   totalPrice: string;
   userId?: string;
   status?: string;
+  telegramDeliveryStatus?: string;
+  telegramAttempts?: number;
+  telegramSentAt?: string;
+  telegramError?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Sight {
@@ -72,10 +100,20 @@ export interface Sight {
 
 export interface BlogPost {
   id: string;
+  slug?: string;
   title: string;
   excerpt: string;
   content: string;
   coverImage?: string;
+  category?: string;
+  readTime?: string;
+  status?: 'draft' | 'published' | 'archived';
+  featured?: boolean;
+  publishedAt?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface FeedbackEntry {
@@ -84,6 +122,10 @@ export interface FeedbackEntry {
   rating: number;
   comments: string;
   adminResponse?: string;
+  isPublished?: boolean;
+  userId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface UserRecord {
@@ -91,6 +133,8 @@ export interface UserRecord {
   name?: string;
   email?: string;
   role?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface SellerSubmission {
@@ -108,6 +152,8 @@ export interface SellerSubmission {
   contactEmail: string;
   ownerId?: string;
   status: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ContentSettings {
@@ -189,6 +235,10 @@ function fromApiGuestRequest<T extends object>(request: ApiGuestRequest): Stored
     ...(request.payload as T),
     id: request.id,
     status: request.status || 'pending',
+    telegramDeliveryStatus: request.telegram_delivery_status || 'waiting',
+    telegramAttempts: request.telegram_attempts || 0,
+    telegramSentAt: request.telegram_sent_at || '',
+    telegramError: request.telegram_error || '',
     createdAt: request.created_at,
     updatedAt: request.updated_at,
   };
@@ -344,6 +394,14 @@ export async function fetchSights(): Promise<Sight[]> {
   return readCollection<Sight>('sights').sort((a, b) => a.name.localeCompare(b.name));
 }
 
+export async function fetchAdminSights(): Promise<Sight[]> {
+  if (apiEnabled) {
+    return (await fetchApiAdminSights()).sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  return fetchSights();
+}
+
 export async function createSight(sight: Omit<Sight, 'id'>) {
   if (apiEnabled) {
     await createApiSight(sight);
@@ -385,6 +443,14 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
   }
 
   return sortNewest(readCollection<Stored<BlogPost>>('blogPosts'));
+}
+
+export async function fetchAdminBlogPosts(): Promise<BlogPost[]> {
+  if (apiEnabled) {
+    return sortNewest(await fetchApiAdminBlogPosts());
+  }
+
+  return fetchBlogPosts();
 }
 
 export async function createBlogPost(post: Omit<BlogPost, 'id'>) {
@@ -513,6 +579,10 @@ export async function fetchBookingsByEmail(email: string): Promise<Array<Booking
 }
 
 export async function fetchBookingsByUserId(userId: string): Promise<Array<BookingRequest & { id: string }>> {
+  if (apiEnabled) {
+    const requests = await fetchApiUserBookings();
+    return sortNewest(requests.map((request) => fromApiGuestRequest<BookingRequest>(request)));
+  }
   return sortNewest(readCollection<Stored<BookingRequest>>('bookings').filter((booking) => booking.userId === userId));
 }
 
@@ -532,6 +602,10 @@ export function subscribeBookingsByUserId(
   onData: (bookings: Array<BookingRequest & { id: string }>) => void,
   onError?: (error: Error) => void
 ) {
+  if (apiEnabled) {
+    return subscribeToRemote(() => fetchBookingsByUserId(userId), onData, onError);
+  }
+
   return subscribeToCollection(
     'bookings',
     () => sortNewest(readCollection<Stored<BookingRequest>>('bookings').filter((booking) => booking.userId === userId)),
@@ -554,11 +628,18 @@ export async function updateBookingStatus(bookingId: string, status: string) {
 }
 
 export async function submitFeedback(data: Omit<FeedbackEntry, 'id'>) {
+  if (apiEnabled) {
+    await createApiFeedback(data);
+    return;
+  }
   const entry: Stored<FeedbackEntry> = { ...data, id: createId(), createdAt: now() };
   writeCollection('feedback', [entry, ...readCollection<Stored<FeedbackEntry>>('feedback')]);
 }
 
 export async function fetchFeedbackEntries(): Promise<FeedbackEntry[]> {
+  if (apiEnabled) {
+    return sortNewest(await fetchApiAdminFeedback());
+  }
   return sortNewest(readCollection<Stored<FeedbackEntry>>('feedback'));
 }
 
@@ -566,18 +647,38 @@ export function subscribeFeedbackEntries(
   onData: (entries: FeedbackEntry[]) => void,
   onError?: (error: Error) => void
 ) {
+  if (apiEnabled) {
+    return subscribeToRemote(fetchFeedbackEntries, onData, onError);
+  }
   return subscribeToCollection('feedback', () => sortNewest(readCollection<Stored<FeedbackEntry>>('feedback')), onData, onError);
 }
 
-export async function updateFeedbackResponse(feedbackId: string, adminResponse: string) {
+export async function updateFeedbackResponse(
+  feedbackId: string,
+  adminResponse: string,
+  isPublished?: boolean
+) {
+  if (apiEnabled) {
+    await updateApiAdminFeedback(feedbackId, { adminResponse, isPublished });
+    return;
+  }
   const items = readCollection<Stored<FeedbackEntry>>('feedback');
   writeCollection(
     'feedback',
-    items.map((item) => (item.id === feedbackId ? { ...item, adminResponse, updatedAt: now() } : item))
+    items.map((item) =>
+      item.id === feedbackId
+        ? { ...item, adminResponse, isPublished: isPublished ?? item.isPublished, updatedAt: now() }
+        : item
+    )
   );
 }
 
 export async function fetchUsers(): Promise<UserRecord[]> {
+  if (apiEnabled) {
+    return (await fetchApiAdminUsers()).sort((a, b) =>
+      String(a.email || '').localeCompare(String(b.email || ''))
+    );
+  }
   return readCollection<UserRecord>('users').sort((a, b) => String(a.email || '').localeCompare(String(b.email || '')));
 }
 
@@ -612,6 +713,10 @@ export async function upsertUserProfile(data: {
 }
 
 export async function updateUserRole(userId: string, role: string) {
+  if (apiEnabled) {
+    await updateApiAdminUserRole(userId, role);
+    return;
+  }
   const users = readCollection<Stored<UserRecord>>('users');
   writeCollection(
     'users',
@@ -620,6 +725,10 @@ export async function updateUserRole(userId: string, role: string) {
 }
 
 export async function submitSellerTour(data: Omit<SellerSubmission, 'id' | 'status'>) {
+  if (apiEnabled) {
+    await createApiSellerSubmission(data);
+    return;
+  }
   const entry: Stored<SellerSubmission> = {
     ...data,
     id: createId(),
@@ -639,6 +748,9 @@ export async function submitSellerTour(data: Omit<SellerSubmission, 'id' | 'stat
 }
 
 export async function fetchSellerSubmissions(): Promise<SellerSubmission[]> {
+  if (apiEnabled) {
+    return sortNewest(await fetchApiAdminSellerSubmissions());
+  }
   return sortNewest(readCollection<Stored<SellerSubmission>>('sellerSubmissions'));
 }
 
@@ -646,6 +758,9 @@ export function subscribeSellerSubmissions(
   onData: (submissions: SellerSubmission[]) => void,
   onError?: (error: Error) => void
 ) {
+  if (apiEnabled) {
+    return subscribeToRemote(fetchSellerSubmissions, onData, onError);
+  }
   return subscribeToCollection('sellerSubmissions', () => sortNewest(readCollection<Stored<SellerSubmission>>('sellerSubmissions')), onData, onError);
 }
 
@@ -659,6 +774,9 @@ export async function fetchSellerSubmissionsByEmail(email: string): Promise<Sell
 }
 
 export async function fetchSellerSubmissionsByOwnerId(userId: string): Promise<SellerSubmission[]> {
+  if (apiEnabled) {
+    return sortNewest(await fetchApiSellerSubmissions());
+  }
   return sortNewest(readCollection<Stored<SellerSubmission>>('sellerSubmissions').filter((submission) => submission.ownerId === userId));
 }
 
@@ -667,6 +785,9 @@ export function subscribeSellerSubmissionsByOwnerId(
   onData: (submissions: SellerSubmission[]) => void,
   onError?: (error: Error) => void
 ) {
+  if (apiEnabled) {
+    return subscribeToRemote(() => fetchSellerSubmissionsByOwnerId(userId), onData, onError);
+  }
   return subscribeToCollection(
     'sellerSubmissions',
     () => sortNewest(readCollection<Stored<SellerSubmission>>('sellerSubmissions').filter((submission) => submission.ownerId === userId)),
@@ -676,6 +797,10 @@ export function subscribeSellerSubmissionsByOwnerId(
 }
 
 export async function updateSellerSubmissionStatus(submissionId: string, status: string) {
+  if (apiEnabled) {
+    await updateApiAdminSellerSubmissionStatus(submissionId, status);
+    return;
+  }
   const items = readCollection<Stored<SellerSubmission>>('sellerSubmissions');
   writeCollection(
     'sellerSubmissions',

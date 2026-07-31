@@ -8,10 +8,25 @@ import {
   WHATSAPP_DISPLAY,
   WHATSAPP_URL,
 } from '../lib/contact';
+import { localizedPath, useSiteLocale } from '../lib/locale';
 
 export function Footer() {
+  const locale = useSiteLocale();
+  const isRussian = locale === 'ru';
+  const path = (value: string) => localizedPath(value, locale);
+  const text = isRussian
+    ? {
+        intro: `Частные туры по Кыргызстану с ${FOUNDER_NAME}.`, request: 'Оставить заявку', quick: 'Навигация', tours: 'Наши туры', contact: 'Контакты',
+        allTours: 'Все туры', gallery: 'Галерея', stories: 'Путеводители', contactLink: 'Связаться', form: 'Форма заявки', reply: 'Обычно отвечаем в течение 24 часов',
+        songKul: 'Экспедиция к Сон-Кулю', silkRoad: 'Шёлковый путь', horse: 'Конная экспедиция', lenin: 'Пик Ленина', issykKul: 'Маршрут вокруг Иссык-Куля', rights: 'Все права защищены.',
+      }
+    : {
+        intro: `Private Kyrgyzstan tours planned by ${FOUNDER_NAME}.`, request: 'Start a trip request', quick: 'Quick Links', tours: 'Popular Tours', contact: 'Contact Us',
+        allTours: 'Our Tours', gallery: 'Gallery', stories: 'Travel Stories', contactLink: 'Contact', form: 'Trip request form', reply: 'Usually within 24 hours',
+        songKul: 'Song-Kul Lake Expedition', silkRoad: 'Silk Road Heritage', horse: 'Horse Riding Adventure', lenin: 'Peak Lenin Trek', issykKul: 'Issyk-Kul Circuit', rights: 'All rights reserved.',
+      };
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-[#064e3b] text-primary-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -22,45 +37,30 @@ export function Footer() {
               </div>
               <span className="text-xl">Go Kyrgyzstan Travel</span>
             </div>
-            <p className="text-primary-foreground/70 text-sm mb-4">
-              Private Kyrgyzstan tours planned by {FOUNDER_NAME}.
-            </p>
+            <p className="text-primary-foreground/70 text-sm mb-4">{text.intro}</p>
             <Link
-              to="/feedback"
+              to={path('/feedback')}
               className="inline-flex items-center gap-2 text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
             >
               <Send className="h-4 w-4" />
-              Start a trip request
+              {text.request}
             </Link>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg mb-4">Quick Links</h3>
+            <h3 className="text-lg mb-4">{text.quick}</h3>
             <ul className="space-y-2 text-primary-foreground/70 text-sm">
               <li>
-                <Link to="/tours" className="hover:text-primary-foreground transition-colors">
-                  Our Tours
+                <Link to={path('/tours')} className="hover:text-primary-foreground transition-colors">
+                  {text.allTours}
                 </Link>
               </li>
+              {!isRussian && <li><Link to="/gallery" className="hover:text-primary-foreground transition-colors">{text.gallery}</Link></li>}
+              {!isRussian && <li><Link to="/blogs" className="hover:text-primary-foreground transition-colors">{text.stories}</Link></li>}
               <li>
-                <Link to="/gallery" className="hover:text-primary-foreground transition-colors">
-                  Gallery
-                </Link>
-              </li>
-              <li>
-                <a href="/#founder" className="hover:text-primary-foreground transition-colors">
-                  Founder
-                </a>
-              </li>
-              <li>
-                <Link to="/blogs" className="hover:text-primary-foreground transition-colors">
-                  Travel Stories
-                </Link>
-              </li>
-              <li>
-                <Link to="/feedback" className="hover:text-primary-foreground transition-colors">
-                  Contact
+                <Link to={path('/feedback')} className="hover:text-primary-foreground transition-colors">
+                  {text.contactLink}
                 </Link>
               </li>
             </ul>
@@ -68,31 +68,31 @@ export function Footer() {
 
           {/* Tours */}
           <div>
-            <h3 className="text-lg mb-4">Popular Tours</h3>
+            <h3 className="text-lg mb-4">{text.tours}</h3>
             <ul className="space-y-2 text-primary-foreground/70 text-sm">
               <li>
-                <Link to="/tours/1" className="hover:text-primary-foreground transition-colors">
-                  Song-Kul Lake Expedition
+                <Link to={path('/tours/1')} className="hover:text-primary-foreground transition-colors">
+                  {text.songKul}
                 </Link>
               </li>
               <li>
-                <Link to="/tours/3" className="hover:text-primary-foreground transition-colors">
-                  Silk Road Heritage
+                <Link to={path('/tours/3')} className="hover:text-primary-foreground transition-colors">
+                  {text.silkRoad}
                 </Link>
               </li>
               <li>
-                <Link to="/tours/4" className="hover:text-primary-foreground transition-colors">
-                  Horse Riding Adventure
+                <Link to={path('/tours/4')} className="hover:text-primary-foreground transition-colors">
+                  {text.horse}
                 </Link>
               </li>
               <li>
-                <Link to="/tours/5" className="hover:text-primary-foreground transition-colors">
-                  Peak Lenin Trek
+                <Link to={path('/tours/5')} className="hover:text-primary-foreground transition-colors">
+                  {text.lenin}
                 </Link>
               </li>
               <li>
-                <Link to="/tours/6" className="hover:text-primary-foreground transition-colors">
-                  Issyk-Kul Circuit
+                <Link to={path('/tours/6')} className="hover:text-primary-foreground transition-colors">
+                  {text.issykKul}
                 </Link>
               </li>
             </ul>
@@ -100,7 +100,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg mb-4">Contact Us</h3>
+            <h3 className="text-lg mb-4">{text.contact}</h3>
             <ul className="space-y-3 text-primary-foreground/70 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="h-5 w-5 flex-shrink-0 mt-0.5" />
@@ -108,8 +108,8 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <Send className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                <Link to="/feedback" className="hover:text-primary-foreground transition-colors">
-                  Trip request form
+                <Link to={path('/feedback')} className="hover:text-primary-foreground transition-colors">
+                  {text.form}
                 </Link>
               </li>
               <li className="flex items-start gap-2">
@@ -147,14 +147,14 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <Clock className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                <span>Usually within 24 hours</span>
+                <span>{text.reply}</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/70 text-sm">
-          <p>&copy; 2025 Go Kyrgyzstan Travel. All rights reserved.</p>
+          <p>&copy; 2025 Go Kyrgyzstan Travel. {text.rights}</p>
         </div>
       </div>
     </footer>

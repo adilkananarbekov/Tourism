@@ -1,127 +1,204 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ArrowRight, BookOpen, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { SEO } from '../components/SEO';
-import { fetchBlogPosts } from '../lib/dataStore';
+import { Button } from '../components/ui/button';
+import { blogPath, fallbackBlogPosts, sortPublishedBlogPosts } from '../data/blogPosts';
+import { fetchBlogPosts, type BlogPost } from '../lib/dataStore';
 import { breadcrumbJsonLd } from '../lib/seo';
+import { withBasePath } from '../lib/assets';
 
-interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  coverImage?: string;
-  createdAt?: string;
+function formatDate(value?: string) {
+  if (!value) {
+    return '';
+  }
+  return new Intl.DateTimeFormat('en', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(value));
 }
 
-const travelVideos = [
-  {
-    id: 'VJ5xZWVb4MI',
-    title: 'Horse Trekking to Song Kol Lake',
-    description: 'A glimpse into nomadic life and the high-alpine pastures of Song Kol.',
-  },
-  {
-    id: 'u6v8T3q7wPc',
-    title: 'Go Kyrgyzstan Travel Guide',
-    description: 'Highlights from Issyk-Kul, Ala-Archa, and the Silk Road heritage.',
-  },
-];
-
 export function BlogsPage() {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<BlogPost[]>(fallbackBlogPosts);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const data = await fetchBlogPosts();
-        setPosts(data);
-      } catch (err) {
-        setErrorMessage(err instanceof Error ? err.message : 'Unable to load blog posts.');
-      } finally {
-        setLoading(false);
-      }
+    let active = true;
+    fetchBlogPosts()
+      .then((data) => {
+        if (active) {
+          setPosts(data);
+        }
+      })
+      .catch((error) => {
+        if (active) {
+          setErrorMessage(error instanceof Error ? error.message : 'Unable to refresh guides.');
+        }
+      });
+    return () => {
+      active = false;
     };
-
-    load();
   }, []);
 
+  const publishedPosts = useMemo(() => sortPublishedBlogPosts(posts), [posts]);
+  const featuredPost = publishedPosts.find((post) => post.featured) || publishedPosts[0];
+  const categories = useMemo(
+    () => ['All', ...new Set(publishedPosts.map((post) => post.category || 'Travel Guide'))],
+    [publishedPosts]
+  );
+  const visiblePosts = publishedPosts.filter(
+    (post) => activeCategory === 'All' || (post.category || 'Travel Guide') === activeCategory
+  );
+
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
+    <section className="bg-background">
       <SEO
         title="Kyrgyzstan Travel Guide"
-        description="Read Kyrgyzstan travel guides, route ideas, culture notes, and trip planning stories for foreign travelers visiting Kyrgyzstan."
+        description="Practical Kyrgyzstan travel guides for Song-Kul, Issyk-Kul, Ala-Archa, horse riding, road trips, seasons, and private tour planning."
         path="/blogs"
-        type="article"
+        type="website"
         jsonLd={breadcrumbJsonLd([
           { name: 'Home', path: '/' },
-          { name: 'Blogs', path: '/blogs' },
+          { name: 'Travel Guide', path: '/blogs' },
         ])}
       />
-      <div className="max-w-6xl mx-auto space-y-12">
-        <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl text-foreground mb-4">Travel Stories & News</h1>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Stories, guides, and updates curated by our Kyrgyz adventure specialists.
-          </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {loading ? (
-            <p className="text-muted-foreground">Loading blog posts...</p>
-          ) : errorMessage ? (
-            <p className="text-sm text-red-600">{errorMessage}</p>
-          ) : posts.length === 0 ? (
-            <p className="text-muted-foreground">No blog posts yet.</p>
-          ) : (
-            posts.map((post) => (
-              <article key={post.id} className="bg-card border border-border rounded-lg overflow-hidden">
-                {post.coverImage && (
-                  <img
-                    src={post.coverImage}
-                    alt={post.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-48 w-full object-cover"
-                  />
-                )}
-                <div className="p-6 space-y-3">
-                  <h2 className="text-2xl text-foreground">{post.title}</h2>
-                  <p className="text-muted-foreground">{post.excerpt}</p>
-                  <div
-                    className="prose prose-sm max-w-none text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                  />
-                </div>
-              </article>
-            ))
-          )}
+      <div className="border-b border-border bg-muted/60 px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">Plan with local context</p>
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+            <div>
+              <h1 className="max-w-3xl text-4xl text-foreground sm:text-5xl">
+                Kyrgyzstan travel guides built for real route planning
+              </h1>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
+                Clear, practical advice about seasons, mountain roads, yurt stays, hiking,
+                horse riding, and the places that fit together in one trip.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <BookOpen className="mb-3 h-6 w-6 text-secondary" />
+              <p className="font-medium text-foreground">Need a route, not just inspiration?</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Send your dates and interests. We will turn the useful parts of these guides into
+                a realistic private itinerary.
+              </p>
+              <Button asChild className="mt-4">
+                <Link to="/feedback">Ask for a trip plan</Link>
+              </Button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl space-y-12 px-4 py-14 sm:px-6 lg:px-8">
+        {featuredPost && (
+          <article className="grid overflow-hidden rounded-2xl border border-border bg-card shadow-sm lg:grid-cols-[1.05fr_0.95fr]">
+            <img
+              src={withBasePath(featuredPost.coverImage || '/images/go-kyrgyzstan-hero-1080.webp')}
+              alt={featuredPost.title}
+              width={1080}
+              height={720}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="h-full min-h-72 w-full object-cover"
+            />
+            <div className="flex flex-col justify-center p-6 sm:p-8">
+              <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                <span className="rounded-full bg-secondary/10 px-3 py-1 text-secondary">
+                  {featuredPost.category || 'Travel Guide'}
+                </span>
+                <span>{featuredPost.readTime || 'Practical guide'}</span>
+              </div>
+              <h2 className="text-3xl text-foreground">{featuredPost.title}</h2>
+              <p className="mt-4 leading-7 text-muted-foreground">{featuredPost.excerpt}</p>
+              <Link
+                to={blogPath(featuredPost)}
+                className="mt-6 inline-flex items-center gap-2 font-medium text-primary hover:underline"
+              >
+                Read the full guide
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </article>
+        )}
 
         <div className="space-y-6">
-          <div>
-            <h2 className="text-2xl sm:text-3xl text-foreground mb-2">Travel Videos</h2>
-            <p className="text-muted-foreground">
-              Watch Go Kyrgyzstan Travel vlogs and get inspired for your next adventure.
-            </p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-3xl text-foreground">All guides</h2>
+              <p className="mt-2 text-muted-foreground">
+                Start with a destination or choose the activity you care about most.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2" aria-label="Filter guides by category">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  type="button"
+                  size="sm"
+                  variant={activeCategory === category ? 'default' : 'outline'}
+                  onClick={() => setActiveCategory(category)}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {travelVideos.map((video) => (
-              <div key={video.id} className="bg-card border border-border rounded-lg p-4 space-y-3">
-                <div className="w-full aspect-video">
-                  <iframe
-                    className="w-full h-full rounded-md"
-                    src={`https://www.youtube.com/embed/${video.id}`}
-                    title={video.title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
+
+          {errorMessage && (
+            <p className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+              Showing the built-in guides. Live refresh was unavailable: {errorMessage}
+            </p>
+          )}
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {visiblePosts.map((post) => (
+              <article
+                key={post.id}
+                className="group interactive-card card-hover flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm"
+              >
+                <Link to={blogPath(post)} className="overflow-hidden">
+                  <img
+                    src={withBasePath(post.coverImage || '/images/go-kyrgyzstan-hero-720.webp')}
+                    alt={post.title}
+                    width={960}
+                    height={640}
+                    loading="lazy"
+                    decoding="async"
+                    className="card-media h-52 w-full object-cover"
                   />
+                </Link>
+                <div className="flex flex-1 flex-col p-5">
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                    <span className="text-secondary">{post.category || 'Travel Guide'}</span>
+                    <span className="inline-flex items-center gap-1">
+                      <Clock className="h-3.5 w-3.5" />
+                      {post.readTime || 'Guide'}
+                    </span>
+                    {formatDate(post.publishedAt || post.createdAt) && (
+                      <span>{formatDate(post.publishedAt || post.createdAt)}</span>
+                    )}
+                  </div>
+                  <h3 className="mt-3 text-2xl text-foreground">
+                    <Link to={blogPath(post)} className="card-title-link">
+                      {post.title}
+                      <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                    </Link>
+                  </h3>
+                  <p className="mt-3 flex-1 leading-7 text-muted-foreground">{post.excerpt}</p>
+                  <Link
+                    to={blogPath(post)}
+                    className="card-cta mt-5 text-sm font-medium text-primary"
+                  >
+                    Read guide
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
-                <div>
-                  <p className="text-foreground font-medium">{video.title}</p>
-                  <p className="text-muted-foreground text-sm">{video.description}</p>
-                </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>

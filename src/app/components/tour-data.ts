@@ -1,6 +1,10 @@
+import seededTours from '../../../data/seed_tours.json';
+
 export interface Tour {
   id: number;
   title: string;
+  /** Selected by an administrator for the Hot tours section on the home page. */
+  isHot?: boolean;
   duration: string;
   tourType: string;
   season: string;
@@ -19,6 +23,17 @@ export interface Tour {
     description: string;
   }[];
   packingList: string[];
+  /** Optional route-specific content used on priority SEO landing pages. */
+  seoContent?: {
+    heading: string;
+    paragraphs: string[];
+    faq?: {
+      question: string;
+      answer: string;
+    }[];
+  };
+  /** Curated internal links to tours that help a traveler continue planning. */
+  relatedTourIds?: number[];
   practicalInfo: {
     accommodation: string;
     meals: string;
@@ -29,10 +44,11 @@ export interface Tour {
   };
 }
 
-export const tours: Tour[] = [
+const legacyTours: Tour[] = [
   {
     id: 1,
     title: 'Song-Kul Lake Expedition',
+    isHot: true,
     duration: '7 days',
     tourType: 'Trekking & Culture',
     season: 'Summer',
@@ -123,6 +139,7 @@ export const tours: Tour[] = [
   {
     id: 2,
     title: 'Ala-Archa Gorge Adventure',
+    isHot: true,
     duration: '3 days',
     tourType: 'Hiking',
     season: 'All seasons',
@@ -484,6 +501,7 @@ export const tours: Tour[] = [
   {
     id: 6,
     title: 'Issyk-Kul Circuit',
+    isHot: true,
     duration: '6 days',
     tourType: 'Road Trip & Culture',
     season: 'Spring to Autumn',
@@ -564,3 +582,7 @@ export const tours: Tour[] = [
     }
   }
 ];
+
+// The fallback mirrors the current public catalog. Live production data comes
+// from the API, while this keeps the site accurate if the API is unavailable.
+export const tours: Tour[] = seededTours as Tour[];

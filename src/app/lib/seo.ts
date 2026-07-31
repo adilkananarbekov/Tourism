@@ -27,8 +27,19 @@ export function absoluteUrl(path = '/') {
 }
 
 function parseUsdPrice(price: string) {
-  const value = Number(price.replace(/[^0-9.]/g, ''));
-  return Number.isFinite(value) && value > 0 ? value : undefined;
+  const values = price
+    .match(/\d+(?:\.\d+)?/g)
+    ?.map(Number)
+    .filter((value) => Number.isFinite(value) && value > 0);
+  return values?.length ? Math.min(...values) : undefined;
+}
+
+function optimizedImagePath(value: string, width = 960) {
+  return value.replace(/\.(jpe?g)$/i, `-${width}.webp`);
+}
+
+function tourDisplayTitle(title: string) {
+  return /\btour\b/i.test(title) ? title : `${title} Tour`;
 }
 
 export function organizationJsonLd(): JsonLd {
@@ -126,9 +137,9 @@ export function tourJsonLd(tour: Tour): JsonLd {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
     '@id': `${SITE_URL}/tours/${tour.id}#tour`,
-    name: `${tour.title} in Kyrgyzstan`,
+    name: `${tourDisplayTitle(tour.title)} in Kyrgyzstan`,
     description: tour.description,
-    image: absoluteUrl(tour.image),
+    image: [absoluteUrl(optimizedImagePath(tour.image)), absoluteUrl(tour.image)],
     url: absoluteUrl(`/tours/${tour.id}`),
     touristType: ['International travelers', 'Adventure travelers', 'Culture travelers'],
     itinerary: (tour.locations || []).map((location) => ({

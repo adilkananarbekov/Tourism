@@ -8,11 +8,15 @@ import { AdminRoute } from '../admin/components/AdminRoute';
 const routerBase = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const HomePage = lazy(() => import('./pages/HomePage').then((module) => ({ default: module.HomePage })));
+const RussianHomePage = lazy(() => import('./pages/RussianHomePage').then((module) => ({ default: module.RussianHomePage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 const TourDetailPage = lazy(() => import('./pages/TourDetailPage').then((module) => ({ default: module.TourDetailPage })));
 const ToursPage = lazy(() => import('./pages/ToursPage').then((module) => ({ default: module.ToursPage })));
+const RussianToursPage = lazy(() => import('./pages/RussianToursPage').then((module) => ({ default: module.RussianToursPage })));
+const RussianTourDetailPage = lazy(() => import('./pages/RussianTourDetailPage').then((module) => ({ default: module.RussianTourDetailPage })));
 const GalleryPage = lazy(() => import('./pages/GalleryPage').then((module) => ({ default: module.GalleryPage })));
 const BlogsPage = lazy(() => import('./pages/BlogsPage').then((module) => ({ default: module.BlogsPage })));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage').then((module) => ({ default: module.BlogPostPage })));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
 const CreateTourPage = lazy(() => import('./pages/CreateTourPage').then((module) => ({ default: module.CreateTourPage })));
 const JoinTourPage = lazy(() => import('./pages/JoinTourPage').then((module) => ({ default: module.JoinTourPage })));
@@ -33,12 +37,17 @@ export default function App() {
         <Routes>
           <Route element={<SiteLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/ru" element={<RussianHomePage />} />
             <Route path="/tours" element={<ToursPage />} />
             <Route path="/tours/:tourId" element={<TourDetailPage />} />
+            <Route path="/ru/tours" element={<RussianToursPage />} />
+            <Route path="/ru/tours/:tourId" element={<RussianTourDetailPage />} />
             <Route path="/join-tour" element={<JoinTourPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/blogs/:slug" element={<BlogPostPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/ru/feedback" element={<FeedbackPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route element={<AuthRoute />}>
               <Route path="/dashboard" element={<UserDashboardPage />} />

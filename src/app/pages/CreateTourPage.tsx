@@ -121,6 +121,9 @@ export function CreateTourPage() {
       }
       await submitSellerTour({
         ...values,
+        season: values.season || 'All seasons',
+        tourType: values.tourType || 'Custom',
+        description: values.description || '',
         image: imageUrl,
         highlights: (values.highlights || '').split('\n').filter(Boolean),
         itinerary: (values.itinerary || '').split('\n').filter(Boolean),
@@ -128,6 +131,9 @@ export function CreateTourPage() {
       });
       appendLocalSubmission({
         ...values,
+        season: values.season || 'All seasons',
+        tourType: values.tourType || 'Custom',
+        description: values.description || '',
         image: imageUrl,
         highlights: (values.highlights || '').split('\n').filter(Boolean),
         itinerary: (values.itinerary || '').split('\n').filter(Boolean),
@@ -313,11 +319,11 @@ export function CreateTourPage() {
                 <Input
                   id="imageFile"
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.heic,.heif"
                   onChange={(event) => setImageFile(event.target.files?.[0] || null)}
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Uploaded files will replace the URL above when submitted.
+                  HEIC/HEIF files are automatically converted to JPG when submitted. Uploaded files replace the URL above.
                 </p>
               </div>
               <div>

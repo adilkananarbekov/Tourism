@@ -56,7 +56,7 @@ export function TripIdeas() {
           {ideas.map((idea) => {
             const Icon = idea.icon;
             return (
-              <article key={idea.title} className="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <article key={idea.title} className="interactive-card rounded-lg border border-border bg-card p-5 shadow-sm">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-md bg-primary text-primary-foreground">
                   <Icon className="h-5 w-5" />
                 </div>

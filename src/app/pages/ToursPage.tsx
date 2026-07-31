@@ -1,6 +1,6 @@
 import { Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ToursGrid } from '../components/ToursGrid';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -8,6 +8,7 @@ import { cn } from '../components/ui/utils';
 import { SEO } from '../components/SEO';
 import { useToursData } from '../hooks/useTours';
 import { breadcrumbJsonLd, tourListJsonLd } from '../lib/seo';
+import { localeAlternates } from '../lib/locale';
 
 const filters = [
   'All',
@@ -52,24 +53,32 @@ function tourMatchesFilter(tourText: string, duration: string, filter: string) {
   return tourText.includes(lowerFilter);
 }
 
+function normalizeSearchText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
 export function ToursPage() {
   const { tours, loading, error } = useToursData();
-  const [search, setSearch] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get('q') || '';
   const [activeFilter, setActiveFilter] = useState('All');
 
   const filteredTours = useMemo(() => {
     return tours.filter((tour) => {
-      const tourText = [
+      const tourText = normalizeSearchText([
         tour.title,
         tour.description,
         tour.tourType,
         tour.season,
         ...tour.highlights,
       ]
-        .join(' ')
-        .toLowerCase();
-      const query = search.trim().toLowerCase();
-      const matchesSearch = !query || tourText.includes(query);
+        .join(' '));
+      const queryTokens = normalizeSearchText(search).split(' ').filter(Boolean);
+      const matchesSearch = queryTokens.every((token) => tourText.includes(token));
       const matchesFilter = tourMatchesFilter(tourText, tour.duration, activeFilter);
       return matchesSearch && matchesFilter;
     });
@@ -91,6 +100,7 @@ export function ToursPage() {
         title="Kyrgyzstan Tour Packages"
         description="Compare Kyrgyzstan tour packages for Song-Kul, Issyk-Kul, Ala-Archa, Silk Road heritage, horse riding, trekking, and private road trips."
         path="/tours"
+        alternates={localeAlternates('/tours')}
         jsonLd={seoJsonLd}
       />
 
@@ -115,7 +125,10 @@ export function ToursPage() {
               <Input
                 placeholder="Search by route, region, lake, mountain, culture..."
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={(event) => {
+                  const query = event.target.value;
+                  setSearchParams(query ? { q: query } : {}, { replace: true });
+                }}
                 className="h-12 pl-10"
               />
             </div>
@@ -132,18 +145,18 @@ export function ToursPage() {
         </div>
       </section>
 
-      <section className="sticky top-14 z-30 border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto py-4">
+      <section className="sticky top-14 z-30 border-b border-border/50 bg-background/60 px-4 backdrop-blur-xl shadow-sm sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-6xl gap-3 overflow-x-auto py-4 scrollbar-hide">
           {filters.map((filter) => (
             <button
               key={filter}
               type="button"
               onClick={() => setActiveFilter(filter)}
               className={cn(
-                'min-h-[38px] whitespace-nowrap rounded-full border px-4 text-sm transition-colors',
+                'min-h-[40px] whitespace-nowrap rounded-full border px-5 text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95',
                 activeFilter === filter
-                  ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border bg-card text-muted-foreground hover:border-primary hover:text-foreground'
+                  ? 'border-primary bg-primary text-primary-foreground shadow-md'
+                  : 'border-border/50 bg-background/50 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-muted'
               )}
             >
               {filter}
