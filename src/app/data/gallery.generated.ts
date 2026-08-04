@@ -1,6 +1,7 @@
 import type { GalleryItem } from './gallery';
+import galleryCaptions from '../../../data/gallery_captions.json';
 
-export const generatedGalleryItems: GalleryItem[] = [
+const generatedGalleryItemsRaw: GalleryItem[] = [
   {
     "src": "/images/travel-gallery-2026/travel-001.jpg",
     "alt": "Kyrgyzstan travel photo 1: local landscapes, nomadic culture, and outdoor adventure",
@@ -541,5 +542,10 @@ export const generatedGalleryItems: GalleryItem[] = [
     "height": 1347
   }
 ];
+
+export const generatedGalleryItems: GalleryItem[] = generatedGalleryItemsRaw.map((item) => ({
+  ...item,
+  alt: galleryCaptions[item.src as keyof typeof galleryCaptions] || item.alt,
+}));
 
 export const generatedGalleryPreviewItems = generatedGalleryItems.filter((_, index) => [0, 4, 9, 15, 20, 25, 33, 40, 52].includes(index));

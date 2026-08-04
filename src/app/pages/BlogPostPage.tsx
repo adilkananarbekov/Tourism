@@ -13,6 +13,49 @@ import {
 import { fetchBlogPosts, type BlogPost } from '../lib/dataStore';
 import { absoluteUrl, breadcrumbJsonLd } from '../lib/seo';
 import { withBasePath } from '../lib/assets';
+import { tourPath } from '../lib/tourRoutes';
+
+const guideRouteLinks: Record<string, { eyebrow: string; title: string; description: string; links: Array<{ to: string; label: string }> }> = {
+  'best-time-to-visit-kyrgyzstan': {
+    eyebrow: 'Plan by season',
+    title: 'Choose a route that fits your travel month',
+    description: 'Summer highland plans need different access checks from a winter trip. Compare a Song-Kul route with a winter option, then confirm conditions before booking.',
+    links: [
+      { to: '/destinations/song-kul', label: 'Compare Song-Kul summer routes' },
+      { to: tourPath(6), label: 'See the winter Song-Kul horse ride' },
+    ],
+  },
+  'song-kul-lake-travel-guide': {
+    eyebrow: 'Song-Kul routes',
+    title: 'Compare horse treks and private road trips',
+    description: 'Choose a Song-Kul route by your available days, riding experience and preferred pace, then confirm current access and yurt-camp availability with the local team.',
+    links: [{ to: '/destinations/song-kul', label: 'Explore Song-Kul tours' }],
+  },
+  'issyk-kul-road-trip-guide': {
+    eyebrow: 'Issyk-Kul routes',
+    title: 'Choose a lake circuit with realistic driving days',
+    description: 'Compare a compact three-day introduction with a slower four-day route for gorges and hot-spring areas.',
+    links: [
+      { to: tourPath(7), label: 'See the 3-day Issyk-Kul tour' },
+      { to: tourPath(10), label: 'See the 4-day gorges and hot springs tour' },
+    ],
+  },
+  'kyrgyzstan-horse-riding-guide': {
+    eyebrow: 'Horse riding routes',
+    title: 'Match the ride to your experience and available days',
+    description: 'A two-day overnight ride and a three-day trek are different commitments. Compare the routes before sending your dates and riding experience.',
+    links: [
+      { to: tourPath(4), label: 'See the 2-day Song-Kul horse ride' },
+      { to: tourPath(2), label: 'See the 3-day Kyzart horse trek' },
+    ],
+  },
+  'ala-archa-day-trip-guide': {
+    eyebrow: 'Plan a hike',
+    title: 'Ask for a route that matches the day and the group',
+    description: 'Send your dates, experience and preferred pace. We will check what is practical before suggesting a private mountain day.',
+    links: [{ to: '/feedback', label: 'Request a private hiking plan' }],
+  },
+};
 
 export function BlogPostPage() {
   const { slug } = useParams();
@@ -56,7 +99,7 @@ export function BlogPostPage() {
 
   const path = blogPath(post);
   const relatedPosts = publishedPosts.filter((item) => item.id !== post.id).slice(0, 3);
-  const isSongKulGuide = post.slug === 'song-kul-lake-travel-guide';
+  const routeLinks = guideRouteLinks[post.slug];
   const sanitizedContent = DOMPurify.sanitize(post.content, {
     ADD_ATTR: ['target', 'rel'],
   });
@@ -137,18 +180,21 @@ export function BlogPostPage() {
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
 
-        {isSongKulGuide && (
+        {routeLinks && (
           <aside className="mx-auto mt-10 max-w-3xl rounded-2xl border border-secondary/30 bg-secondary/10 p-6 sm:p-7">
-            <p className="text-xs uppercase tracking-[0.18em] text-secondary">Song-Kul routes</p>
-            <h2 className="mt-2 text-2xl text-foreground">Compare horse treks and private road trips</h2>
+            <p className="text-xs uppercase tracking-[0.18em] text-secondary">{routeLinks.eyebrow}</p>
+            <h2 className="mt-2 text-2xl text-foreground">{routeLinks.title}</h2>
             <p className="mt-3 leading-7 text-muted-foreground">
-              Choose a Song-Kul route by your available days, riding experience and preferred pace,
-              then confirm current access and yurt-camp availability with the local team.
+              {routeLinks.description}
             </p>
-            <Link to="/destinations/song-kul" className="card-cta mt-5 text-sm font-medium text-primary">
-              Explore Song-Kul tours
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
+            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3">
+              {routeLinks.links.map((link) => (
+                <Link key={link.to} to={link.to} className="card-cta text-sm font-medium text-primary">
+                  {link.label}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              ))}
+            </div>
           </aside>
         )}
 

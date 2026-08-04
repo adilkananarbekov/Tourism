@@ -8,12 +8,13 @@ import {
   WHATSAPP_DISPLAY,
   WHATSAPP_URL,
 } from './contact';
+import { tourPath } from './tourRoutes';
 
 export const SITE_NAME = 'Go Kyrgyzstan Travel';
 export const SITE_URL = 'https://kyrgyz.tours';
 export const DEFAULT_SOCIAL_IMAGE = '/images/go-kyrgyzstan-hero.webp';
 export const SITE_DESCRIPTION =
-  'Private Kyrgyzstan tours, small-group trips, nomad culture experiences, horse riding, mountain trekking, and Silk Road routes with local planning.';
+  'Private Kyrgyzstan tours, small-group trips, Song-Kul and Issyk-Kul lake routes, horse riding, yurt stays, and mountain road trips with local planning.';
 
 export type JsonLd = Record<string, unknown>;
 
@@ -124,7 +125,7 @@ export function tourListJsonLd(tours: Tour[]): JsonLd {
     itemListElement: tours.map((tour, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: absoluteUrl(`/tours/${tour.id}`),
+      url: absoluteUrl(tourPath(tour)),
       name: tour.title,
     })),
   };
@@ -136,11 +137,11 @@ export function tourJsonLd(tour: Tour): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
-    '@id': `${SITE_URL}/tours/${tour.id}#tour`,
+    '@id': `${SITE_URL}${tourPath(tour)}#tour`,
     name: `${tourDisplayTitle(tour.title)} in Kyrgyzstan`,
     description: tour.description,
     image: [absoluteUrl(optimizedImagePath(tour.image)), absoluteUrl(tour.image)],
-    url: absoluteUrl(`/tours/${tour.id}`),
+    url: absoluteUrl(tourPath(tour)),
     touristType: ['International travelers', 'Adventure travelers', 'Culture travelers'],
     itinerary: (tour.locations || []).map((location) => ({
       '@type': 'TouristDestination',
@@ -160,7 +161,7 @@ export function tourJsonLd(tour: Tour): JsonLd {
           price,
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
-          url: absoluteUrl(`/tours/${tour.id}`),
+          url: absoluteUrl(tourPath(tour)),
         }
       : undefined,
   };

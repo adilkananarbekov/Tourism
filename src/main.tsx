@@ -27,8 +27,8 @@ async function preloadCurrentRoute() {
   if (path === '/ru') return import('./app/pages/RussianHomePage');
   if (path === '/tours') return import('./app/pages/ToursPage');
   if (path === '/ru/tours') return import('./app/pages/RussianToursPage');
-  if (/^\/tours\/[1-9][0-9]*$/.test(path)) return import('./app/pages/TourDetailPage');
-  if (/^\/ru\/tours\/[1-9][0-9]*$/.test(path)) return import('./app/pages/RussianTourDetailPage');
+  if (/^\/tours\/[a-z0-9][a-z0-9-]*$/.test(path)) return import('./app/pages/TourDetailPage');
+  if (/^\/ru\/tours\/[a-z0-9][a-z0-9-]*$/.test(path)) return import('./app/pages/RussianTourDetailPage');
   if (path === '/join-tour') return import('./app/pages/JoinTourPage');
   if (path === '/gallery') return import('./app/pages/GalleryPage');
   if (path === '/blogs') return import('./app/pages/BlogsPage');

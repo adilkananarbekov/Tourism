@@ -6,21 +6,25 @@ import { useToursData } from '../hooks/useTours';
 import { localizeTour } from '../lib/localizedTours';
 import { localeAlternates } from '../lib/locale';
 import { breadcrumbJsonLd } from '../lib/seo';
+import { tourIdFromSlug, tourPath } from '../lib/tourRoutes';
 
 export function RussianTourDetailPage() {
-  const { tourId } = useParams();
+  const { tourSlug } = useParams();
   const { tours, loading } = useToursData();
   const selectedTour = useMemo(() => {
-    const id = Number(tourId);
+    const id = tourIdFromSlug(tourSlug);
+    if (!id) {
+      return null;
+    }
     const tour = tours.find((item) => item.id === id);
     return tour ? localizeTour(tour, 'ru') : null;
-  }, [tourId, tours]);
+  }, [tourSlug, tours]);
 
   if (loading) {
     return <div className="px-4 py-16 text-center text-muted-foreground">Загружаем тур...</div>;
   }
 
-  const path = selectedTour ? `/tours/${selectedTour.id}` : '/tours';
+  const path = selectedTour ? tourPath(selectedTour) : '/tours';
   const relatedTours = useMemo(() => {
     if (!selectedTour?.relatedTourIds?.length) {
       return [];
@@ -37,14 +41,14 @@ export function RussianTourDetailPage() {
         title={selectedTour ? `${selectedTour.title} — тур по Кыргызстану` : 'Тур по Кыргызстану'}
         description={selectedTour ? `${selectedTour.description} Продолжительность: ${selectedTour.duration}. Цена от ${selectedTour.price}.` : 'Детали тура по Кыргызстану.'}
         image={selectedTour?.image}
-        path={selectedTour ? `/ru/tours/${selectedTour.id}` : '/ru/tours'}
+        path={selectedTour ? tourPath(selectedTour, 'ru') : '/ru/tours'}
         language="ru"
         alternates={localeAlternates(path)}
         noindex={!selectedTour}
         jsonLd={selectedTour ? breadcrumbJsonLd([
           { name: 'Главная', path: '/ru' },
           { name: 'Туры', path: '/ru/tours' },
-          { name: selectedTour.title, path: `/ru/tours/${selectedTour.id}` },
+          { name: selectedTour.title, path: tourPath(selectedTour, 'ru') },
         ]) : undefined}
       />
       <TourDetail tour={selectedTour} locale="ru" relatedTours={relatedTours} />

@@ -1,20 +1,21 @@
 import { ArrowRight, Camera, Compass, Mountain, TentTree } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
+import { tourPath } from '../lib/tourRoutes';
 
 const ideas = [
   {
     title: 'First time in Kyrgyzstan',
     description: 'Lake views, canyons, hot springs, Karakol, and flexible stops around Issyk-Kul.',
-    to: '/tours/6',
+    to: tourPath(7),
     action: 'See Issyk-Kul route',
     icon: Compass,
   },
   {
-    title: 'Big mountain photos',
-    description: 'Ala-Archa hikes, glacier viewpoints, dramatic gorges, and easy access from Bishkek.',
-    to: '/tours/2',
-    action: 'See mountain trip',
+    title: 'Horseback highlands',
+    description: 'Ride from Kyzart through Kilemche Valley to Song-Kul, with yurt stays and wide mountain scenery.',
+    to: tourPath(2),
+    action: 'See horse route',
     icon: Camera,
   },
   {
@@ -25,10 +26,10 @@ const ideas = [
     icon: TentTree,
   },
   {
-    title: 'Silk Road culture',
-    description: 'Burana, Tash Rabat, Osh, bazaars, craft workshops, and heritage routes.',
-    to: '/tours/3',
-    action: 'See heritage route',
+    title: 'A week of mountain lakes',
+    description: 'A private 7-day route connecting Song-Kul, Kel-Suu, and Issyk-Kul at a practical pace.',
+    to: tourPath(3),
+    action: 'See 7-day route',
     icon: Mountain,
   },
 ];

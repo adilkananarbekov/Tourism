@@ -29,7 +29,7 @@ export function GalleryPage() {
       />
       <div className="max-w-7xl mx-auto space-y-12">
         <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl text-foreground mb-4">Gallery</h1>
+          <h1 className="text-3xl sm:text-4xl text-foreground mb-4">Kyrgyzstan Travel Photo Gallery</h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             A visual diary of trips, landscapes, and guest experiences across Kyrgyzstan.
           </p>
@@ -95,7 +95,7 @@ export function GalleryPage() {
 
         <div className="masonry-grid">
           {visibleItems.map((item) => (
-            <div key={item.src} className="masonry-item">
+            <figure key={item.src} className="masonry-item">
               <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm">
                 <ResponsiveImage
                   src={item.src}
@@ -115,7 +115,8 @@ export function GalleryPage() {
                   className="masonry-image"
                 />
               </div>
-            </div>
+              <figcaption className="px-1 pt-2 text-sm leading-5 text-muted-foreground">{item.alt}</figcaption>
+            </figure>
           ))}
         </div>
         {hasMore && (

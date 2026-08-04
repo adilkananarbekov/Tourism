@@ -9,6 +9,7 @@ import { SEO } from '../components/SEO';
 import { useToursData } from '../hooks/useTours';
 import { breadcrumbJsonLd, tourListJsonLd } from '../lib/seo';
 import { localeAlternates } from '../lib/locale';
+import { tourPath } from '../lib/tourRoutes';
 
 const filters = [
   'All',
@@ -20,6 +21,41 @@ const filters = [
   'Short trips',
   'Road trip',
   'Weekend',
+];
+
+const routeHighlights = [
+  {
+    title: 'Song-Kul horse riding',
+    description: 'Compare a compact overnight ride with a longer trek from Kyzart.',
+    links: [
+      { to: '/destinations/song-kul', label: 'Song-Kul route hub' },
+      { to: tourPath(2), label: '3-day horse trek' },
+    ],
+  },
+  {
+    title: 'Issyk-Kul from Bishkek',
+    description: 'Choose a three-day lake introduction or a four-day gorges and hot-springs route.',
+    links: [
+      { to: tourPath(7), label: '3-day Issyk-Kul tour' },
+      { to: tourPath(10), label: '4-day Issyk-Kul tour' },
+    ],
+  },
+  {
+    title: 'Kel-Suu and mountain lakes',
+    description: 'Plan for remote-road access with a private route linking Kel-Suu, Song-Kul, and Issyk-Kul.',
+    links: [
+      { to: tourPath(11), label: '4-day Kel-Suu & Song-Kul' },
+      { to: tourPath(3), label: '7-day mountain lakes tour' },
+    ],
+  },
+  {
+    title: 'Choose the right season',
+    description: 'High-altitude routes, yurt camps, and winter travel have different access windows.',
+    links: [
+      { to: '/blogs/best-time-to-visit-kyrgyzstan', label: 'Read the season guide' },
+      { to: tourPath(6), label: 'Winter Song-Kul ride' },
+    ],
+  },
 ];
 
 function tourMatchesFilter(tourText: string, duration: string, filter: string) {
@@ -98,7 +134,7 @@ export function ToursPage() {
     <div className="bg-background pb-20 md:pb-0">
       <SEO
         title="Kyrgyzstan Tour Packages"
-        description="Compare Kyrgyzstan tour packages for Song-Kul, Issyk-Kul, Ala-Archa, Silk Road heritage, horse riding, trekking, and private road trips."
+        description="Compare private Kyrgyzstan tour packages for Song-Kul, Issyk-Kul, Kel-Suu, horse riding, yurt stays, and flexible mountain road trips from Bishkek."
         path="/tours"
         alternates={localeAlternates('/tours')}
         jsonLd={seoJsonLd}
@@ -141,6 +177,32 @@ export function ToursPage() {
                 Send Trip Request
               </Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border bg-background px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-3xl">
+            <h2 className="text-2xl text-foreground sm:text-3xl">Start with the route that matches your trip.</h2>
+            <p className="mt-3 text-base leading-7 text-muted-foreground">
+              These routes have the clearest practical details and help narrow the trip by days, season, and travel style before you compare the wider catalogue.
+            </p>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {routeHighlights.map((route) => (
+              <article key={route.title} className="rounded-xl border border-border bg-card p-5 shadow-sm">
+                <h3 className="text-xl text-foreground">{route.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{route.description}</p>
+                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                  {route.links.map((link) => (
+                    <Link key={link.to} to={link.to} className="card-cta text-sm font-medium text-primary">
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

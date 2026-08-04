@@ -46,7 +46,14 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--gallery-module", type=Path, required=True)
     parser.add_argument("--gallery-json", type=Path, required=True)
+    parser.add_argument("--captions", type=Path, default=Path("data/gallery_captions.json"))
     args = parser.parse_args()
+
+    captions: dict[str, str] = {}
+    if args.captions.exists():
+        raw_captions = json.loads(args.captions.read_text(encoding="utf-8"))
+        if isinstance(raw_captions, dict):
+            captions = {str(key): str(value) for key, value in raw_captions.items() if value}
 
     files = sorted(path for path in args.input.iterdir() if path.is_file() and path.suffix.lower() in {".jpg", ".jpeg", ".png"})
     unique: list[tuple[Path, int]] = []
@@ -71,14 +78,15 @@ def main() -> None:
             variant = resize(image, width)
             variant.save(args.output / f"{stem}-{width}.webp", "WEBP", quality=82, method=6)
         orientation = "landscape" if primary.width > primary.height else "portrait" if primary.height > primary.width else "square"
+        src = f"/images/travel-gallery-2026/{stem}.jpg"
         generated.append({
             "index": index,
             "source": path.name,
-            "src": f"/images/travel-gallery-2026/{stem}.jpg",
+            "src": src,
             "width": primary.width,
             "height": primary.height,
             "orientation": orientation,
-            "alt": f"Kyrgyzstan travel photo {index}: local landscapes, nomadic culture, and outdoor adventure",
+            "alt": captions.get(src, f"Kyrgyzstan travel photo {index}: local landscapes, nomadic culture, and outdoor adventure"),
         })
 
     args.manifest.write_text(json.dumps({"kept": generated, "discarded": discarded}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

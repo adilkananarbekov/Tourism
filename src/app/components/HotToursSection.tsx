@@ -4,6 +4,7 @@ import { useToursData } from '../hooks/useTours';
 import type { Tour } from './tour-data';
 import { ResponsiveImage } from './ResponsiveImage';
 import { Button } from './ui/button';
+import { tourPath } from '../lib/tourRoutes';
 
 const DEFAULT_HOT_TOUR_IDS = [6, 1, 2];
 
@@ -82,13 +83,14 @@ export function HotToursSection() {
         <div className="grid gap-5 lg:grid-cols-3">
           {hotTours.map((tour, index) => {
             const imageVariants = tourImageVariants(tour.image);
+            const publicTourPath = tourPath(tour);
             return (
               <article
                 key={tour.id}
                 className="group interactive-card card-hover overflow-hidden rounded-xl border border-border bg-card shadow-sm"
               >
                 <Link
-                  to={`/tours/${tour.id}`}
+                  to={publicTourPath}
                   className="relative block h-60 overflow-hidden sm:h-64"
                   aria-label={`View ${tour.title}`}
                   data-track-event="home_hot_tour_image_click"
@@ -121,7 +123,7 @@ export function HotToursSection() {
                   <div className="flex items-start justify-between gap-4">
                     <h3 className="text-xl leading-snug text-foreground sm:text-2xl">
                       <Link
-                        to={`/tours/${tour.id}`}
+                        to={publicTourPath}
                         className="card-title-link"
                         data-track-event="home_hot_tour_title_click"
                         data-track-label={tour.title}
@@ -152,7 +154,7 @@ export function HotToursSection() {
                       Dates and final price confirmed personally
                     </span>
                     <Link
-                      to={`/tours/${tour.id}?book=true`}
+                      to={`${publicTourPath}?book=true`}
                       className="card-cta shrink-0 text-sm font-medium text-primary"
                       data-track-event="home_hot_tour_request_click"
                       data-track-label={tour.title}

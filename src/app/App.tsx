@@ -40,9 +40,9 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/ru" element={<RussianHomePage />} />
             <Route path="/tours" element={<ToursPage />} />
-            <Route path="/tours/:tourId" element={<TourDetailPage />} />
+            <Route path="/tours/:tourSlug" element={<TourDetailPage />} />
             <Route path="/ru/tours" element={<RussianToursPage />} />
-            <Route path="/ru/tours/:tourId" element={<RussianTourDetailPage />} />
+            <Route path="/ru/tours/:tourSlug" element={<RussianTourDetailPage />} />
             <Route path="/join-tour" element={<JoinTourPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/blogs" element={<BlogsPage />} />

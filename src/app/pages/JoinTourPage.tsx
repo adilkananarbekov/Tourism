@@ -12,6 +12,7 @@ import { Button } from '../components/ui/button';
 import { tours } from '../components/tour-data';
 import { breadcrumbJsonLd } from '../lib/seo';
 import { withBasePath } from '../lib/assets';
+import { tourPath } from '../lib/tourRoutes';
 
 const steps = [
   {
@@ -164,7 +165,7 @@ export function JoinTourPage() {
                     {tour.duration} · {tour.season}
                   </p>
                   <Link
-                    to={`/tours/${tour.id}`}
+                    to={tourPath(tour)}
                     className="mt-4 inline-flex text-sm font-medium text-primary hover:underline"
                   >
                     View route details

@@ -17,7 +17,7 @@ export function HomePage() {
     <>
       <SEO
         title="Kyrgyzstan Tours & Private Trips"
-        description="Book private Kyrgyzstan tours with local planning: Song-Kul, Issyk-Kul, Ala-Archa, horse riding, yurt camps, Silk Road routes, private mountain trips, and canyon lake views."
+        description="Book private Kyrgyzstan tours with local planning: Song-Kul, Issyk-Kul, Kel-Suu, horse riding, yurt camps, and flexible mountain road trips from Bishkek."
         path="/"
         alternates={localeAlternates('/')}
         jsonLd={[

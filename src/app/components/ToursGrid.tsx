@@ -7,7 +7,7 @@ import { Skeleton } from './ui/skeleton';
 import type { Tour } from './tour-data';
 import { ResponsiveImage } from './ResponsiveImage';
 import type { SiteLocale } from '../lib/locale';
-import { localizedPath } from '../lib/locale';
+import { tourPath } from '../lib/tourRoutes';
 
 function tourImageVariants(image: string) {
   if (!/^\/images\/tour-[\w-]+\.(?:jpe?g|webp)$/i.test(image)) {
@@ -113,7 +113,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false, loca
             >
               {/* Tour Image */}
               <Link
-                to={localizedPath(`/tours/${tour.id}`, locale)}
+                to={tourPath(tour, locale)}
                 className="relative block h-56 overflow-hidden sm:h-64"
                 aria-label={`${labels.viewAria} ${tour.title}`}
                 data-track-event="tour_card_image_click"
@@ -144,7 +144,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false, loca
               <div className="p-6">
                 <h3 className="text-xl sm:text-2xl text-foreground mb-3">
                   <Link
-                    to={localizedPath(`/tours/${tour.id}`, locale)}
+                    to={tourPath(tour, locale)}
                     className="card-title-link"
                     data-track-event="tour_card_title_click"
                     data-track-label={tour.title}
@@ -179,7 +179,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false, loca
                     className="w-full btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     <Link
-                      to={localizedPath(`/tours/${tour.id}`, locale)}
+                      to={tourPath(tour, locale)}
                       data-track-event="tour_card_view_click"
                       data-track-label={tour.title}
                     >
@@ -193,7 +193,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false, loca
                     className="w-full btn-micro btn-action-outline"
                   >
                     <Link
-                      to={`${localizedPath(`/tours/${tour.id}`, locale)}?book=true`}
+                      to={`${tourPath(tour, locale)}?book=true`}
                       data-track-event="tour_card_request_click"
                       data-track-label={tour.title}
                     >

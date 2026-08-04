@@ -27,6 +27,7 @@ const seedToursPath = path.join(repoRoot, 'data', 'seed_tours.json');
 const seedBlogPostsPath = path.join(repoRoot, 'data', 'seed_blog_posts.json');
 const seedSightsPath = path.join(repoRoot, 'data', 'seed_sights.json');
 const galleryImagesPath = path.join(repoRoot, 'data', 'gallery_images.json');
+const tourSlugsPath = path.join(repoRoot, 'data', 'tour_slugs.json');
 const legacyDataFilePath = path.resolve(repoRoot, process.env.DATA_FILE_PATH || 'backend/data/app-data.json');
 const databasePath = path.resolve(repoRoot, process.env.DATABASE_PATH || 'backend/data/go-kyrgyzstan-travel.sqlite');
 const uploadsDir = path.resolve(repoRoot, process.env.UPLOADS_DIR || 'public/uploads');
@@ -67,6 +68,16 @@ function readJsonFile(filePath, fallback) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Invalid JSON in ${filePath}: ${message}`);
   }
+}
+
+const tourSlugs = readJsonFile(tourSlugsPath, {});
+
+function publicTourPath(tour, locale = 'en') {
+  const slug = asString(tourSlugs[String(tour?.id)], 160);
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
+    return null;
+  }
+  return `${locale === 'ru' ? '/ru' : ''}/tours/${slug}`;
 }
 
 function nowIso() {
@@ -1554,6 +1565,20 @@ app.get('/api/tours/:id', (req, res) => {
   res.json({ tour });
 });
 
+app.get('/internal/legacy-tour-redirect', (req, res) => {
+  const tourId = Math.trunc(asNumber(req.query.id, 0));
+  const tour = mapTourRow(statements.getTour.get(tourId));
+  const locale = asString(req.query.locale, 8).startsWith('ru') ? 'ru' : 'en';
+  const destination = tour ? publicTourPath(tour, locale) : null;
+
+  if (!destination) {
+    res.status(404).end();
+    return;
+  }
+
+  res.set('Cache-Control', 'public, max-age=86400').redirect(301, destination);
+});
+
 app.get('/api/sights', (_req, res) => {
   res.json({ sights: getContentCollection('sights') });
 });
@@ -1595,22 +1620,30 @@ app.get('/api/sitemap.xml', (_req, res) => {
     .all()
     .map(mapTourRow)
     .filter(Boolean)
-    .map((tour) => ({
-      path: `/tours/${tour.id}`,
+    .map((tour) => {
+      const path = publicTourPath(tour);
+      return path ? {
+      path,
       priority: '0.8',
       changefreq: 'monthly',
       images: tour.image ? [tour.image] : [],
-    }));
+      } : null;
+    })
+    .filter(Boolean);
   const russianTourRoutes = statements.listTours
     .all()
     .map(mapTourRow)
     .filter(Boolean)
-    .map((tour) => ({
-      path: `/ru/tours/${tour.id}`,
+    .map((tour) => {
+      const path = publicTourPath(tour, 'ru');
+      return path ? {
+      path,
       priority: '0.7',
       changefreq: 'monthly',
       images: tour.image ? [tour.image] : [],
-    }));
+      } : null;
+    })
+    .filter(Boolean);
   const blogRoutes = getContentCollection('blogPosts')
     .filter((post) => post.status !== 'draft' && post.status !== 'archived')
     .map((post) => ({
@@ -1631,7 +1664,7 @@ app.get('/api/sitemap.xml', (_req, res) => {
       englishPath === '/' ||
       englishPath === '/tours' ||
       englishPath === '/feedback' ||
-      /^\/tours\/\d+$/.test(englishPath) ||
+      /^\/tours\/[a-z0-9][a-z0-9-]*$/.test(englishPath) ||
       /^\/destinations\/[a-z0-9-]+$/.test(englishPath);
     if (!supportsRussian) {
       return '';

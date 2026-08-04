@@ -26,6 +26,7 @@ import { trackEvent } from '../lib/eventTracker';
 import type { SiteLocale } from '../lib/locale';
 import { localizedPath } from '../lib/locale';
 import { getCountryOptions } from '../lib/countries';
+import { tourPath } from '../lib/tourRoutes';
 
 interface TourDetailProps {
   tour: Tour | null;
@@ -483,7 +484,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
                   {relatedTours.map((relatedTour) => (
                     <Link
                       key={relatedTour.id}
-                      to={localizedPath(`/tours/${relatedTour.id}`, locale)}
+                      to={tourPath(relatedTour, locale)}
                       className="interactive-card rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/50"
                     >
                       <p className="text-sm text-secondary">{relatedTour.duration} · {relatedTour.tourType}</p>

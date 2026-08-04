@@ -11,6 +11,8 @@ const toursPath = path.join(rootDir, 'data', 'seed_tours.json');
 const blogPostsPath = path.join(rootDir, 'data', 'seed_blog_posts.json');
 const russianToursPath = path.join(rootDir, 'data', 'tour_translations_ru.json');
 const destinationsPath = path.join(rootDir, 'data', 'destinations.json');
+const tourSlugsPath = path.join(rootDir, 'data', 'tour_slugs.json');
+const galleryCaptionsPath = path.join(rootDir, 'data', 'gallery_captions.json');
 
 const SITE_NAME = 'Go Kyrgyzstan Travel';
 const SITE_URL = 'https://kyrgyz.tours';
@@ -22,7 +24,7 @@ const TELEGRAM_URL = 'https://t.me/Jakypbekovv1';
 const WHATSAPP_URL = 'https://wa.me/996502099808';
 const WHATSAPP_DISPLAY = '+996 502 099 808';
 const SITE_DESCRIPTION =
-  'Private Kyrgyzstan tours, small-group trips, nomad culture experiences, horse riding, mountain trekking, and Silk Road routes with local planning.';
+  'Private Kyrgyzstan tours, small-group trips, Song-Kul and Issyk-Kul lake routes, horse riding, yurt stays, and mountain road trips with local planning.';
 const GALLERY_IMAGES = Array.from(
   { length: 77 },
   (_, index) => `/images/travel-gallery-2026/travel-${String(index + 1).padStart(3, '0')}-960.webp`
@@ -57,6 +59,20 @@ function optimizedImagePath(value, width = 960) {
 
 function tourDisplayTitle(title) {
   return /\btour\b/i.test(title) ? title : `${title} Tour`;
+}
+
+function tourSlug(tour) {
+  return tourSlugs[String(tour.id)] || `tour-${tour.id}`;
+}
+
+function tourPath(tour, locale = 'en') {
+  const prefix = locale === 'ru' ? '/ru' : '';
+  return `${prefix}/tours/${tourSlug(tour)}`;
+}
+
+function galleryImageAlt(image, index) {
+  const originalPath = image.replace(/-\d+\.webp$/i, '.jpg');
+  return galleryCaptions[originalPath] || `Kyrgyzstan travel photo ${index + 1}`;
 }
 
 function localizeTourRu(tour, translations) {
@@ -148,7 +164,7 @@ function tourListJsonLd(tours) {
     itemListElement: tours.map((tour, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: absoluteUrl(`/tours/${tour.id}`),
+      url: absoluteUrl(tourPath(tour)),
       name: tour.title,
     })),
   };
@@ -159,11 +175,11 @@ function tourJsonLd(tour) {
   return {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
-    '@id': `${SITE_URL}/tours/${tour.id}#tour`,
+    '@id': `${SITE_URL}${tourPath(tour)}#tour`,
     name: `${tourDisplayTitle(tour.title)} in Kyrgyzstan`,
     description: tour.description,
     image: [absoluteUrl(optimizedImagePath(tour.image)), absoluteUrl(tour.image)],
-    url: absoluteUrl(`/tours/${tour.id}`),
+    url: absoluteUrl(tourPath(tour)),
     touristType: ['International travelers', 'Adventure travelers', 'Culture travelers'],
     provider: { '@id': `${SITE_URL}/#organization` },
     itinerary: (tour.locations || []).map((location) => ({
@@ -181,7 +197,7 @@ function tourJsonLd(tour) {
           price,
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
-          url: absoluteUrl(`/tours/${tour.id}`),
+          url: absoluteUrl(tourPath(tour)),
         }
       : undefined,
   };
@@ -209,7 +225,6 @@ function blogPostJsonLd(post) {
 
 function destinationTourListJsonLd(destination, destinationTours, locale = 'en') {
   const copy = destination[locale];
-  const localePrefix = locale === 'ru' ? '/ru' : '';
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -218,7 +233,7 @@ function destinationTourListJsonLd(destination, destinationTours, locale = 'en')
       '@type': 'ListItem',
       position: index + 1,
       name: tour.title,
-      url: absoluteUrl(`${localePrefix}/tours/${tour.id}`),
+      url: absoluteUrl(tourPath(tour, locale)),
     })),
   };
 }
@@ -233,7 +248,7 @@ function listMarkup(items, renderItem) {
 function tourSummaryMarkup(tour) {
   return `
     <article>
-      <h2><a href="/tours/${tour.id}">${escapeHtml(tour.title)}</a></h2>
+      <h2><a href="${tourPath(tour)}">${escapeHtml(tour.title)}</a></h2>
       <p>${escapeHtml(tour.description)}</p>
       <p><strong>Duration:</strong> ${escapeHtml(tour.duration)} · <strong>Season:</strong> ${escapeHtml(tour.season)} · <strong>From:</strong> ${escapeHtml(tour.price)}</p>
       ${listMarkup(tour.highlights, (highlight) => `<li>${escapeHtml(highlight)}</li>`)}
@@ -307,8 +322,28 @@ function tourDetailMarkup(tour, tours) {
 }
 
 function blogPostMarkup(post) {
-  const destinationLink = post.slug === 'song-kul-lake-travel-guide'
-    ? '<p><a href="/destinations/song-kul">Compare Song-Kul tours and horseback routes</a></p>'
+  const routeLinks = {
+    'best-time-to-visit-kyrgyzstan': [
+      ['Plan by season: compare Song-Kul summer routes', '/destinations/song-kul'],
+      ['See the winter Song-Kul horse ride', tourPath({ id: 6 })],
+    ],
+    'song-kul-lake-travel-guide': [
+      ['Compare Song-Kul tours and horseback routes', '/destinations/song-kul'],
+    ],
+    'issyk-kul-road-trip-guide': [
+      ['See the 3-day Issyk-Kul tour from Bishkek', tourPath({ id: 7 })],
+      ['See the 4-day Issyk-Kul gorges and hot springs tour', tourPath({ id: 10 })],
+    ],
+    'kyrgyzstan-horse-riding-guide': [
+      ['See the 2-day Song-Kul horse ride', tourPath({ id: 4 })],
+      ['See the 3-day Kyzart horse trek', tourPath({ id: 2 })],
+    ],
+    'ala-archa-day-trip-guide': [
+      ['Request a private hiking plan', '/feedback'],
+    ],
+  }[post.slug] || [];
+  const internalLinks = routeLinks.length
+    ? `<aside><h2>Plan the next step</h2><p>${routeLinks.map(([label, href]) => `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`).join(' · ')}</p></aside>`
     : '';
   return `
     <article>
@@ -317,7 +352,7 @@ function blogPostMarkup(post) {
       <h1>${escapeHtml(post.title)}</h1>
       <p>${escapeHtml(post.excerpt)}</p>
       ${post.content || ''}
-      ${destinationLink}
+      ${internalLinks}
       <p><a href="/feedback">Request a private Kyrgyzstan itinerary</a></p>
     </article>`;
 }
@@ -325,7 +360,7 @@ function blogPostMarkup(post) {
 function russianTourSummaryMarkup(tour) {
   return `
     <article>
-      <h2><a href="/ru/tours/${tour.id}">${escapeHtml(tour.title)}</a></h2>
+      <h2><a href="${tourPath(tour, 'ru')}">${escapeHtml(tour.title)}</a></h2>
       <p>${escapeHtml(tour.description)}</p>
       <p><strong>Продолжительность:</strong> ${escapeHtml(tour.duration)} · <strong>Сезон:</strong> ${escapeHtml(tour.season)} · <strong>Стоимость от:</strong> ${escapeHtml(tour.price)}</p>
       ${listMarkup(tour.highlights, (highlight) => `<li>${escapeHtml(highlight)}</li>`)}</article>`;
@@ -370,7 +405,7 @@ function destinationStaticMarkup(page, locale = 'en') {
       <p>${escapeHtml(copy.routeIntro)}</p>
       ${destinationTours.map((tour) => `
         <article>
-          <h3><a href="${prefix}/tours/${tour.id}">${escapeHtml(tour.title)}</a></h3>
+          <h3><a href="${tourPath(tour, locale)}">${escapeHtml(tour.title)}</a></h3>
           <p>${escapeHtml(tour.description)}</p>
           <p><strong>${labels.duration}:</strong> ${escapeHtml(tour.duration)} · <strong>${labels.type}:</strong> ${escapeHtml(tour.tourType)} · <strong>${locale === 'ru' ? 'Сезон' : 'Season'}:</strong> ${escapeHtml(tour.season)}</p>
         </article>`).join('')}
@@ -414,7 +449,7 @@ function russianStaticContentMarkup(page, tours) {
       .filter(Boolean);
     return `
       <h1>Туры по Кыргызстану: частные поездки и горные маршруты</h1>
-      <p>Планируйте путешествие по Кыргызстану с локальной командой: Иссык-Куль, Сон-Куль, Ала-Арча, конные маршруты, юрты, горы и Шёлковый путь.</p>
+      <p>Планируйте путешествие по Кыргызстану с локальной командой: Иссык-Куль, Сон-Куль, Кель-Суу, конные маршруты, юрты и горные автопутешествия.</p>
       <h2>Популярные туры</h2>
       ${hotTours.map(russianTourSummaryMarkup).join('')}
       <h2>Маршрут под вашу поездку</h2>
@@ -425,7 +460,7 @@ function russianStaticContentMarkup(page, tours) {
   if (page.path === '/ru/tours') {
     return `
       <h1>Туры по Кыргызстану</h1>
-      <p>Готовые маршруты к озёрам и горам Кыргызстана: Иссык-Куль, Сон-Куль, Ала-Арча, Шёлковый путь, конные туры и треккинг.</p>
+      <p>Готовые маршруты к озёрам и горам Кыргызстана: Иссык-Куль, Сон-Куль, Кель-Суу, конные туры и горные автопутешествия.</p>
       ${tours.map(russianTourSummaryMarkup).join('')}
       <p><a href="/ru/feedback">Оставить заявку на тур</a></p>`;
   }
@@ -461,7 +496,7 @@ function staticContentMarkup(page, tours) {
     ].filter((tour, index, items) => items.findIndex((item) => item.id === tour.id) === index).slice(0, 3);
     content = `
       <h1>Private Kyrgyzstan Tours &amp; Mountain Trips</h1>
-      <p>Plan a flexible private trip in Kyrgyzstan with local support: Song-Kul and Issyk-Kul lakes, Ala-Archa hikes, horse riding, nomad culture, Silk Road routes, and road trips from Bishkek or Osh.</p>
+      <p>Plan a flexible private trip in Kyrgyzstan with local support: Song-Kul, Issyk-Kul, and Kel-Suu lakes, horse riding, yurt stays, and mountain road trips from Bishkek.</p>
       <h2>Hot tours right now</h2>
       <p>These are routes travelers ask for most. Send your dates to confirm real availability and receive a personal plan for your group.</p>
       ${hotTours.map(tourSummaryMarkup).join('')}
@@ -473,7 +508,14 @@ function staticContentMarkup(page, tours) {
   } else if (page.path === '/tours') {
     content = `
       <h1>Kyrgyzstan Tour Packages</h1>
-      <p>Compare private and small-group routes for mountain lakes, nomad culture, trekking, horse riding, Silk Road heritage, and scenic road trips.</p>
+      <p>Compare private and small-group routes for Song-Kul, Issyk-Kul, Kel-Suu, horse riding, yurt stays, and scenic mountain road trips from Bishkek.</p>
+      <h2>Start with a route that matches your trip</h2>
+      <ul>
+        <li><a href="/destinations/song-kul">Song-Kul tours and horseback routes</a>: choose a route by your available days and riding experience.</li>
+        <li><a href="${tourPath({ id: 7 })}">3-day Issyk-Kul tour from Bishkek</a> or <a href="${tourPath({ id: 10 })}">4-day Issyk-Kul gorges and hot springs tour</a>.</li>
+        <li><a href="${tourPath({ id: 11 })}">4-day Kel-Suu and Song-Kul tour</a> or <a href="${tourPath({ id: 3 })}">7-day Kyrgyzstan mountain lakes tour</a>.</li>
+        <li><a href="/blogs/best-time-to-visit-kyrgyzstan">Read the best time to visit Kyrgyzstan guide</a> before selecting a high-altitude route.</li>
+      </ul>
       ${tours.map(tourSummaryMarkup).join('')}
       <p><a href="/feedback">Request a custom Kyrgyzstan itinerary</a></p>`;
   } else if (page.path === '/join-tour') {
@@ -485,9 +527,9 @@ function staticContentMarkup(page, tours) {
       <p><a href="/feedback">Send a group-tour request</a></p>`;
   } else if (page.path === '/gallery') {
     content = `
-      <h1>Kyrgyzstan Travel Photos and Videos</h1>
+      <h1>Kyrgyzstan Travel Photo Gallery</h1>
       <p>See mountain landscapes, high-altitude lakes, yurt camps, horse-riding routes, trekking days, and cultural experiences from trips across Kyrgyzstan.</p>
-      <div class="seo-gallery">${GALLERY_IMAGES.map((image, index) => `<img src="${escapeHtml(image)}" alt="Kyrgyzstan travel photo ${index + 1}" loading="lazy" width="960" height="640" />`).join('')}</div>
+      <div class="seo-gallery">${GALLERY_IMAGES.map((image, index) => `<figure><img src="${escapeHtml(image)}" alt="${escapeHtml(galleryImageAlt(image, index))}" loading="lazy" width="960" height="640" /><figcaption>${escapeHtml(galleryImageAlt(image, index))}</figcaption></figure>`).join('')}</div>
       <p><a href="/tours">Explore the routes shown in the gallery</a></p>`;
   } else if (page.path === '/blogs') {
     content = `
@@ -637,6 +679,8 @@ if (!fs.existsSync(indexPath)) {
 const template = fs.readFileSync(indexPath, 'utf8');
 const tours = JSON.parse(fs.readFileSync(toursPath, 'utf8'));
 const russianTourTranslations = JSON.parse(fs.readFileSync(russianToursPath, 'utf8'));
+const tourSlugs = JSON.parse(fs.readFileSync(tourSlugsPath, 'utf8'));
+const galleryCaptions = JSON.parse(fs.readFileSync(galleryCaptionsPath, 'utf8'));
 const russianTours = tours.map((tour) => localizeTourRu(tour, russianTourTranslations));
 const blogPosts = JSON.parse(fs.readFileSync(blogPostsPath, 'utf8'))
   .filter((post) => post.status !== 'draft' && post.status !== 'archived');
@@ -654,7 +698,7 @@ const pages = [
     path: '/',
     title: `${SITE_NAME} | Kyrgyzstan Tours & Private Trips`,
     description:
-      'Book private Kyrgyzstan tours with local planning: Song-Kul, Issyk-Kul, Ala-Archa, horse riding, yurt camps, Silk Road routes, private mountain trips, and canyon lake views.',
+      'Book private Kyrgyzstan tours with local planning: Song-Kul, Issyk-Kul, Kel-Suu, horse riding, yurt camps, and flexible mountain road trips from Bishkek.',
     image: DEFAULT_IMAGE,
     images: [
       '/images/go-kyrgyzstan-hero-1080.webp',
@@ -671,7 +715,7 @@ const pages = [
     path: '/tours',
     title: `Kyrgyzstan Tour Packages | ${SITE_NAME}`,
     description:
-      'Compare Kyrgyzstan tour packages for Song-Kul, Issyk-Kul, Ala-Archa, Silk Road heritage, horse riding, trekking, and private road trips.',
+      'Compare private Kyrgyzstan tour packages for Song-Kul, Issyk-Kul, Kel-Suu, horse riding, yurt stays, and flexible mountain road trips from Bishkek.',
     image: DEFAULT_IMAGE,
     images: tours.map((tour) => optimizedImagePath(tour.image)),
     preloadImage: {
@@ -768,7 +812,7 @@ const pages = [
     };
   }),
   ...tours.map((tour) => ({
-    path: `/tours/${tour.id}`,
+    path: tourPath(tour),
     tour,
     title: `${tourDisplayTitle(tour.title)} in Kyrgyzstan | ${SITE_NAME}`,
     description: `${tour.description} Duration: ${tour.duration}. Starting from ${tour.price}.`,
@@ -783,7 +827,7 @@ const pages = [
       breadcrumbJsonLd([
         { name: 'Home', path: '/' },
         { name: 'Tours', path: '/tours' },
-        { name: tour.title, path: `/tours/${tour.id}` },
+        { name: tour.title, path: tourPath(tour) },
       ]),
     ],
   })),
@@ -813,7 +857,7 @@ const localizedEnglishPaths = new Set([
   '/tours',
   '/feedback',
   ...destinations.map((destination) => `/destinations/${destination.slug}`),
-  ...tours.map((tour) => `/tours/${tour.id}`),
+  ...tours.map((tour) => tourPath(tour)),
 ]);
 
 for (const page of pages) {
@@ -827,7 +871,7 @@ pages.push(
     path: '/ru',
     locale: 'ru',
     title: `Туры по Кыргызстану — частные поездки и горные маршруты | ${SITE_NAME}`,
-    description: 'Частные туры по Кыргызстану: Иссык-Куль, Сон-Куль, Ала-Арча, конные маршруты, юрты, горы и Шёлковый путь с локальной организацией.',
+    description: 'Частные туры по Кыргызстану: Иссык-Куль, Сон-Куль, Кель-Суу, конные маршруты, юрты и горные автопутешествия с локальной организацией.',
     image: DEFAULT_IMAGE,
     images: [DEFAULT_IMAGE, ...russianTours.map((tour) => optimizedImagePath(tour.image))],
     alternates: localeAlternates('/'),
@@ -837,7 +881,7 @@ pages.push(
     path: '/ru/tours',
     locale: 'ru',
     title: `Туры по Кыргызстану — озёра, горы, культура и конные маршруты | ${SITE_NAME}`,
-    description: 'Выберите тур по Кыргызстану: Иссык-Куль, Сон-Куль, Ала-Арча, Шёлковый путь, верховая езда, треккинг и горные автопутешествия.',
+    description: 'Выберите тур по Кыргызстану: Иссык-Куль, Сон-Куль, Кель-Суу, верховая езда, юрты и горные автопутешествия из Бишкека.',
     image: DEFAULT_IMAGE,
     images: russianTours.map((tour) => optimizedImagePath(tour.image)),
     alternates: localeAlternates('/tours'),
@@ -878,18 +922,18 @@ pages.push(
     };
   }),
   ...russianTours.map((tour) => ({
-    path: `/ru/tours/${tour.id}`,
+    path: tourPath(tour, 'ru'),
     locale: 'ru',
     tour,
     title: `${tour.title} — тур по Кыргызстану | ${SITE_NAME}`,
     description: `${tour.description} Продолжительность: ${tour.duration}. Цена от ${tour.price}.`,
     image: tour.image,
     images: [optimizedImagePath(tour.image)],
-    alternates: localeAlternates(`/tours/${tour.id}`),
+    alternates: localeAlternates(tourPath(tour)),
     jsonLd: [breadcrumbJsonLd([
       { name: 'Главная', path: '/ru' },
       { name: 'Туры', path: '/ru/tours' },
-      { name: tour.title, path: `/ru/tours/${tour.id}` },
+      { name: tour.title, path: tourPath(tour, 'ru') },
     ])],
   })),
 );

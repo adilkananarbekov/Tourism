@@ -10,8 +10,9 @@ import { useToursData } from '../hooks/useTours';
 import { localizeTour } from '../lib/localizedTours';
 import { localeAlternates } from '../lib/locale';
 import { breadcrumbJsonLd, organizationJsonLd } from '../lib/seo';
+import { tourPath } from '../lib/tourRoutes';
 
-const featuredTourIds = [6, 1, 2];
+const featuredTourIds = [2, 11, 3];
 
 export function RussianHomePage() {
   const { tours } = useToursData();
@@ -24,7 +25,7 @@ export function RussianHomePage() {
     <>
       <SEO
         title="Туры по Кыргызстану — частные поездки и горные маршруты"
-        description="Частные туры по Кыргызстану: Иссык-Куль, Сон-Куль, Ала-Арча, конные маршруты, юрты, горы и Шёлковый путь с локальной организацией."
+        description="Частные туры по Кыргызстану: Иссык-Куль, Сон-Куль, Кель-Суу, конные маршруты, юрты и горные автопутешествия с локальной организацией."
         path="/ru"
         language="ru"
         alternates={localeAlternates('/')}
@@ -63,7 +64,7 @@ export function RussianHomePage() {
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90 sm:text-xl">
                 Подберём маршрут по датам, уровню активности и интересам: Иссык-Куль, Сон-Куль,
-                Ала-Арча, конные поездки и Шёлковый путь.
+                Кель-Суу, конные поездки и горные автопутешествия.
               </p>
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -95,7 +96,7 @@ export function RussianHomePage() {
           <div className="grid gap-5 lg:grid-cols-3">
             {featuredTours.map((tour) => (
               <article key={tour.id} className="interactive-card card-hover overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-                <Link to={`/ru/tours/${tour.id}`} className="relative block h-60 overflow-hidden">
+                <Link to={tourPath(tour, 'ru')} className="relative block h-60 overflow-hidden">
                   <ResponsiveImage
                     src={tour.image}
                     alt={tour.title}
@@ -111,7 +112,7 @@ export function RussianHomePage() {
                 <div className="p-5">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="text-xl leading-snug text-foreground">
-                      <Link to={`/ru/tours/${tour.id}`} className="card-title-link">
+                      <Link to={tourPath(tour, 'ru')} className="card-title-link">
                         {tour.title}
                         <ArrowRight className="h-5 w-5" aria-hidden="true" />
                       </Link>
@@ -123,7 +124,7 @@ export function RussianHomePage() {
                     <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4 text-secondary" />{tour.tourType}</span>
                   </div>
                   <p className="mt-4 text-sm leading-6 text-muted-foreground">{tour.description}</p>
-                  <Link to={`/ru/tours/${tour.id}`} className="card-cta mt-5 text-sm font-medium text-primary">
+                  <Link to={tourPath(tour, 'ru')} className="card-cta mt-5 text-sm font-medium text-primary">
                     Подробнее о туре
                     <ArrowRight className="h-4 w-4" />
                   </Link>

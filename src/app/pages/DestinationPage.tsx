@@ -9,6 +9,7 @@ import { useToursData } from '../hooks/useTours';
 import { localizedPath, localeAlternates, useSiteLocale } from '../lib/locale';
 import { absoluteUrl, breadcrumbJsonLd } from '../lib/seo';
 import { localizeTour } from '../lib/localizedTours';
+import { tourPath } from '../lib/tourRoutes';
 
 function imageVariants(image: string) {
   if (!/\.(jpe?g)$/i.test(image)) {
@@ -112,7 +113,7 @@ export function DestinationPage() {
       '@type': 'ListItem',
       position: index + 1,
       name: tour.title,
-      url: absoluteUrl(localizedPath(`/tours/${tour.id}`, locale)),
+      url: absoluteUrl(tourPath(tour, locale)),
     })),
   };
 
@@ -200,11 +201,11 @@ export function DestinationPage() {
           <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {selectedTours.map((tour) => {
               const variants = imageVariants(tour.image);
-              const tourPath = localizedPath(`/tours/${tour.id}`, locale);
+              const publicTourPath = tourPath(tour, locale);
               return (
                 <article key={tour.id} className="interactive-card card-hover overflow-hidden rounded-xl border border-border bg-card shadow-sm">
                   <Link
-                    to={tourPath}
+                    to={publicTourPath}
                     aria-label={`${labels.details}: ${tour.title}`}
                     className="relative block h-52 overflow-hidden"
                     data-track-event="destination_tour_image_click"
@@ -228,7 +229,7 @@ export function DestinationPage() {
                   <div className="p-5">
                     <h3 className="text-xl leading-snug text-foreground">
                       <Link
-                        to={tourPath}
+                        to={publicTourPath}
                         className="card-title-link"
                         data-track-event="destination_tour_title_click"
                         data-track-label={tour.title}
@@ -245,7 +246,7 @@ export function DestinationPage() {
                     <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
                       <span className="text-sm font-medium text-primary">{tour.price}</span>
                       <Link
-                        to={`${tourPath}?book=true`}
+                        to={`${publicTourPath}?book=true`}
                         className="card-cta text-sm font-medium text-primary"
                         data-track-event="destination_tour_request_click"
                         data-track-label={tour.title}

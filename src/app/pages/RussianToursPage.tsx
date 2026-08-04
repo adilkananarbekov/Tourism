@@ -15,7 +15,7 @@ export function RussianToursPage() {
     <div className="bg-background pb-20 md:pb-0">
       <SEO
         title="Туры по Кыргызстану — озёра, горы, культура и конные маршруты"
-        description="Выберите тур по Кыргызстану: Иссык-Куль, Сон-Куль, Ала-Арча, Шёлковый путь, верховая езда, треккинг и горные автопутешествия."
+        description="Выберите тур по Кыргызстану: Иссык-Куль, Сон-Куль, Кель-Суу, верховая езда, юрты и горные автопутешествия из Бишкека."
         path="/ru/tours"
         language="ru"
         alternates={localeAlternates('/tours')}
