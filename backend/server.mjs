@@ -1571,12 +1571,24 @@ app.get('/api/sitemap.xml', (_req, res) => {
   const staticRoutes = [
     { path: '/', priority: '1.0', changefreq: 'weekly' },
     { path: '/tours', priority: '0.9', changefreq: 'weekly' },
+    {
+      path: '/destinations/song-kul',
+      priority: '0.8',
+      changefreq: 'monthly',
+      images: ['/images/travel-gallery-2026/travel-032-960.webp'],
+    },
     { path: '/join-tour', priority: '0.8', changefreq: 'monthly' },
     { path: '/gallery', priority: '0.7', changefreq: 'monthly', images: galleryImages },
     { path: '/blogs', priority: '0.8', changefreq: 'weekly' },
     { path: '/feedback', priority: '0.6', changefreq: 'monthly' },
     { path: '/ru', priority: '0.9', changefreq: 'weekly' },
     { path: '/ru/tours', priority: '0.8', changefreq: 'weekly' },
+    {
+      path: '/ru/destinations/song-kul',
+      priority: '0.7',
+      changefreq: 'monthly',
+      images: ['/images/travel-gallery-2026/travel-032-960.webp'],
+    },
     { path: '/ru/feedback', priority: '0.6', changefreq: 'monthly' },
   ];
   const tourRoutes = statements.listTours
@@ -1619,7 +1631,8 @@ app.get('/api/sitemap.xml', (_req, res) => {
       englishPath === '/' ||
       englishPath === '/tours' ||
       englishPath === '/feedback' ||
-      /^\/tours\/\d+$/.test(englishPath);
+      /^\/tours\/\d+$/.test(englishPath) ||
+      /^\/destinations\/[a-z0-9-]+$/.test(englishPath);
     if (!supportsRussian) {
       return '';
     }
