@@ -141,12 +141,12 @@ function normalizeGuestRequestPayload(type, payload) {
   if (!normalized.countryOfResidence) {
     throw new Error('Country of residence is required.');
   }
-  const contactPreferences = new Set(['whatsapp', 'telegram', 'email', 'phone']);
+  const contactPreferences = new Set(['whatsapp', 'telegram', 'email']);
   if (!contactPreferences.has(normalized.contactPreference)) {
-    throw new Error('Choose WhatsApp, Telegram, email, or phone as the contact method.');
+    throw new Error('Choose WhatsApp, Telegram, or email as the contact method.');
   }
   const normalizedPhone = normalized.phone.replace(/[\s()-]/g, '');
-  if ((normalized.contactPreference === 'whatsapp' || normalized.contactPreference === 'phone') && !/^\+\d{7,15}$/.test(normalizedPhone)) {
+  if (normalized.contactPreference === 'whatsapp' && !/^\+\d{7,15}$/.test(normalizedPhone)) {
     throw new Error('Use a phone number with country code, for example +1 803 555 0123.');
   }
   if (normalized.contactPreference === 'telegram' && !normalized.telegramUsername) {
@@ -1067,7 +1067,7 @@ function formatGuestRequestMessage({ id, type, payload, createdAt }) {
     compactLine('Country of residence', payload.countryOfResidence),
     compactLine('Preferred contact', payload.contactPreference),
     compactLine('Telegram', payload.telegramUsername),
-    compactLine('Phone', payload.phone),
+    compactLine('WhatsApp', payload.phone),
     compactLine('Email', payload.email),
     compactLine('Tour', payload.tourTitle || payload.tourId),
     compactLine('Participants', payload.participants || payload.groupSize),

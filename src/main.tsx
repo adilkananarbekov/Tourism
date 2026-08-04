@@ -33,6 +33,7 @@ async function preloadCurrentRoute() {
   if (path === '/gallery') return import('./app/pages/GalleryPage');
   if (path === '/blogs') return import('./app/pages/BlogsPage');
   if (/^\/blogs\/[a-z0-9-]+$/.test(path)) return import('./app/pages/BlogPostPage');
+  if (/^\/(?:ru\/)?destinations\/[a-z0-9-]+$/.test(path)) return import('./app/pages/DestinationPage');
   if (path === '/feedback' || path === '/ru/feedback') return import('./app/pages/FeedbackPage');
   if (path === '/auth') return import('./app/pages/AuthPage');
   if (path === '/dashboard') return import('./app/pages/UserDashboardPage');

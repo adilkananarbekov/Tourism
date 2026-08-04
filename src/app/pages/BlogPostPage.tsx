@@ -56,6 +56,7 @@ export function BlogPostPage() {
 
   const path = blogPath(post);
   const relatedPosts = publishedPosts.filter((item) => item.id !== post.id).slice(0, 3);
+  const isSongKulGuide = post.slug === 'song-kul-lake-travel-guide';
   const sanitizedContent = DOMPurify.sanitize(post.content, {
     ADD_ATTR: ['target', 'rel'],
   });
@@ -135,6 +136,21 @@ export function BlogPostPage() {
           className="blog-content mx-auto mt-10 max-w-3xl text-base leading-8 text-muted-foreground [&_a]:text-primary [&_a]:underline [&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:text-3xl [&_h2]:text-foreground [&_li]:mb-2 [&_p]:mb-5 [&_ul]:mb-6 [&_ul]:list-disc [&_ul]:pl-6"
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
+
+        {isSongKulGuide && (
+          <aside className="mx-auto mt-10 max-w-3xl rounded-2xl border border-secondary/30 bg-secondary/10 p-6 sm:p-7">
+            <p className="text-xs uppercase tracking-[0.18em] text-secondary">Song-Kul routes</p>
+            <h2 className="mt-2 text-2xl text-foreground">Compare horse treks and private road trips</h2>
+            <p className="mt-3 leading-7 text-muted-foreground">
+              Choose a Song-Kul route by your available days, riding experience and preferred pace,
+              then confirm current access and yurt-camp availability with the local team.
+            </p>
+            <Link to="/destinations/song-kul" className="card-cta mt-5 text-sm font-medium text-primary">
+              Explore Song-Kul tours
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </aside>
+        )}
 
         <div className="mx-auto mt-12 max-w-3xl rounded-2xl border border-border bg-card p-6 sm:p-8">
           <h2 className="text-2xl text-foreground">Turn this guide into your own route</h2>

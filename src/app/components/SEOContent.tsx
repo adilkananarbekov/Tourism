@@ -19,7 +19,7 @@ const faqs = [
   {
     question: 'Do you organize tours for international travelers?',
     answer:
-      'Yes. Go Kyrgyzstan Travel helps international guests plan mountain, lake, culture, road-trip, and nomad experiences with direct follow-up by Telegram or phone.',
+      'Yes. Go Kyrgyzstan Travel helps international guests plan mountain, lake, culture, road-trip, and nomad experiences with direct follow-up by WhatsApp, Telegram, or email.',
   },
   {
     question: 'How do I request a Kyrgyzstan tour?',

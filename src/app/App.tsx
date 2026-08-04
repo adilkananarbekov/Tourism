@@ -17,6 +17,7 @@ const RussianTourDetailPage = lazy(() => import('./pages/RussianTourDetailPage')
 const GalleryPage = lazy(() => import('./pages/GalleryPage').then((module) => ({ default: module.GalleryPage })));
 const BlogsPage = lazy(() => import('./pages/BlogsPage').then((module) => ({ default: module.BlogsPage })));
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage').then((module) => ({ default: module.BlogPostPage })));
+const DestinationPage = lazy(() => import('./pages/DestinationPage').then((module) => ({ default: module.DestinationPage })));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
 const CreateTourPage = lazy(() => import('./pages/CreateTourPage').then((module) => ({ default: module.CreateTourPage })));
 const JoinTourPage = lazy(() => import('./pages/JoinTourPage').then((module) => ({ default: module.JoinTourPage })));
@@ -46,6 +47,8 @@ export default function App() {
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/blogs/:slug" element={<BlogPostPage />} />
+            <Route path="/destinations/:slug" element={<DestinationPage />} />
+            <Route path="/ru/destinations/:slug" element={<DestinationPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/ru/feedback" element={<FeedbackPage />} />
             <Route path="/auth" element={<AuthPage />} />

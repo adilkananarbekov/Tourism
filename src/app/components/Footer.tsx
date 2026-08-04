@@ -18,12 +18,12 @@ export function Footer() {
     ? {
         intro: `Частные туры по Кыргызстану с ${FOUNDER_NAME}.`, request: 'Оставить заявку', quick: 'Навигация', tours: 'Наши туры', contact: 'Контакты',
         allTours: 'Все туры', gallery: 'Галерея', stories: 'Путеводители', contactLink: 'Связаться', form: 'Форма заявки', reply: 'Обычно отвечаем в течение 24 часов',
-        songKul: 'Экспедиция к Сон-Кулю', silkRoad: 'Шёлковый путь', horse: 'Конная экспедиция', lenin: 'Пик Ленина', issykKul: 'Маршрут вокруг Иссык-Куля', rights: 'Все права защищены.',
+        songKul: 'Туры и конные маршруты на Сон-Куль', silkRoad: 'Шёлковый путь', horse: 'Конная экспедиция', lenin: 'Пик Ленина', issykKul: 'Маршрут вокруг Иссык-Куля', rights: 'Все права защищены.',
       }
     : {
         intro: `Private Kyrgyzstan tours planned by ${FOUNDER_NAME}.`, request: 'Start a trip request', quick: 'Quick Links', tours: 'Popular Tours', contact: 'Contact Us',
         allTours: 'Our Tours', gallery: 'Gallery', stories: 'Travel Stories', contactLink: 'Contact', form: 'Trip request form', reply: 'Usually within 24 hours',
-        songKul: 'Song-Kul Lake Expedition', silkRoad: 'Silk Road Heritage', horse: 'Horse Riding Adventure', lenin: 'Peak Lenin Trek', issykKul: 'Issyk-Kul Circuit', rights: 'All rights reserved.',
+        songKul: 'Song-Kul Tours & Horse Routes', silkRoad: 'Silk Road Heritage', horse: 'Horse Riding Adventure', lenin: 'Peak Lenin Trek', issykKul: 'Issyk-Kul Circuit', rights: 'All rights reserved.',
       };
   return (
     <footer className="bg-[#064e3b] text-primary-foreground">
@@ -71,7 +71,7 @@ export function Footer() {
             <h3 className="text-lg mb-4">{text.tours}</h3>
             <ul className="space-y-2 text-primary-foreground/70 text-sm">
               <li>
-                <Link to={path('/tours/1')} className="hover:text-primary-foreground transition-colors">
+                <Link to={path('/destinations/song-kul')} className="hover:text-primary-foreground transition-colors">
                   {text.songKul}
                 </Link>
               </li>

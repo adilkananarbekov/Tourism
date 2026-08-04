@@ -131,6 +131,18 @@ export function RussianHomePage() {
               </article>
             ))}
           </div>
+          <Link
+            to="/ru/destinations/song-kul"
+            className="interactive-card mt-6 flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-primary sm:flex-row sm:items-center sm:justify-between"
+            data-track-event="ru_home_song_kul_destination_click"
+            data-track-label="Song-Kul destination"
+          >
+            <span>
+              <span className="block text-xs uppercase tracking-[0.18em] text-secondary">Популярное направление</span>
+              <span className="mt-1 block text-xl text-foreground">Сон-Куль: юрты, конные маршруты и горные дороги</span>
+            </span>
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-primary">Выбрать маршрут <ArrowRight className="h-4 w-4" aria-hidden="true" /></span>
+          </Link>
         </div>
       </section>
       </Reveal>

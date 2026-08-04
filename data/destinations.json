@@ -1,0 +1,119 @@
+[
+  {
+    "slug": "song-kul",
+    "heroImage": "/images/travel-gallery-2026/travel-032.jpg",
+    "tourIds": [2, 4, 9, 11],
+    "en": {
+      "seoTitle": "Song-Kul Tours & Horseback Riding in Kyrgyzstan",
+      "metaDescription": "Compare private Song-Kul tours in Kyrgyzstan: yurt stays, horseback riding and highland road trips. Check dates, route conditions and availability with a local team.",
+      "eyebrow": "Central Kyrgyzstan · highland lake",
+      "title": "Song-Kul Tours & Horseback Riding in Kyrgyzstan",
+      "intro": "Song-Kul is a high-mountain lake surrounded by summer pasture. A visit is usually as much about the journey, yurt stay and changing mountain weather as it is about the lake itself. Choose a route that fits your days, riding experience and preferred pace.",
+      "facts": [
+        { "label": "Best for", "value": "Yurt stays, horse riding and open highland scenery" },
+        { "label": "Travel style", "value": "Private road trip or horseback route" },
+        { "label": "Planning", "value": "Dates and route conditions confirmed personally" }
+      ],
+      "routeHeading": "Choose a Song-Kul route",
+      "routeIntro": "Start with a short horseback approach, a longer trek across the pastures, or a private road trip that combines Song-Kul with another region. Each route remains adjustable after we know your dates and group.",
+      "planningHeading": "Plan for the highlands",
+      "planningItems": [
+        "Confirm yurt-camp availability and road access for your exact dates before finalising flights.",
+        "Keep the daily plan realistic: weather, trail conditions and long mountain transfers can change the pace.",
+        "Tell us honestly about riding experience so the horse route, guide and time in the saddle fit your group."
+      ],
+      "experienceHeading": "What makes a Song-Kul trip different",
+      "experienceItems": [
+        {
+          "title": "Yurt-camp rhythm",
+          "body": "Expect a simple highland stay rather than a resort. Facilities differ by camp, so the confirmed route should state the actual accommodation and meal plan."
+        },
+        {
+          "title": "A route, not a quick stop",
+          "body": "The most rewarding visits leave time for the approach, the lake and a slow morning. This is why a short ride and a wider road trip are offered as different experiences."
+        },
+        {
+          "title": "Mountain conditions",
+          "body": "Warm sun, wind and cold evenings can all happen in one day. Layers, closed shoes and an itinerary with some flexibility make the trip more comfortable."
+        }
+      ],
+      "faqHeading": "Song-Kul planning questions",
+      "faq": [
+        {
+          "question": "Can I visit Song-Kul all year?",
+          "answer": "Most yurt stays and highland routes are planned for the warmer season. Send your travel month first, and we will confirm the realistic route and current access."
+        },
+        {
+          "question": "Is a horse trek suitable for beginners?",
+          "answer": "Some shorter rides can be adapted for beginners, while longer mountain routes need more confidence in the saddle. Tell us your recent experience before choosing a tour."
+        },
+        {
+          "question": "What should I pack for a yurt stay?",
+          "answer": "Bring layers for sun, wind and cold evenings, a waterproof outer layer, closed footwear, sun protection and any personal medication. The final packing list depends on your selected route."
+        }
+      ],
+      "ctaTitle": "Tell us your dates and travel style",
+      "ctaText": "We will confirm which Song-Kul route is practical for your group, the current availability and the next planning step.",
+      "ctaPrimary": "Ask about Song-Kul dates",
+      "ctaSecondary": "Compare all tours",
+      "notFoundTitle": "Destination not found",
+      "notFoundText": "This destination page is not available. Browse all Kyrgyzstan tours or send us your travel idea."
+    },
+    "ru": {
+      "seoTitle": "Туры на Сон-Куль и конные маршруты по Кыргызстану",
+      "metaDescription": "Выберите частный тур на Сон-Куль: юрты, конные маршруты и высокогорные автопоездки. Уточним даты, доступность и условия маршрута у местной команды.",
+      "eyebrow": "Центральный Кыргызстан · высокогорное озеро",
+      "title": "Туры на Сон-Куль и конные маршруты по Кыргызстану",
+      "intro": "Сон-Куль — высокогорное озеро среди летних пастбищ. Поездка сюда — это не только само озеро, но и дорога, ночёвка в юрте и переменчивая горная погода. Выберите маршрут под ваши даты, опыт верховой езды и желаемый темп.",
+      "facts": [
+        { "label": "Подойдёт для", "value": "Юрт, верховой езды и открытых горных пейзажей" },
+        { "label": "Формат поездки", "value": "Частный автотур или конный маршрут" },
+        { "label": "Планирование", "value": "Даты и условия маршрута подтверждаем лично" }
+      ],
+      "routeHeading": "Выберите маршрут на Сон-Куль",
+      "routeIntro": "Можно начать с короткого конного выезда, выбрать более длинный переход по пастбищам или частный автотур с Сон-Кулем и другим регионом. После ваших дат и состава группы маршрут можно адаптировать.",
+      "planningHeading": "Что важно учесть в высокогорье",
+      "planningItems": [
+        "До покупки билетов уточните доступность юрточного лагеря и состояние дорог на ваши даты.",
+        "Оставьте темп реалистичным: погода, состояние троп и длинные горные переезды могут менять план дня.",
+        "Честно расскажите об опыте верховой езды — так мы подберём подходящий маршрут, проводника и время в седле."
+      ],
+      "experienceHeading": "Чем поездка на Сон-Куль отличается",
+      "experienceItems": [
+        {
+          "title": "Ритм юрточного лагеря",
+          "body": "Это простое размещение в высокогорье, а не курорт. Условия в лагерях отличаются, поэтому в подтверждённом маршруте нужно зафиксировать реальное размещение и питание."
+        },
+        {
+          "title": "Не короткая остановка, а маршрут",
+          "body": "Лучшее впечатление даёт время на дорогу, озеро и спокойное утро. Поэтому короткий конный выезд и большой автотур — это разные форматы поездки."
+        },
+        {
+          "title": "Горные условия",
+          "body": "За один день могут быть яркое солнце, ветер и холодный вечер. Многослойная одежда, закрытая обувь и небольшой запас времени делают поездку комфортнее."
+        }
+      ],
+      "faqHeading": "Частые вопросы о Сон-Куле",
+      "faq": [
+        {
+          "question": "Можно ли приехать на Сон-Куль круглый год?",
+          "answer": "Большинство юрточных лагерей и высокогорных маршрутов работают в тёплый сезон. Сначала отправьте месяц поездки, и мы подтвердим реальный маршрут и текущий доступ."
+        },
+        {
+          "question": "Подойдёт ли конный маршрут новичкам?",
+          "answer": "Некоторые короткие прогулки можно адаптировать для новичков, но длинные горные переходы требуют уверенности в седле. Расскажите о вашем опыте до выбора тура."
+        },
+        {
+          "question": "Что взять с собой в юрточный лагерь?",
+          "answer": "Возьмите одежду слоями для солнца, ветра и холодного вечера, непромокаемый верхний слой, закрытую обувь, защиту от солнца и личные лекарства. Точный список зависит от выбранного маршрута."
+        }
+      ],
+      "ctaTitle": "Расскажите о датах и формате поездки",
+      "ctaText": "Мы подскажем, какой маршрут на Сон-Куль реалистичен для вашей группы, проверим доступность и предложим следующий шаг по планированию.",
+      "ctaPrimary": "Уточнить даты на Сон-Куль",
+      "ctaSecondary": "Смотреть все туры",
+      "notFoundTitle": "Направление не найдено",
+      "notFoundText": "Эта страница направления недоступна. Посмотрите все туры по Кыргызстану или отправьте нам идею поездки."
+    }
+  }
+]

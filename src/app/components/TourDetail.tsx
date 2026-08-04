@@ -56,7 +56,7 @@ const bookingDetailsSchema = z
     notes: formString,
   })
   .superRefine((values, ctx) => {
-    if (values.contactPreference === 'whatsapp' || values.contactPreference === 'phone') {
+    if (values.contactPreference === 'whatsapp') {
       const phone = values.phone.replace(/[\s()-]/g, '');
       if (!phone) {
         ctx.addIssue({
@@ -718,7 +718,6 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
               <option value="whatsapp">WhatsApp</option>
               <option value="telegram">Telegram</option>
               <option value="email">Email</option>
-              <option value="phone">{isRussian ? 'Звонок или SMS' : 'Phone call or SMS'}</option>
             </select>
             <p className="mt-1 text-xs text-muted-foreground">
               {isRussian ? 'Предпочтительнее WhatsApp или Telegram. По email тоже можно вести переписку.' : 'WhatsApp or Telegram is preferred. Email also works well for written communication.'}
@@ -736,7 +735,7 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
             />
           </div>
           <div>
-            <Label htmlFor="phone">{isRussian ? 'Телефон для WhatsApp / звонка' : 'Phone for WhatsApp / calls'}</Label>
+            <Label htmlFor="phone">{isRussian ? 'Номер WhatsApp' : 'WhatsApp number'}</Label>
             <Input
               id="phone"
               type="tel"

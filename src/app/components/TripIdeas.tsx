@@ -20,8 +20,8 @@ const ideas = [
   {
     title: 'Nomad lake experience',
     description: 'Song-Kul yurts, horse riding, local families, open pastures, and high-altitude scenery.',
-    to: '/tours/1',
-    action: 'See Song-Kul tour',
+    to: '/destinations/song-kul',
+    action: 'Explore Song-Kul routes',
     icon: TentTree,
   },
   {

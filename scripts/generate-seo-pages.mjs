@@ -10,6 +10,7 @@ const indexPath = path.join(distDir, 'index.html');
 const toursPath = path.join(rootDir, 'data', 'seed_tours.json');
 const blogPostsPath = path.join(rootDir, 'data', 'seed_blog_posts.json');
 const russianToursPath = path.join(rootDir, 'data', 'tour_translations_ru.json');
+const destinationsPath = path.join(rootDir, 'data', 'destinations.json');
 
 const SITE_NAME = 'Go Kyrgyzstan Travel';
 const SITE_URL = 'https://kyrgyz.tours';
@@ -206,6 +207,22 @@ function blogPostJsonLd(post) {
   };
 }
 
+function destinationTourListJsonLd(destination, destinationTours, locale = 'en') {
+  const copy = destination[locale];
+  const localePrefix = locale === 'ru' ? '/ru' : '';
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: copy.title,
+    itemListElement: destinationTours.map((tour, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: tour.title,
+      url: absoluteUrl(`${localePrefix}/tours/${tour.id}`),
+    })),
+  };
+}
+
 function listMarkup(items, renderItem) {
   if (!Array.isArray(items) || items.length === 0) {
     return '';
@@ -290,6 +307,9 @@ function tourDetailMarkup(tour, tours) {
 }
 
 function blogPostMarkup(post) {
+  const destinationLink = post.slug === 'song-kul-lake-travel-guide'
+    ? '<p><a href="/destinations/song-kul">Compare Song-Kul tours and horseback routes</a></p>'
+    : '';
   return `
     <article>
       <p><a href="/blogs">All Kyrgyzstan travel guides</a></p>
@@ -297,6 +317,7 @@ function blogPostMarkup(post) {
       <h1>${escapeHtml(post.title)}</h1>
       <p>${escapeHtml(post.excerpt)}</p>
       ${post.content || ''}
+      ${destinationLink}
       <p><a href="/feedback">Request a private Kyrgyzstan itinerary</a></p>
     </article>`;
 }
@@ -310,7 +331,64 @@ function russianTourSummaryMarkup(tour) {
       ${listMarkup(tour.highlights, (highlight) => `<li>${escapeHtml(highlight)}</li>`)}</article>`;
 }
 
+function destinationStaticMarkup(page, locale = 'en') {
+  const destination = page.destination;
+  const copy = destination[locale];
+  const destinationTours = page.destinationTours || [];
+  const prefix = locale === 'ru' ? '/ru' : '';
+  const labels = locale === 'ru'
+    ? {
+        allTours: 'Все туры по Кыргызстану',
+        routes: 'Выберите маршрут на Сон-Куль',
+        planning: 'Что важно учесть в высокогорье',
+        experience: 'Чем поездка на Сон-Куль отличается',
+        faq: copy.faqHeading,
+        request: 'Уточнить даты на Сон-Куль',
+        duration: 'Продолжительность',
+        type: 'Формат',
+      }
+    : {
+        allTours: 'All Kyrgyzstan tours',
+        routes: 'Choose a Song-Kul route',
+        planning: 'Plan for the highlands',
+        experience: 'What makes a Song-Kul trip different',
+        faq: copy.faqHeading,
+        request: 'Ask about Song-Kul dates',
+        duration: 'Duration',
+        type: 'Travel style',
+      };
+
+  return `
+    <article>
+      <p><a href="${prefix || '/'}">${locale === 'ru' ? 'Главная' : 'Home'}</a> · <a href="${prefix}/tours">${labels.allTours}</a></p>
+      <h1>${escapeHtml(copy.title)}</h1>
+      <p>${escapeHtml(copy.intro)}</p>
+      <dl>
+        ${copy.facts.map((fact) => `<dt>${escapeHtml(fact.label)}</dt><dd>${escapeHtml(fact.value)}</dd>`).join('')}
+      </dl>
+      <h2>${escapeHtml(labels.routes)}</h2>
+      <p>${escapeHtml(copy.routeIntro)}</p>
+      ${destinationTours.map((tour) => `
+        <article>
+          <h3><a href="${prefix}/tours/${tour.id}">${escapeHtml(tour.title)}</a></h3>
+          <p>${escapeHtml(tour.description)}</p>
+          <p><strong>${labels.duration}:</strong> ${escapeHtml(tour.duration)} · <strong>${labels.type}:</strong> ${escapeHtml(tour.tourType)} · <strong>${locale === 'ru' ? 'Сезон' : 'Season'}:</strong> ${escapeHtml(tour.season)}</p>
+        </article>`).join('')}
+      <h2>${escapeHtml(labels.planning)}</h2>
+      ${listMarkup(copy.planningItems, (item) => `<li>${escapeHtml(item)}</li>`)}
+      <h2>${escapeHtml(labels.experience)}</h2>
+      ${copy.experienceItems.map((item) => `<section><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.body)}</p></section>`).join('')}
+      <h2>${escapeHtml(labels.faq)}</h2>
+      <dl>${copy.faq.map((item) => `<dt>${escapeHtml(item.question)}</dt><dd>${escapeHtml(item.answer)}</dd>`).join('')}</dl>
+      <p><a href="${prefix}/feedback?tour=${encodeURIComponent(copy.title)}">${labels.request}</a> · <a href="${prefix}/tours">${labels.allTours}</a></p>
+    </article>`;
+}
+
 function russianStaticContentMarkup(page, tours) {
+  if (page.destination) {
+    return destinationStaticMarkup(page, 'ru');
+  }
+
   if (page.tour) {
     const practicalInfo = page.tour.practicalInfo || {};
     return `
@@ -341,7 +419,7 @@ function russianStaticContentMarkup(page, tours) {
       ${hotTours.map(russianTourSummaryMarkup).join('')}
       <h2>Маршрут под вашу поездку</h2>
       <p>Выберите готовый тур или отправьте даты, интересы и размер группы. Мы уточним реальную доступность, темп и детали поездки.</p>
-      <p><a href="/ru/tours">Смотреть все туры</a> · <a href="/ru/feedback">Подобрать маршрут</a></p>`;
+      <p><a href="/ru/destinations/song-kul">Туры на Сон-Куль и конные маршруты</a> · <a href="/ru/tours">Смотреть все туры</a> · <a href="/ru/feedback">Подобрать маршрут</a></p>`;
   }
 
   if (page.path === '/ru/tours') {
@@ -368,6 +446,8 @@ function staticContentMarkup(page, tours) {
 
   if (page.locale === 'ru') {
     content = russianStaticContentMarkup(page, tours);
+  } else if (page.destination) {
+    content = destinationStaticMarkup(page);
   } else if (page.tour) {
     content = tourDetailMarkup(page.tour, tours);
   } else if (page.blogPost) {
@@ -389,7 +469,7 @@ function staticContentMarkup(page, tours) {
       ${tours.map(tourSummaryMarkup).join('')}
       <h2>Plan your trip with a local travel specialist</h2>
       <p>Choose a ready route or send your dates, interests, group size, and preferred pace for a personal itinerary.</p>
-      <p><a href="/tours">Compare all tours</a> · <a href="/feedback">Request a custom tour</a></p>`;
+      <p><a href="/destinations/song-kul">Explore Song-Kul tours and horseback routes</a> · <a href="/tours">Compare all tours</a> · <a href="/feedback">Request a custom tour</a></p>`;
   } else if (page.path === '/tours') {
     content = `
       <h1>Kyrgyzstan Tour Packages</h1>
@@ -560,6 +640,14 @@ const russianTourTranslations = JSON.parse(fs.readFileSync(russianToursPath, 'ut
 const russianTours = tours.map((tour) => localizeTourRu(tour, russianTourTranslations));
 const blogPosts = JSON.parse(fs.readFileSync(blogPostsPath, 'utf8'))
   .filter((post) => post.status !== 'draft' && post.status !== 'archived');
+const destinations = JSON.parse(fs.readFileSync(destinationsPath, 'utf8'));
+
+function selectDestinationTours(destination, sourceTours) {
+  const toursById = new Map(sourceTours.map((tour) => [Number(tour.id), tour]));
+  return (destination.tourIds || [])
+    .map((tourId) => toursById.get(Number(tourId)))
+    .filter(Boolean);
+}
 
 const pages = [
   {
@@ -656,6 +744,29 @@ const pages = [
       ]),
     ],
   },
+  ...destinations.map((destination) => {
+    const destinationTours = selectDestinationTours(destination, tours);
+    return {
+      path: `/destinations/${destination.slug}`,
+      destination,
+      destinationTours,
+      title: `${destination.en.seoTitle} | ${SITE_NAME}`,
+      description: destination.en.metaDescription,
+      image: destination.heroImage,
+      images: [optimizedImagePath(destination.heroImage)],
+      preloadImage: {
+        href: optimizedImagePath(destination.heroImage, 480),
+        media: '(max-width: 767px)',
+      },
+      jsonLd: [
+        breadcrumbJsonLd([
+          { name: 'Home', path: '/' },
+          { name: destination.en.title, path: `/destinations/${destination.slug}` },
+        ]),
+        destinationTourListJsonLd(destination, destinationTours),
+      ],
+    };
+  }),
   ...tours.map((tour) => ({
     path: `/tours/${tour.id}`,
     tour,
@@ -701,6 +812,7 @@ const localizedEnglishPaths = new Set([
   '/',
   '/tours',
   '/feedback',
+  ...destinations.map((destination) => `/destinations/${destination.slug}`),
   ...tours.map((tour) => `/tours/${tour.id}`),
 ]);
 
@@ -740,6 +852,31 @@ pages.push(
     alternates: localeAlternates('/feedback'),
     jsonLd: [breadcrumbJsonLd([{ name: 'Главная', path: '/ru' }, { name: 'Заявка на тур', path: '/ru/feedback' }])],
   },
+  ...destinations.map((destination) => {
+    const destinationTours = selectDestinationTours(destination, russianTours);
+    return {
+      path: `/ru/destinations/${destination.slug}`,
+      locale: 'ru',
+      destination,
+      destinationTours,
+      title: `${destination.ru.seoTitle} | ${SITE_NAME}`,
+      description: destination.ru.metaDescription,
+      image: destination.heroImage,
+      images: [optimizedImagePath(destination.heroImage)],
+      alternates: localeAlternates(`/destinations/${destination.slug}`),
+      preloadImage: {
+        href: optimizedImagePath(destination.heroImage, 480),
+        media: '(max-width: 767px)',
+      },
+      jsonLd: [
+        breadcrumbJsonLd([
+          { name: 'Главная', path: '/ru' },
+          { name: destination.ru.title, path: `/ru/destinations/${destination.slug}` },
+        ]),
+        destinationTourListJsonLd(destination, destinationTours, 'ru'),
+      ],
+    };
+  }),
   ...russianTours.map((tour) => ({
     path: `/ru/tours/${tour.id}`,
     locale: 'ru',

@@ -145,6 +145,11 @@ function formatAdminDate(value?: string) {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
 
+function whatsappConversationUrl(phone?: string) {
+  const number = String(phone || '').replace(/\D/g, '');
+  return number ? `https://wa.me/${number}` : '';
+}
+
 function StatusBadge({ status }: { status?: string }) {
   const normalized = status || 'pending';
   const color =
@@ -1519,7 +1524,7 @@ export function AdminDashboardPage() {
               <Input
                 aria-label="Search custom requests"
                 className="pl-9"
-                placeholder="Search name, email, phone, or Telegram"
+                placeholder="Search name, email, WhatsApp, or Telegram"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
               />
@@ -1570,7 +1575,16 @@ export function AdminDashboardPage() {
                     <p className="text-xs uppercase tracking-wide text-muted-foreground">Contact</p>
                     <div className="mt-1 space-y-1">
                       {request.email && <a className="block text-primary hover:underline" href={`mailto:${request.email}`}>{request.email}</a>}
-                      {request.phone && <a className="block text-primary hover:underline" href={`tel:${request.phone}`}>{request.phone}</a>}
+                      {request.phone && (
+                        <a
+                          className="block text-primary hover:underline"
+                          href={whatsappConversationUrl(request.phone)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          WhatsApp {request.phone}
+                        </a>
+                      )}
                       {request.telegramUsername && (
                         <a
                           className="block text-primary hover:underline"
@@ -1690,7 +1704,7 @@ export function AdminDashboardPage() {
               <Input
                 aria-label="Search bookings"
                 className="pl-9"
-                placeholder="Search traveler, tour, email, or phone"
+                placeholder="Search traveler, tour, email, or WhatsApp"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
               />
@@ -1735,7 +1749,16 @@ export function AdminDashboardPage() {
                     <p className="text-xs uppercase tracking-wide text-muted-foreground">Traveler</p>
                     <p className="mt-1 font-medium">{booking.name}</p>
                     {booking.email && <a className="block text-primary hover:underline" href={`mailto:${booking.email}`}>{booking.email}</a>}
-                    {booking.phone && <a className="block text-primary hover:underline" href={`tel:${booking.phone}`}>{booking.phone}</a>}
+                    {booking.phone && (
+                      <a
+                        className="block text-primary hover:underline"
+                        href={whatsappConversationUrl(booking.phone)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        WhatsApp {booking.phone}
+                      </a>
+                    )}
                     {booking.telegramUsername && (
                       <a
                         className="block text-primary hover:underline"

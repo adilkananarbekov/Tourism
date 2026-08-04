@@ -9,7 +9,7 @@ const chapters = [
   {
     eyebrow: 'First message',
     title: 'Tell me the shape of the trip',
-    body: 'Dates can be exact or flexible. A name and Telegram username or phone number is enough to start.',
+    body: 'Dates can be exact or flexible. Leave WhatsApp, Telegram, or email and we can start planning.',
     image: '/images/gallery/gallery-25.jpg',
     icon: MessageCircle,
   },

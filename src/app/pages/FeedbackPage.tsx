@@ -47,7 +47,7 @@ const contactRequestSchema = z
     message: requiredFormString('Add a short message so we know what you need.'),
   })
   .superRefine((values, ctx) => {
-    if (values.contactPreference === 'whatsapp' || values.contactPreference === 'phone') {
+    if (values.contactPreference === 'whatsapp') {
       const phone = values.phone.replace(/[\s()-]/g, '');
       if (!phone) {
         ctx.addIssue({
@@ -97,26 +97,26 @@ export function FeedbackPage() {
   const text = isRussian
     ? {
         eyebrow: 'Прямая заявка', title: `Выберите тур, оставьте контакты — ${FOUNDER_NAME} напишет вам лично.`,
-        intro: 'Это авторский сайт туров по Кыргызстану. Форма не подтверждает оплату: она отправляет заявку команде, а затем мы уточняем детали в Telegram, WhatsApp или по телефону.',
+        intro: 'Это авторский сайт туров по Кыргызстану. Форма не подтверждает оплату: она отправляет заявку команде, а затем мы уточняем детали в Telegram, WhatsApp или по email.',
         websiteRequest: 'Заявка с сайта', websiteRequestText: 'Данные о туре и контакты поступают владельцу сайта через защищённый сервер.',
         followUp: 'Личная связь', followUpText: `${FOUNDER_NAME} или менеджер связывается с гостем до окончательного подтверждения.`,
         contacts: 'Прямые контакты основателя', browse: 'Сначала посмотреть туры', send: 'Отправить заявку',
         formIntro: 'Укажите страну проживания и выберите удобный способ связи. Предпочтительнее WhatsApp или Telegram; по email также можно вести переписку.', sent: 'Заявка отправлена. Мы свяжемся с вами по выбранному каналу.',
         name: 'Имя *', country: 'Страна проживания *', countryHint: 'Начните вводить название и выберите страну из списка.', contactPreference: 'Как с вами связаться? *', contactHint: 'Предпочтительнее WhatsApp или Telegram. Если выберете email, ответим письмом.',
-        whatsapp: 'WhatsApp', telegramOption: 'Telegram', emailOption: 'Email', phoneOption: 'Звонок или SMS', telegram: 'Имя пользователя Telegram', phone: 'Телефон для WhatsApp / звонка', email: 'Email',
+        whatsapp: 'WhatsApp', telegramOption: 'Telegram', emailOption: 'Email', telegram: 'Имя пользователя Telegram', phone: 'Номер WhatsApp', email: 'Email',
         tour: 'Тур или маршрут', guests: 'Количество гостей', travelTime: 'Даты поездки', message: 'Сообщение *',
         tourPlaceholder: 'Сон-Куль, Ала-Арча, Иссык-Куль…', travelPlaceholder: 'Точные даты, гибкий месяц или пока не определились',
         messagePlaceholder: 'Что хотите увидеть, уровень комфорта, бюджет или вопросы…', sending: 'Отправляем…', submit: 'Отправить в Go Kyrgyzstan Travel',
       }
     : {
         eyebrow: 'Direct request', title: `Choose a tour, leave your contact, and ${FOUNDER_NAME} will write to you directly.`,
-        intro: 'This is my author site for Kyrgyzstan tours. The form does not confirm payment automatically. It sends your request to the team, then we contact you in Telegram, WhatsApp, or by phone to confirm details.',
+        intro: 'This is my author site for Kyrgyzstan tours. The form does not confirm payment automatically. It sends your request to the team, then we contact you in Telegram, WhatsApp, or by email to confirm details.',
         websiteRequest: 'Website request', websiteRequestText: 'Tour and contact details go to the site owner through the configured backend.',
         followUp: 'Personal follow-up', followUpText: `${FOUNDER_NAME} or a manager contacts the guest personally before any final confirmation.`,
         contacts: 'Direct founder contacts', browse: 'Browse tours first', send: 'Send Request',
         formIntro: 'Tell us your country of residence and choose how we should contact you. WhatsApp or Telegram is preferred; email also works well for written communication.', sent: 'Request sent. We will contact you through the method you chose.',
         name: 'Name *', country: 'Country of residence *', countryHint: 'Start typing, then choose a country from the list.', contactPreference: 'How should we contact you? *', contactHint: 'WhatsApp or Telegram is preferred. If you choose email, we will reply by email.',
-        whatsapp: 'WhatsApp', telegramOption: 'Telegram', emailOption: 'Email', phoneOption: 'Phone call or SMS', telegram: 'Telegram username', phone: 'Phone for WhatsApp / calls', email: 'Email',
+        whatsapp: 'WhatsApp', telegramOption: 'Telegram', emailOption: 'Email', telegram: 'Telegram username', phone: 'WhatsApp number', email: 'Email',
         tour: 'Tour or route', guests: 'Guests', travelTime: 'Travel time', message: 'Message *',
         tourPlaceholder: 'Song-Kul, Ala-Archa, Issyk-Kul...', travelPlaceholder: 'Exact dates, flexible month, or not sure yet',
         messagePlaceholder: 'Tell me what you want to see, comfort level, budget, or questions...', sending: 'Sending...', submit: 'Send to Go Kyrgyzstan Travel',
@@ -347,7 +347,6 @@ export function FeedbackPage() {
               <option value="whatsapp">{text.whatsapp}</option>
               <option value="telegram">{text.telegramOption}</option>
               <option value="email">{text.emailOption}</option>
-              <option value="phone">{text.phoneOption}</option>
             </select>
             <p className="mt-1 text-xs text-muted-foreground">{text.contactHint}</p>
             {errors.contactPreference && <p className="text-xs text-red-600">{errors.contactPreference.message}</p>}

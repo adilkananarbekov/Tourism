@@ -23,7 +23,7 @@ export function StickyLeadCTA() {
           </div>
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-foreground">{isRussian ? 'Нужна помощь с выбором?' : 'Need help choosing?'}</p>
-            <p className="truncate text-xs text-muted-foreground">{isRussian ? 'Оставьте Telegram или телефон.' : 'Leave Telegram or phone.'}</p>
+            <p className="truncate text-xs text-muted-foreground">{isRussian ? 'Оставьте WhatsApp, Telegram или email.' : 'Leave WhatsApp, Telegram, or email.'}</p>
           </div>
         </div>
         <Button asChild className="btn-micro btn-action shrink-0">
