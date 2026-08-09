@@ -116,6 +116,18 @@ export function DestinationPage() {
       url: absoluteUrl(tourPath(tour, locale)),
     })),
   };
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: copy.faq.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
 
   return (
     <div className="bg-background pb-20 md:pb-0">
@@ -132,6 +144,7 @@ export function DestinationPage() {
             { name: copy.title, path: pagePath },
           ]),
           listJsonLd,
+          faqJsonLd,
         ]}
       />
 

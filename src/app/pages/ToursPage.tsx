@@ -36,7 +36,7 @@ const routeHighlights = [
     title: 'Issyk-Kul from Bishkek',
     description: 'Choose a three-day lake introduction or a four-day gorges and hot-springs route.',
     links: [
-      { to: tourPath(7), label: '3-day Issyk-Kul tour' },
+      { to: '/destinations/issyk-kul', label: 'Issyk-Kul route hub' },
       { to: tourPath(10), label: '4-day Issyk-Kul tour' },
     ],
   },
@@ -44,7 +44,7 @@ const routeHighlights = [
     title: 'Kel-Suu and mountain lakes',
     description: 'Plan for remote-road access with a private route linking Kel-Suu, Song-Kul, and Issyk-Kul.',
     links: [
-      { to: tourPath(11), label: '4-day Kel-Suu & Song-Kul' },
+      { to: '/destinations/kel-suu', label: 'Kel-Suu route hub' },
       { to: tourPath(3), label: '7-day mountain lakes tour' },
     ],
   },

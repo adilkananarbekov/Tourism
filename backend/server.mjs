@@ -27,6 +27,7 @@ const seedToursPath = path.join(repoRoot, 'data', 'seed_tours.json');
 const seedBlogPostsPath = path.join(repoRoot, 'data', 'seed_blog_posts.json');
 const seedSightsPath = path.join(repoRoot, 'data', 'seed_sights.json');
 const galleryImagesPath = path.join(repoRoot, 'data', 'gallery_images.json');
+const destinationsPath = path.join(repoRoot, 'data', 'destinations.json');
 const tourSlugsPath = path.join(repoRoot, 'data', 'tour_slugs.json');
 const legacyDataFilePath = path.resolve(repoRoot, process.env.DATA_FILE_PATH || 'backend/data/app-data.json');
 const databasePath = path.resolve(repoRoot, process.env.DATABASE_PATH || 'backend/data/go-kyrgyzstan-travel.sqlite');
@@ -1593,27 +1594,27 @@ app.get('/api/blog-posts', (_req, res) => {
 app.get('/api/sitemap.xml', (_req, res) => {
   const galleryImages = readJsonFile(galleryImagesPath, [])
     .filter((image) => typeof image === 'string' && image.startsWith('/'));
+  const destinationRoutes = readJsonFile(destinationsPath, [])
+    .filter((destination) => isObject(destination) && /^[a-z0-9][a-z0-9-]*$/.test(asString(destination.slug, 120)))
+    .flatMap((destination) => {
+      const slug = asString(destination.slug, 120);
+      const heroImage = asString(destination.heroImage, 500);
+      const optimizedHeroImage = heroImage.replace(/\.(jpe?g)$/i, '-960.webp');
+      const images = optimizedHeroImage.startsWith('/') ? [optimizedHeroImage] : [];
+      return [
+        { path: `/destinations/${slug}`, priority: '0.8', changefreq: 'monthly', images },
+        { path: `/ru/destinations/${slug}`, priority: '0.7', changefreq: 'monthly', images },
+      ];
+    });
   const staticRoutes = [
     { path: '/', priority: '1.0', changefreq: 'weekly' },
     { path: '/tours', priority: '0.9', changefreq: 'weekly' },
-    {
-      path: '/destinations/song-kul',
-      priority: '0.8',
-      changefreq: 'monthly',
-      images: ['/images/travel-gallery-2026/travel-032-960.webp'],
-    },
     { path: '/join-tour', priority: '0.8', changefreq: 'monthly' },
     { path: '/gallery', priority: '0.7', changefreq: 'monthly', images: galleryImages },
     { path: '/blogs', priority: '0.8', changefreq: 'weekly' },
     { path: '/feedback', priority: '0.6', changefreq: 'monthly' },
     { path: '/ru', priority: '0.9', changefreq: 'weekly' },
     { path: '/ru/tours', priority: '0.8', changefreq: 'weekly' },
-    {
-      path: '/ru/destinations/song-kul',
-      priority: '0.7',
-      changefreq: 'monthly',
-      images: ['/images/travel-gallery-2026/travel-032-960.webp'],
-    },
     { path: '/ru/feedback', priority: '0.6', changefreq: 'monthly' },
   ];
   const tourRoutes = statements.listTours
@@ -1653,7 +1654,7 @@ app.get('/api/sitemap.xml', (_req, res) => {
       lastmod: asString(post.updatedAt || post.publishedAt || post.createdAt, 40).slice(0, 10),
     }))
     .filter((route) => !route.path.endsWith('/'));
-  const routes = [...staticRoutes, ...tourRoutes, ...russianTourRoutes, ...blogRoutes];
+  const routes = [...staticRoutes, ...destinationRoutes, ...tourRoutes, ...russianTourRoutes, ...blogRoutes];
   const localizedRouteAlternates = (routePath) => {
     const englishPath = routePath === '/ru'
       ? '/'

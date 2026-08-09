@@ -43,6 +43,7 @@ const guideRouteLinks: Record<string, { eyebrow: string; title: string; descript
     title: 'Choose a lake circuit with realistic driving days',
     description: 'Compare a compact three-day introduction with a slower four-day route for gorges and hot-spring areas.',
     links: [
+      { to: '/destinations/issyk-kul', label: 'Compare private Issyk-Kul routes' },
       { to: tourPath(7), label: 'See the 3-day Issyk-Kul tour' },
       { to: tourPath(10), label: 'See the 4-day gorges and hot springs tour' },
     ],

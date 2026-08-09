@@ -7,8 +7,8 @@ const ideas = [
   {
     title: 'First time in Kyrgyzstan',
     description: 'Lake views, canyons, hot springs, Karakol, and flexible stops around Issyk-Kul.',
-    to: tourPath(7),
-    action: 'See Issyk-Kul route',
+    to: '/destinations/issyk-kul',
+    action: 'Explore Issyk-Kul routes',
     icon: Compass,
   },
   {

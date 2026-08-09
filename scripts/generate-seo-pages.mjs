@@ -371,6 +371,7 @@ function blogPostMarkup(post) {
       ['Compare Song-Kul tours and horseback routes', '/destinations/song-kul'],
     ],
     'issyk-kul-road-trip-guide': [
+      ['Compare private Issyk-Kul routes', '/destinations/issyk-kul'],
       ['See the 3-day Issyk-Kul tour from Bishkek', tourPath({ id: 7 })],
       ['See the 4-day Issyk-Kul gorges and hot springs tour', tourPath({ id: 10 })],
     ],
@@ -418,21 +419,21 @@ function destinationStaticMarkup(page, locale = 'en') {
   const labels = locale === 'ru'
     ? {
         allTours: 'Все туры по Кыргызстану',
-        routes: 'Выберите маршрут на Сон-Куль',
-        planning: 'Что важно учесть в высокогорье',
-        experience: 'Чем поездка на Сон-Куль отличается',
+        routes: copy.routeHeading,
+        planning: copy.planningHeading,
+        experience: copy.experienceHeading,
         faq: copy.faqHeading,
-        request: 'Уточнить даты на Сон-Куль',
+        request: copy.ctaPrimary,
         duration: 'Продолжительность',
         type: 'Формат',
       }
     : {
         allTours: 'All Kyrgyzstan tours',
-        routes: 'Choose a Song-Kul route',
-        planning: 'Plan for the highlands',
-        experience: 'What makes a Song-Kul trip different',
+        routes: copy.routeHeading,
+        planning: copy.planningHeading,
+        experience: copy.experienceHeading,
         faq: copy.faqHeading,
-        request: 'Ask about Song-Kul dates',
+        request: copy.ctaPrimary,
         duration: 'Duration',
         type: 'Travel style',
       };
@@ -498,7 +499,7 @@ function russianStaticContentMarkup(page, tours) {
       ${hotTours.map(russianTourSummaryMarkup).join('')}
       <h2>Маршрут под вашу поездку</h2>
       <p>Выберите готовый тур или отправьте даты, интересы и размер группы. Мы уточним реальную доступность, темп и детали поездки.</p>
-      <p><a href="/ru/destinations/song-kul">Туры на Сон-Куль и конные маршруты</a> · <a href="/ru/tours">Смотреть все туры</a> · <a href="/ru/feedback">Подобрать маршрут</a></p>`;
+      <p><a href="/ru/destinations/song-kul">Туры на Сон-Куль и конные маршруты</a> · <a href="/ru/destinations/issyk-kul">Туры на Иссык-Куль из Бишкека</a> · <a href="/ru/destinations/kel-suu">Туры на Кель-Суу</a> · <a href="/ru/tours">Смотреть все туры</a> · <a href="/ru/feedback">Подобрать маршрут</a></p>`;
   }
 
   if (page.path === '/ru/tours') {
@@ -548,7 +549,7 @@ function staticContentMarkup(page, tours) {
       ${tours.map(tourSummaryMarkup).join('')}
       <h2>Plan your trip with a local travel specialist</h2>
       <p>Choose a ready route or send your dates, interests, group size, and preferred pace for a personal itinerary.</p>
-      <p><a href="/destinations/song-kul">Explore Song-Kul tours and horseback routes</a> · <a href="/tours">Compare all tours</a> · <a href="/feedback">Request a custom tour</a></p>`;
+      <p><a href="/destinations/song-kul">Explore Song-Kul tours and horseback routes</a> · <a href="/destinations/issyk-kul">Explore Issyk-Kul tours from Bishkek</a> · <a href="/destinations/kel-suu">Explore Kel-Suu tours</a> · <a href="/tours">Compare all tours</a> · <a href="/feedback">Request a custom tour</a></p>`;
   } else if (page.path === '/tours') {
     content = `
       <h1>Kyrgyzstan Tour Packages</h1>
@@ -556,8 +557,8 @@ function staticContentMarkup(page, tours) {
       <h2>Start with a route that matches your trip</h2>
       <ul>
         <li><a href="/destinations/song-kul">Song-Kul tours and horseback routes</a>: choose a route by your available days and riding experience.</li>
-        <li><a href="${tourPath({ id: 7 })}">3-day Issyk-Kul tour from Bishkek</a> or <a href="${tourPath({ id: 10 })}">4-day Issyk-Kul gorges and hot springs tour</a>.</li>
-        <li><a href="${tourPath({ id: 11 })}">4-day Kel-Suu and Song-Kul tour</a> or <a href="${tourPath({ id: 3 })}">7-day Kyrgyzstan mountain lakes tour</a>.</li>
+        <li><a href="/destinations/issyk-kul">Issyk-Kul tours from Bishkek</a>: compare a 3-day lake introduction or a 4-day gorges and hot springs route.</li>
+        <li><a href="/destinations/kel-suu">Kel-Suu tours</a>: compare a focused mountain-lake route with a longer Kyrgyzstan lakes itinerary.</li>
         <li><a href="/blogs/best-time-to-visit-kyrgyzstan">Read the best time to visit Kyrgyzstan guide</a> before selecting a high-altitude route.</li>
       </ul>
       ${tours.map(tourSummaryMarkup).join('')}
@@ -855,6 +856,7 @@ const pages = [
           { name: destination.en.title, path: `/destinations/${destination.slug}` },
         ]),
         destinationTourListJsonLd(destination, destinationTours),
+        faqPageJsonLd(destination.en.faq),
       ],
     };
   }),
@@ -966,6 +968,7 @@ pages.push(
           { name: destination.ru.title, path: `/ru/destinations/${destination.slug}` },
         ]),
         destinationTourListJsonLd(destination, destinationTours, 'ru'),
+        faqPageJsonLd(destination.ru.faq),
       ],
     };
   }),
