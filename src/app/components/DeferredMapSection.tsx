@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import type { SiteLocale } from '../lib/locale';
 
 type MapLocation = {
   name: string;
@@ -13,9 +14,11 @@ const MapSection = lazy(() =>
 export function DeferredMapSection({
   title,
   locations = [],
+  locale = 'en',
 }: {
   title: string;
   locations?: MapLocation[];
+  locale?: SiteLocale;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
@@ -53,13 +56,15 @@ export function DeferredMapSection({
             <div className="h-64 animate-pulse rounded-lg border border-border bg-muted sm:h-72" />
           }
         >
-          <MapSection title={title} locations={locations} />
+          <MapSection title={title} locations={locations} locale={locale} />
         </Suspense>
       ) : (
         <div className="space-y-3">
-          <h3 className="text-2xl text-foreground">Map Preview</h3>
+          <h3 className="text-2xl text-foreground">{locale === 'ru' ? 'Карта маршрута' : 'Map Preview'}</h3>
           <p className="text-sm text-muted-foreground">
-            The interactive route map loads when you scroll closer to this section.
+            {locale === 'ru'
+              ? 'Интерактивная карта маршрута загрузится, когда вы прокрутите страницу ближе к этому разделу.'
+              : 'The interactive route map loads when you scroll closer to this section.'}
           </p>
           <div className="h-64 rounded-lg border border-border bg-muted sm:h-72" />
         </div>

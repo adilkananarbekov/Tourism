@@ -127,6 +127,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
         routeNotes: 'Route notes', commonQuestions: 'Common questions', relatedTours: 'Related routes', viewTour: 'View tour',
       };
   const toursPath = localizedPath('/tours', locale);
+  const displayPrice = isRussian && tour?.price === 'Price on request' ? 'По запросу' : tour?.price;
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -193,7 +194,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
               </div>
               <div className="flex items-center gap-2">
                 <Tag className="h-5 w-5" />
-                <span>{tour.price}</span>
+                <span>{displayPrice}</span>
               </div>
             </div>
           </div>
@@ -452,7 +453,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
             </div>
 
             <div className="mt-10">
-              <DeferredMapSection title={tour.title} locations={tour.locations} />
+              <DeferredMapSection title={tour.title} locations={tour.locations} locale={locale} />
             </div>
 
             {tour.seoContent && (
@@ -502,7 +503,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
             <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-xl lg:sticky lg:top-24">
               <div className="mb-6">
                 <p className="text-sm text-muted-foreground mb-2">{text.startingFrom}</p>
-                <p className="text-3xl sm:text-4xl text-foreground">{tour.price}</p>
+                <p className="text-3xl sm:text-4xl text-foreground">{displayPrice}</p>
                 <p className="text-sm text-muted-foreground">{text.perPerson}</p>
               </div>
 
