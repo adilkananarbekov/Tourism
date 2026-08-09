@@ -6,6 +6,7 @@ import { useToursData } from '../hooks/useTours';
 import { breadcrumbJsonLd, tourJsonLd } from '../lib/seo';
 import { localeAlternates } from '../lib/locale';
 import { tourIdFromSlug, tourPath } from '../lib/tourRoutes';
+import { tourMetaDescription } from '../lib/tourSeo';
 
 export function TourDetailPage() {
   const { tourSlug } = useParams();
@@ -41,11 +42,7 @@ export function TourDetailPage() {
     <>
       <SEO
         title={selectedTourTitle}
-        description={
-          selectedTour
-            ? `${selectedTour.description} Duration: ${selectedTour.duration}. Starting from ${selectedTour.price}.`
-            : 'Kyrgyzstan tour details and booking request.'
-        }
+        description={selectedTour ? tourMetaDescription(selectedTour) : 'Kyrgyzstan tour details and booking request.'}
         image={selectedTour?.image}
         path={selectedTour ? tourPath(selectedTour) : undefined}
         alternates={selectedTour ? localeAlternates(tourPath(selectedTour)) : []}

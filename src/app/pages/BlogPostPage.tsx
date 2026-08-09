@@ -14,6 +14,13 @@ import { fetchBlogPosts, type BlogPost } from '../lib/dataStore';
 import { absoluteUrl, breadcrumbJsonLd } from '../lib/seo';
 import { withBasePath } from '../lib/assets';
 import { tourPath } from '../lib/tourRoutes';
+import blogSeoOverrides from '../../../data/blog_seo_overrides.json';
+
+type BlogSeoOverride = {
+  seoTitle?: string;
+  seoDescription?: string;
+  faq?: Array<{ question: string; answer: string }>;
+};
 
 const guideRouteLinks: Record<string, { eyebrow: string; title: string; description: string; links: Array<{ to: string; label: string }> }> = {
   'best-time-to-visit-kyrgyzstan': {
@@ -100,6 +107,9 @@ export function BlogPostPage() {
   const path = blogPath(post);
   const relatedPosts = publishedPosts.filter((item) => item.id !== post.id).slice(0, 3);
   const routeLinks = guideRouteLinks[post.slug];
+  const editorial = (blogSeoOverrides as Record<string, BlogSeoOverride>)[post.slug];
+  const seoTitle = editorial?.seoTitle || post.seoTitle || post.title;
+  const seoDescription = editorial?.seoDescription || post.seoDescription || post.excerpt;
   const sanitizedContent = DOMPurify.sanitize(post.content, {
     ADD_ATTR: ['target', 'rel'],
   });
@@ -107,7 +117,7 @@ export function BlogPostPage() {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
-    description: post.seoDescription || post.excerpt,
+    description: seoDescription,
     image: absoluteUrl(post.coverImage || '/images/go-kyrgyzstan-hero.webp'),
     datePublished: post.publishedAt || post.createdAt,
     dateModified: post.updatedAt || post.publishedAt || post.createdAt,
@@ -121,17 +131,32 @@ export function BlogPostPage() {
       '@id': `${absoluteUrl('/')}#organization`,
     },
   };
+  const faqJsonLd = editorial?.faq?.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: editorial.faq.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
+      }
+    : undefined;
 
   return (
     <article className="bg-background">
       <SEO
-        title={post.seoTitle || post.title}
-        description={post.seoDescription || post.excerpt}
+        title={seoTitle}
+        description={seoDescription}
         image={post.coverImage}
         path={path}
         type="article"
         jsonLd={[
           articleJsonLd,
+          ...(faqJsonLd ? [faqJsonLd] : []),
           breadcrumbJsonLd([
             { name: 'Home', path: '/' },
             { name: 'Travel Guide', path: '/blogs' },
@@ -179,6 +204,26 @@ export function BlogPostPage() {
           className="blog-content mx-auto mt-10 max-w-3xl text-base leading-8 text-muted-foreground [&_a]:text-primary [&_a]:underline [&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:text-3xl [&_h2]:text-foreground [&_li]:mb-2 [&_p]:mb-5 [&_ul]:mb-6 [&_ul]:list-disc [&_ul]:pl-6"
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
+
+        {editorial?.faq?.length ? (
+          <section className="mx-auto mt-12 max-w-3xl" aria-labelledby="guide-faq-heading">
+            <p className="text-xs uppercase tracking-[0.18em] text-secondary">Quick answers</p>
+            <h2 id="guide-faq-heading" className="mt-2 text-3xl text-foreground">
+              Frequently asked questions about Kyrgyzstan travel seasons
+            </h2>
+            <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-card px-5 shadow-sm sm:px-6">
+              {editorial.faq.map((item) => (
+                <details key={item.question} className="group py-5">
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-lg text-foreground marker:content-none">
+                    <span>{item.question}</span>
+                    <span className="mt-1 text-secondary transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                  </summary>
+                  <p className="mt-3 pr-6 leading-7 text-muted-foreground">{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {routeLinks && (
           <aside className="mx-auto mt-10 max-w-3xl rounded-2xl border border-secondary/30 bg-secondary/10 p-6 sm:p-7">

@@ -13,6 +13,8 @@ const russianToursPath = path.join(rootDir, 'data', 'tour_translations_ru.json')
 const destinationsPath = path.join(rootDir, 'data', 'destinations.json');
 const tourSlugsPath = path.join(rootDir, 'data', 'tour_slugs.json');
 const galleryCaptionsPath = path.join(rootDir, 'data', 'gallery_captions.json');
+const blogSeoOverridesPath = path.join(rootDir, 'data', 'blog_seo_overrides.json');
+const tourMetaDescriptionsPath = path.join(rootDir, 'data', 'tour_seo_descriptions.json');
 
 const SITE_NAME = 'Go Kyrgyzstan Travel';
 const SITE_URL = 'https://kyrgyz.tours';
@@ -59,6 +61,29 @@ function optimizedImagePath(value, width = 960) {
 
 function tourDisplayTitle(title) {
   return /\btour\b/i.test(title) ? title : `${title} Tour`;
+}
+
+function shortenMetaDescription(value, limit = 160) {
+  const normalized = String(value || '').replace(/\s+/g, ' ').trim();
+  if (normalized.length <= limit) {
+    return normalized;
+  }
+
+  const excerpt = normalized.slice(0, limit + 1);
+  const sentenceEnd = Math.max(excerpt.lastIndexOf('. '), excerpt.lastIndexOf('? '), excerpt.lastIndexOf('! '));
+  if (sentenceEnd >= 90) {
+    return excerpt.slice(0, sentenceEnd + 1);
+  }
+
+  const wordEnd = excerpt.lastIndexOf(' ');
+  return `${excerpt.slice(0, Math.max(wordEnd, 1)).trimEnd()}…`;
+}
+
+function tourMetaDescription(tour, locale = 'en') {
+  if (locale === 'en' && tourMetaDescriptions[String(tour.id)]) {
+    return tourMetaDescriptions[String(tour.id)];
+  }
+  return shortenMetaDescription(tour.description);
 }
 
 function tourSlug(tour) {
@@ -223,6 +248,21 @@ function blogPostJsonLd(post) {
   };
 }
 
+function faqPageJsonLd(faq) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 function destinationTourListJsonLd(destination, destinationTours, locale = 'en') {
   const copy = destination[locale];
   return {
@@ -345,6 +385,9 @@ function blogPostMarkup(post) {
   const internalLinks = routeLinks.length
     ? `<aside><h2>Plan the next step</h2><p>${routeLinks.map(([label, href]) => `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`).join(' · ')}</p></aside>`
     : '';
+  const faq = Array.isArray(post.faq) && post.faq.length
+    ? `<section><h2>Frequently asked questions about Kyrgyzstan travel seasons</h2><dl>${post.faq.map((item) => `<dt>${escapeHtml(item.question)}</dt><dd>${escapeHtml(item.answer)}</dd>`).join('')}</dl></section>`
+    : '';
   return `
     <article>
       <p><a href="/blogs">All Kyrgyzstan travel guides</a></p>
@@ -352,6 +395,7 @@ function blogPostMarkup(post) {
       <h1>${escapeHtml(post.title)}</h1>
       <p>${escapeHtml(post.excerpt)}</p>
       ${post.content || ''}
+      ${faq}
       ${internalLinks}
       <p><a href="/feedback">Request a private Kyrgyzstan itinerary</a></p>
     </article>`;
@@ -681,9 +725,12 @@ const tours = JSON.parse(fs.readFileSync(toursPath, 'utf8'));
 const russianTourTranslations = JSON.parse(fs.readFileSync(russianToursPath, 'utf8'));
 const tourSlugs = JSON.parse(fs.readFileSync(tourSlugsPath, 'utf8'));
 const galleryCaptions = JSON.parse(fs.readFileSync(galleryCaptionsPath, 'utf8'));
+const blogSeoOverrides = JSON.parse(fs.readFileSync(blogSeoOverridesPath, 'utf8'));
+const tourMetaDescriptions = JSON.parse(fs.readFileSync(tourMetaDescriptionsPath, 'utf8'));
 const russianTours = tours.map((tour) => localizeTourRu(tour, russianTourTranslations));
 const blogPosts = JSON.parse(fs.readFileSync(blogPostsPath, 'utf8'))
-  .filter((post) => post.status !== 'draft' && post.status !== 'archived');
+  .filter((post) => post.status !== 'draft' && post.status !== 'archived')
+  .map((post) => ({ ...post, ...(blogSeoOverrides[post.slug] || {}) }));
 const destinations = JSON.parse(fs.readFileSync(destinationsPath, 'utf8'));
 
 function selectDestinationTours(destination, sourceTours) {
@@ -815,7 +862,7 @@ const pages = [
     path: tourPath(tour),
     tour,
     title: `${tourDisplayTitle(tour.title)} in Kyrgyzstan | ${SITE_NAME}`,
-    description: `${tour.description} Duration: ${tour.duration}. Starting from ${tour.price}.`,
+    description: tourMetaDescription(tour),
     image: tour.image,
     images: [optimizedImagePath(tour.image)],
     preloadImage: {
@@ -842,6 +889,7 @@ const pages = [
       images: [post.coverImage || DEFAULT_IMAGE],
       jsonLd: [
         blogPostJsonLd(post),
+        ...(Array.isArray(post.faq) && post.faq.length ? [faqPageJsonLd(post.faq)] : []),
         breadcrumbJsonLd([
           { name: 'Home', path: '/' },
           { name: 'Travel Guide', path: '/blogs' },
@@ -926,7 +974,7 @@ pages.push(
     locale: 'ru',
     tour,
     title: `${tour.title} — тур по Кыргызстану | ${SITE_NAME}`,
-    description: `${tour.description} Продолжительность: ${tour.duration}. Цена от ${tour.price}.`,
+    description: tourMetaDescription(tour, 'ru'),
     image: tour.image,
     images: [optimizedImagePath(tour.image)],
     alternates: localeAlternates(tourPath(tour)),

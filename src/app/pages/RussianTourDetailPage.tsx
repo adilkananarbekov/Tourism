@@ -7,6 +7,7 @@ import { localizeTour } from '../lib/localizedTours';
 import { localeAlternates } from '../lib/locale';
 import { breadcrumbJsonLd } from '../lib/seo';
 import { tourIdFromSlug, tourPath } from '../lib/tourRoutes';
+import { tourMetaDescription } from '../lib/tourSeo';
 
 export function RussianTourDetailPage() {
   const { tourSlug } = useParams();
@@ -39,7 +40,7 @@ export function RussianTourDetailPage() {
     <>
       <SEO
         title={selectedTour ? `${selectedTour.title} — тур по Кыргызстану` : 'Тур по Кыргызстану'}
-        description={selectedTour ? `${selectedTour.description} Продолжительность: ${selectedTour.duration}. Цена от ${selectedTour.price}.` : 'Детали тура по Кыргызстану.'}
+        description={selectedTour ? tourMetaDescription(selectedTour, 'ru') : 'Детали тура по Кыргызстану.'}
         image={selectedTour?.image}
         path={selectedTour ? tourPath(selectedTour, 'ru') : '/ru/tours'}
         language="ru"
