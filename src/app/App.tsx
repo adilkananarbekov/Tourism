@@ -19,6 +19,7 @@ const BlogsPage = lazy(() => import('./pages/BlogsPage').then((module) => ({ def
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage').then((module) => ({ default: module.BlogPostPage })));
 const DestinationPage = lazy(() => import('./pages/DestinationPage').then((module) => ({ default: module.DestinationPage })));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
+const LegalPage = lazy(() => import('./pages/LegalPage').then((module) => ({ default: module.LegalPage })));
 const CreateTourPage = lazy(() => import('./pages/CreateTourPage').then((module) => ({ default: module.CreateTourPage })));
 const JoinTourPage = lazy(() => import('./pages/JoinTourPage').then((module) => ({ default: module.JoinTourPage })));
 const UserDashboardPage = lazy(() => import('./pages/UserDashboardPage').then((module) => ({ default: module.UserDashboardPage })));
@@ -51,6 +52,10 @@ export default function App() {
             <Route path="/ru/destinations/:slug" element={<DestinationPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/ru/feedback" element={<FeedbackPage />} />
+            <Route path="/privacy-policy" element={<LegalPage kind="privacy" />} />
+            <Route path="/ru/privacy-policy" element={<LegalPage kind="privacy" />} />
+            <Route path="/terms-of-use" element={<LegalPage kind="terms" />} />
+            <Route path="/ru/terms-of-use" element={<LegalPage kind="terms" />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route element={<AuthRoute />}>
               <Route path="/dashboard" element={<UserDashboardPage />} />

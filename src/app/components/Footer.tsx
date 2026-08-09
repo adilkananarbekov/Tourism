@@ -10,6 +10,7 @@ import {
 } from '../lib/contact';
 import { localizedPath, useSiteLocale } from '../lib/locale';
 import { tourPath } from '../lib/tourRoutes';
+import { openCookieSettings } from '../lib/cookieConsent';
 
 export function Footer() {
   const locale = useSiteLocale();
@@ -19,12 +20,12 @@ export function Footer() {
     ? {
         intro: `Частные туры по Кыргызстану с ${FOUNDER_NAME}.`, request: 'Оставить заявку', quick: 'Навигация', tours: 'Наши туры', contact: 'Контакты',
         allTours: 'Все туры', gallery: 'Галерея', stories: 'Путеводители', contactLink: 'Связаться', form: 'Форма заявки', reply: 'Обычно отвечаем в течение 24 часов',
-        songKul: 'Туры и конные маршруты на Сон-Куль', mountainLakes: 'Сон-Куль, Кель-Суу и Иссык-Куль — 7 дней', horse: 'Конный тур на Сон-Куль — 2 дня', roadTrip: 'Автопутешествие: Иссык-Куль и Сон-Куль', winterRide: 'Зимний конный маршрут к Сон-Кулю', rights: 'Все права защищены.',
+        songKul: 'Туры и конные маршруты на Сон-Куль', mountainLakes: 'Сон-Куль, Кель-Суу и Иссык-Куль — 7 дней', horse: 'Конный тур на Сон-Куль — 2 дня', roadTrip: 'Автопутешествие: Иссык-Куль и Сон-Куль', winterRide: 'Зимний конный маршрут к Сон-Кулю', rights: 'Все права защищены.', privacy: 'Конфиденциальность и cookies', terms: 'Условия использования', cookieSettings: 'Настройки cookies',
       }
     : {
         intro: `Private Kyrgyzstan tours planned by ${FOUNDER_NAME}.`, request: 'Start a trip request', quick: 'Quick Links', tours: 'Popular Tours', contact: 'Contact Us',
         allTours: 'Our Tours', gallery: 'Gallery', stories: 'Travel Stories', contactLink: 'Contact', form: 'Trip request form', reply: 'Usually within 24 hours',
-        songKul: 'Song-Kul Tours & Horse Routes', mountainLakes: 'Song-Kul, Kel-Suu & Issyk-Kul — 7 Days', horse: '2-Day Song-Kul Horseback Tour', roadTrip: 'Issyk-Kul & Song-Kul Road Trip', winterRide: 'Winter Song-Kul Horse Ride', rights: 'All rights reserved.',
+        songKul: 'Song-Kul Tours & Horse Routes', mountainLakes: 'Song-Kul, Kel-Suu & Issyk-Kul — 7 Days', horse: '2-Day Song-Kul Horseback Tour', roadTrip: 'Issyk-Kul & Song-Kul Road Trip', winterRide: 'Winter Song-Kul Horse Ride', rights: 'All rights reserved.', privacy: 'Privacy & cookies', terms: 'Terms of use', cookieSettings: 'Cookie settings',
       };
   return (
     <footer className="bg-[#064e3b] text-primary-foreground">
@@ -156,6 +157,17 @@ export function Footer() {
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/70 text-sm">
           <p>&copy; 2025 Go Kyrgyzstan Travel. {text.rights}</p>
+          <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-2">
+            <Link to={path('/privacy-policy')} className="hover:text-primary-foreground transition-colors">
+              {text.privacy}
+            </Link>
+            <Link to={path('/terms-of-use')} className="hover:text-primary-foreground transition-colors">
+              {text.terms}
+            </Link>
+            <button type="button" className="hover:text-primary-foreground transition-colors" onClick={openCookieSettings}>
+              {text.cookieSettings}
+            </button>
+          </div>
         </div>
       </div>
     </footer>

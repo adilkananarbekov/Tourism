@@ -8,6 +8,7 @@ import { AppToaster } from './AppToaster';
 import { PageTransition } from './PageTransition';
 import { EventTracker } from './EventTracker';
 import { StickyLeadCTA } from './StickyLeadCTA';
+import { CookieConsentBanner } from './CookieConsentBanner';
 
 export function SiteLayout() {
   const { pathname } = useLocation();
@@ -33,6 +34,7 @@ export function SiteLayout() {
       <Footer />
       <StickyLeadCTA />
       <FloatingContact />
+      <CookieConsentBanner />
       <AppToaster />
     </div>
   );

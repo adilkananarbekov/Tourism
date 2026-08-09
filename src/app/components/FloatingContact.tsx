@@ -7,6 +7,8 @@ export function FloatingContact() {
       <button
         className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
         onClick={() => window.open(WHATSAPP_URL, '_blank', 'noopener,noreferrer')}
+        data-track-event="floating_whatsapp_click"
+        data-track-label="Floating WhatsApp"
         aria-label="Contact on WhatsApp"
         title="WhatsApp"
       >
@@ -15,6 +17,8 @@ export function FloatingContact() {
       <button
         className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-[#0088cc] text-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
         onClick={() => window.open(TELEGRAM_URL, '_blank', 'noopener,noreferrer')}
+        data-track-event="floating_telegram_click"
+        data-track-label="Floating Telegram"
         aria-label="Contact on Telegram"
         title="Telegram"
       >

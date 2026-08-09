@@ -30,6 +30,8 @@ export function languageSwitchPath(pathname: string, search = '') {
     barePath === '/' ||
     barePath === '/tours' ||
     barePath === '/feedback' ||
+    barePath === '/privacy-policy' ||
+    barePath === '/terms-of-use' ||
     /^\/tours\/[a-z0-9][a-z0-9-]*$/.test(barePath) ||
     /^\/destinations\/[a-z0-9-]+$/.test(barePath);
 

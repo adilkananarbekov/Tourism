@@ -354,6 +354,8 @@ export function postApiEvent(payload: Record<string, unknown>) {
 export async function fetchApiEventSummary() {
   return requestAdminJson<{
     totals: Record<string, number>;
+    paths: Array<{ path: string; count: number }>;
+    interests: Array<{ label: string; count: number }>;
     recent: Array<{
       source: string;
       event_name: string;

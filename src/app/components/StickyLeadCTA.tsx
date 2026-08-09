@@ -7,7 +7,7 @@ export function StickyLeadCTA() {
   const { pathname } = useLocation();
   const locale = useSiteLocale();
   const isRussian = locale === 'ru';
-  const hiddenRoutes = ['/feedback', '/admin', '/auth', '/dashboard'];
+  const hiddenRoutes = ['/feedback', '/privacy-policy', '/terms-of-use', '/admin', '/auth', '/dashboard'];
   const shouldHide = hiddenRoutes.some((route) => pathname === route || pathname.startsWith(`/ru${route}`));
 
   if (shouldHide) {

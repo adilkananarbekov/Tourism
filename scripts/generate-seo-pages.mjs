@@ -518,6 +518,25 @@ function russianStaticContentMarkup(page, tours) {
       <ul><li>Даты или удобный месяц</li><li>Количество путешественников</li><li>Озёра, горы и желаемые активности</li><li>Уровень размещения и ориентировочный бюджет</li></ul>`;
   }
 
+  if (page.path === '/ru/privacy-policy') {
+    return `
+      <h1>Политика конфиденциальности и cookies</h1>
+      <p>Мы объясняем, как обрабатываем заявки на поездки, анонимную аналитику и настройки cookies.</p>
+      <h2>Анонимная аналитика по согласию</h2>
+      <p>После отдельного согласия сайт фиксирует просмотренные страницы, клики по турам и глубину чтения. Мы не используем рекламные пиксели, fingerprinting или запись экрана.</p>
+      <h2>Ваш выбор</h2>
+      <p>Вы можете в любое время отказаться от аналитики в настройках cookies. Для вопроса конфиденциальности используйте <a href="/ru/feedback">форму заявки</a>.</p>`;
+  }
+
+  if (page.path === '/ru/terms-of-use') {
+    return `
+      <h1>Условия использования</h1>
+      <p>Сайт помогает изучить туры по Кыргызстану и отправить запрос. Заявка не является подтверждённым бронированием.</p>
+      <h2>Подтверждение поездки</h2>
+      <p>Маршрут, цена, наличие мест и условия подтверждаются только после письменного согласования с командой.</p>
+      <p><a href="/ru/feedback">Задать вопрос о поездке</a> · <a href="/ru/privacy-policy">Политика конфиденциальности</a></p>`;
+  }
+
   return `<h1>${escapeHtml(page.title)}</h1><p>${escapeHtml(page.description)}</p>`;
 }
 
@@ -592,6 +611,21 @@ function staticContentMarkup(page, tours) {
       <p>Send your preferred dates, group size, places, activities, and contact details. We will reply with route and planning options.</p>
       <h2>Useful details to include</h2>
       <ul><li>Arrival and departure dates</li><li>Number of travelers</li><li>Preferred lakes, mountains, and activities</li><li>Accommodation level and approximate budget</li></ul>`;
+  } else if (page.path === '/privacy-policy') {
+    content = `
+      <h1>Privacy Policy and Cookie Policy</h1>
+      <p>This policy explains how Go Kyrgyzstan Travel handles trip requests, anonymous analytics, cookies, and privacy choices.</p>
+      <h2>Optional anonymous analytics</h2>
+      <p>Only after consent, the site records viewed pages, tour clicks, and reading depth. We do not use advertising pixels, fingerprinting, or session recording.</p>
+      <h2>Your choices</h2>
+      <p>You can withdraw analytics consent at any time in cookie settings. For a privacy request, use the <a href="/feedback">trip request form</a>.</p>`;
+  } else if (page.path === '/terms-of-use') {
+    content = `
+      <h1>Terms of Use</h1>
+      <p>This website helps you explore Kyrgyzstan tours and send a travel request. A request is not a confirmed booking.</p>
+      <h2>Trip confirmation</h2>
+      <p>Route, price, availability, and trip terms are confirmed only after written agreement with the team.</p>
+      <p><a href="/feedback">Ask a trip question</a> · <a href="/privacy-policy">Privacy Policy</a></p>`;
   } else {
     content = `<h1>${escapeHtml(page.title)}</h1><p>${escapeHtml(page.description)}</p>`;
   }
@@ -836,6 +870,20 @@ const pages = [
       ]),
     ],
   },
+  {
+    path: '/privacy-policy',
+    title: `Privacy Policy & Cookie Policy | ${SITE_NAME}`,
+    description: 'Learn how Go Kyrgyzstan Travel handles tour requests, anonymous consented analytics, cookies, and privacy choices.',
+    image: DEFAULT_IMAGE,
+    jsonLd: [breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Privacy Policy', path: '/privacy-policy' }])],
+  },
+  {
+    path: '/terms-of-use',
+    title: `Terms of Use | ${SITE_NAME}`,
+    description: 'Read the terms for using the Go Kyrgyzstan Travel website and requesting Kyrgyzstan trip information.',
+    image: DEFAULT_IMAGE,
+    jsonLd: [breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Terms of Use', path: '/terms-of-use' }])],
+  },
   ...destinations.map((destination) => {
     const destinationTours = selectDestinationTours(destination, tours);
     return {
@@ -906,6 +954,8 @@ const localizedEnglishPaths = new Set([
   '/',
   '/tours',
   '/feedback',
+  '/privacy-policy',
+  '/terms-of-use',
   ...destinations.map((destination) => `/destinations/${destination.slug}`),
   ...tours.map((tour) => tourPath(tour)),
 ]);
@@ -945,6 +995,24 @@ pages.push(
     image: DEFAULT_IMAGE,
     alternates: localeAlternates('/feedback'),
     jsonLd: [breadcrumbJsonLd([{ name: 'Главная', path: '/ru' }, { name: 'Заявка на тур', path: '/ru/feedback' }])],
+  },
+  {
+    path: '/ru/privacy-policy',
+    locale: 'ru',
+    title: `Политика конфиденциальности и cookies | ${SITE_NAME}`,
+    description: 'Как Go Kyrgyzstan Travel обрабатывает заявки на туры, анонимную аналитику, cookies и настройки приватности.',
+    image: DEFAULT_IMAGE,
+    alternates: localeAlternates('/privacy-policy'),
+    jsonLd: [breadcrumbJsonLd([{ name: 'Главная', path: '/ru' }, { name: 'Конфиденциальность', path: '/ru/privacy-policy' }])],
+  },
+  {
+    path: '/ru/terms-of-use',
+    locale: 'ru',
+    title: `Условия использования | ${SITE_NAME}`,
+    description: 'Правила использования сайта Go Kyrgyzstan Travel и отправки запросов на путешествия по Кыргызстану.',
+    image: DEFAULT_IMAGE,
+    alternates: localeAlternates('/terms-of-use'),
+    jsonLd: [breadcrumbJsonLd([{ name: 'Главная', path: '/ru' }, { name: 'Условия использования', path: '/ru/terms-of-use' }])],
   },
   ...destinations.map((destination) => {
     const destinationTours = selectDestinationTours(destination, russianTours);

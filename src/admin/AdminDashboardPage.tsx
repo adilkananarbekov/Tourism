@@ -286,6 +286,8 @@ function ImageUploadPanel({
 
 type EventSummary = {
   totals: Record<string, number>;
+  paths: Array<{ path: string; count: number }>;
+  interests: Array<{ label: string; count: number }>;
   recent: Array<{
     source: string;
     event_name: string;
@@ -308,7 +310,7 @@ export function AdminDashboardPage() {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>([]);
   const [contentSettings, setContentSettings] = useState<ContentSettings>({});
-  const [eventSummary, setEventSummary] = useState<EventSummary>({ totals: {}, recent: [] });
+  const [eventSummary, setEventSummary] = useState<EventSummary>({ totals: {}, paths: [], interests: [], recent: [] });
   const [telegramStatus, setTelegramStatus] = useState<TelegramAdminStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -342,7 +344,7 @@ export function AdminDashboardPage() {
           fetchAdminBlogPosts(),
           fetchUsers(),
           fetchContentSettings(),
-          fetchEventSummary().catch(() => ({ totals: {}, recent: [] })),
+          fetchEventSummary().catch(() => ({ totals: {}, paths: [], interests: [], recent: [] })),
         ]);
         if (!isActive) {
           return;
@@ -1908,7 +1910,7 @@ export function AdminDashboardPage() {
           <div>
             <h2 className="text-2xl text-foreground mb-2">Event Tracker</h2>
             <p className="text-muted-foreground text-sm">
-              Page views, CTA clicks, request submits, and Telegram bot actions.
+              Anonymous, consented page views, reading depth, CTA clicks, and request submits. No form answers or contact details are stored here.
             </p>
           </div>
 
@@ -1922,6 +1924,36 @@ export function AdminDashboardPage() {
             {Object.keys(eventSummary.totals).length === 0 && (
               <p className="text-muted-foreground">No tracked events yet.</p>
             )}
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <section className="rounded-xl border border-border bg-card p-5">
+              <h3 className="text-lg text-foreground">Top pages</h3>
+              <p className="mt-1 text-sm text-muted-foreground">Pages people chose to view after accepting analytics.</p>
+              <div className="mt-4 space-y-3">
+                {eventSummary.paths.map((item) => (
+                  <div key={item.path} className="flex items-center justify-between gap-4 text-sm">
+                    <span className="min-w-0 truncate text-muted-foreground">{item.path}</span>
+                    <span className="shrink-0 font-medium text-foreground">{item.count}</span>
+                  </div>
+                ))}
+                {eventSummary.paths.length === 0 && <p className="text-sm text-muted-foreground">No consented page data yet.</p>}
+              </div>
+            </section>
+
+            <section className="rounded-xl border border-border bg-card p-5">
+              <h3 className="text-lg text-foreground">Top interests</h3>
+              <p className="mt-1 text-sm text-muted-foreground">Tour cards, contact actions, and calls to action people choose most often.</p>
+              <div className="mt-4 space-y-3">
+                {eventSummary.interests.map((item) => (
+                  <div key={item.label} className="flex items-center justify-between gap-4 text-sm">
+                    <span className="min-w-0 truncate text-muted-foreground">{item.label}</span>
+                    <span className="shrink-0 font-medium text-foreground">{item.count}</span>
+                  </div>
+                ))}
+                {eventSummary.interests.length === 0 && <p className="text-sm text-muted-foreground">No consented interest data yet.</p>}
+              </div>
+            </section>
           </div>
 
           <div className="space-y-3">

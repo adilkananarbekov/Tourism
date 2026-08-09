@@ -368,6 +368,7 @@ const statements = {
       SELECT id FROM site_events ORDER BY created_at DESC LIMIT 5000
     )
   `),
+  purgeExpiredEvents: sqlite.prepare('DELETE FROM site_events WHERE created_at < ?'),
   eventTotals: sqlite.prepare(`
     SELECT event_name, COUNT(*) AS count
     FROM site_events
@@ -379,6 +380,23 @@ const statements = {
     FROM site_events
     ORDER BY created_at DESC
     LIMIT 40
+  `),
+  topEventPaths: sqlite.prepare(`
+    SELECT path, COUNT(*) AS count
+    FROM site_events
+    WHERE path != ''
+    GROUP BY path
+    ORDER BY count DESC, path ASC
+    LIMIT 12
+  `),
+  topEventInterests: sqlite.prepare(`
+    SELECT label, COUNT(*) AS count
+    FROM site_events
+    WHERE label != ''
+      AND event_name NOT IN ('page_view', 'scroll_depth', 'analytics_consent_granted')
+    GROUP BY label
+    ORDER BY count DESC, label ASC
+    LIMIT 12
   `),
   createUser: sqlite.prepare(`
     INSERT INTO app_users (id, name, email, password_hash, role, created_at, updated_at)
@@ -434,6 +452,14 @@ const statements = {
     WHERE id = ?
   `),
 };
+
+function analyticsRetentionCutoff() {
+  const cutoff = new Date();
+  cutoff.setUTCMonth(cutoff.getUTCMonth() - 13);
+  return cutoff.toISOString();
+}
+
+statements.purgeExpiredEvents.run(analyticsRetentionCutoff());
 
 function getMeta(key) {
   return statements.getMeta.get(key)?.value || '';
@@ -806,6 +832,7 @@ function insertEvent({ id, source, eventName, event_name, path: eventPath, label
     createdAt: createdAt || nowIso(),
   });
   statements.trimEvents.run();
+  statements.purgeExpiredEvents.run(analyticsRetentionCutoff());
 }
 
 function buildEventSummary() {
@@ -816,6 +843,14 @@ function buildEventSummary() {
 
   return {
     totals,
+    paths: statements.topEventPaths.all().map((event) => ({
+      path: event.path || '',
+      count: Number(event.count),
+    })),
+    interests: statements.topEventInterests.all().map((event) => ({
+      label: event.label || '',
+      count: Number(event.count),
+    })),
     recent: statements.recentEvents.all().map((event) => ({
       source: event.source || 'web',
       event_name: event.event_name || 'unknown',
@@ -1613,9 +1648,13 @@ app.get('/api/sitemap.xml', (_req, res) => {
     { path: '/gallery', priority: '0.7', changefreq: 'monthly', images: galleryImages },
     { path: '/blogs', priority: '0.8', changefreq: 'weekly' },
     { path: '/feedback', priority: '0.6', changefreq: 'monthly' },
+    { path: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
+    { path: '/terms-of-use', priority: '0.3', changefreq: 'yearly' },
     { path: '/ru', priority: '0.9', changefreq: 'weekly' },
     { path: '/ru/tours', priority: '0.8', changefreq: 'weekly' },
     { path: '/ru/feedback', priority: '0.6', changefreq: 'monthly' },
+    { path: '/ru/privacy-policy', priority: '0.3', changefreq: 'yearly' },
+    { path: '/ru/terms-of-use', priority: '0.3', changefreq: 'yearly' },
   ];
   const tourRoutes = statements.listTours
     .all()
@@ -1665,6 +1704,8 @@ app.get('/api/sitemap.xml', (_req, res) => {
       englishPath === '/' ||
       englishPath === '/tours' ||
       englishPath === '/feedback' ||
+      englishPath === '/privacy-policy' ||
+      englishPath === '/terms-of-use' ||
       /^\/tours\/[a-z0-9][a-z0-9-]*$/.test(englishPath) ||
       /^\/destinations\/[a-z0-9-]+$/.test(englishPath);
     if (!supportsRussian) {
