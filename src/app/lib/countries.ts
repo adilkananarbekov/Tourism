@@ -16,10 +16,23 @@ type IntlWithSupportedRegions = typeof Intl & {
   supportedValuesOf?: (key: string) => string[];
 };
 
+function getRegionCodes(): string[] {
+  try {
+    const supportedValuesOf = (Intl as IntlWithSupportedRegions).supportedValuesOf;
+    const regionCodes = supportedValuesOf?.('region');
+
+    if (Array.isArray(regionCodes)) {
+      return regionCodes.filter((code) => /^[A-Z]{2}$/.test(code));
+    }
+  } catch {
+    // Some browsers expose supportedValuesOf but do not support the "region" key yet.
+  }
+
+  return fallbackCountryCodes;
+}
+
 export function getCountryOptions(locale: string): CountryOption[] {
-  const regionCodes = (Intl as IntlWithSupportedRegions).supportedValuesOf?.('region')
-    ?.filter((code) => /^[A-Z]{2}$/.test(code))
-    ?? fallbackCountryCodes;
+  const regionCodes = getRegionCodes();
   const names = new Intl.DisplayNames([locale], { type: 'region' });
 
   return [...new Set(regionCodes)]

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { galleryItems, galleryVideo } from '../data/gallery';
 import { SEO } from '../components/SEO';
 import { Button } from '../components/ui/button';
@@ -9,11 +9,59 @@ import { ResponsiveImage } from '../components/ResponsiveImage';
 const INITIAL_GALLERY_COUNT = 12;
 const GALLERY_BATCH_SIZE = 12;
 
+type GalleryItem = (typeof galleryItems)[number];
+
+function getGalleryColumnCount() {
+  if (typeof window === 'undefined') {
+    return 2;
+  }
+
+  if (window.matchMedia('(min-width: 1280px)').matches) {
+    return 5;
+  }
+  if (window.matchMedia('(min-width: 1024px)').matches) {
+    return 4;
+  }
+  if (window.matchMedia('(min-width: 640px)').matches) {
+    return 3;
+  }
+  return 2;
+}
+
+function useGalleryColumnCount() {
+  const [columnCount, setColumnCount] = useState(getGalleryColumnCount);
+
+  useEffect(() => {
+    const updateColumnCount = () => setColumnCount(getGalleryColumnCount());
+    window.addEventListener('resize', updateColumnCount);
+    return () => window.removeEventListener('resize', updateColumnCount);
+  }, []);
+
+  return columnCount;
+}
+
 export function GalleryPage() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_GALLERY_COUNT);
   const [videoActive, setVideoActive] = useState(false);
+  const columnCount = useGalleryColumnCount();
   const visibleItems = galleryItems.slice(0, visibleCount);
   const hasMore = visibleCount < galleryItems.length;
+  const galleryColumns = useMemo(() => {
+    const columns = Array.from(
+      { length: columnCount },
+      () => [] as Array<{ item: GalleryItem; index: number }>,
+    );
+
+    visibleItems.forEach((item, index) => {
+      columns[index % columnCount].push({ item, index });
+    });
+
+    return columns;
+  }, [columnCount, visibleItems]);
+
+  const loadMorePhotos = () => {
+    setVisibleCount((count) => Math.min(count + GALLERY_BATCH_SIZE, galleryItems.length));
+  };
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
@@ -93,41 +141,47 @@ export function GalleryPage() {
           </div>
         </div>
 
-        <div className="masonry-grid">
-          {visibleItems.map((item) => (
-            <figure key={item.src} className="masonry-item">
-              <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm">
-                <ResponsiveImage
-                  src={item.src}
-                  variants={[
-                    { src: item.src.replace(/\.[^.]+$/, '-480.webp'), width: 480 },
-                    { src: item.src.replace(/\.[^.]+$/, '-960.webp'), width: 960 },
-                  ]}
-                  mobileVariants={[
-                    { src: item.src.replace(/\.[^.]+$/, '-480.webp'), width: 480 },
-                  ]}
-                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
-                  alt={item.alt}
-                  width={item.width}
-                  height={item.height}
-                  loading="lazy"
-                  decoding="async"
-                  className="masonry-image"
-                />
-              </div>
-              <figcaption className="px-1 pt-2 text-sm leading-5 text-muted-foreground">{item.alt}</figcaption>
-            </figure>
+        <p className="sr-only" aria-live="polite">
+          Showing {visibleItems.length} of {galleryItems.length} photos.
+        </p>
+        <div
+          className="gallery-masonry-grid"
+          style={{ '--gallery-columns': columnCount } as CSSProperties}
+        >
+          {galleryColumns.map((column, columnIndex) => (
+            <div className="gallery-masonry-column" key={columnIndex}>
+              {column.map(({ item, index }) => (
+                <figure key={item.src} className="gallery-masonry-item" data-gallery-index={index}>
+                  <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm">
+                    <ResponsiveImage
+                      src={item.src}
+                      variants={[
+                        { src: item.src.replace(/\.[^.]+$/, '-480.webp'), width: 480 },
+                        { src: item.src.replace(/\.[^.]+$/, '-960.webp'), width: 960 },
+                      ]}
+                      mobileVariants={[
+                        { src: item.src.replace(/\.[^.]+$/, '-480.webp'), width: 480 },
+                      ]}
+                      sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 23vw, (min-width: 640px) 30vw, 50vw"
+                      alt={item.alt}
+                      width={item.width}
+                      height={item.height}
+                      loading="lazy"
+                      decoding="async"
+                      className="masonry-image"
+                    />
+                  </div>
+                  <figcaption className="px-1 pt-2 text-sm leading-5 text-muted-foreground">{item.alt}</figcaption>
+                </figure>
+              ))}
+            </div>
           ))}
         </div>
         {hasMore && (
           <div className="flex justify-center">
             <Button
               className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() =>
-                setVisibleCount((count) =>
-                  Math.min(count + GALLERY_BATCH_SIZE, galleryItems.length)
-                )
-              }
+              onClick={loadMorePhotos}
             >
               Load more photos
             </Button>

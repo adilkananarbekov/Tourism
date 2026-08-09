@@ -21,11 +21,6 @@ export function RussianTourDetailPage() {
     return tour ? localizeTour(tour, 'ru') : null;
   }, [tourSlug, tours]);
 
-  if (loading) {
-    return <div className="px-4 py-16 text-center text-muted-foreground">Загружаем тур...</div>;
-  }
-
-  const path = selectedTour ? tourPath(selectedTour) : '/tours';
   const relatedTours = useMemo(() => {
     if (!selectedTour?.relatedTourIds?.length) {
       return [];
@@ -36,6 +31,12 @@ export function RussianTourDetailPage() {
       .map((id) => byId.get(id))
       .filter((tour): tour is NonNullable<typeof tour> => Boolean(tour));
   }, [selectedTour, tours]);
+
+  if (loading) {
+    return <div className="px-4 py-16 text-center text-muted-foreground">Загружаем тур...</div>;
+  }
+
+  const path = selectedTour ? tourPath(selectedTour) : '/tours';
   return (
     <>
       <SEO

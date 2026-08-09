@@ -919,8 +919,21 @@
   display: inline-block;
   width: 100%;
   margin: 0 0 1rem;
-  content-visibility: auto;
-  contain-intrinsic-size: 300px 300px;
+}
+
+.gallery-masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--gallery-columns), minmax(0, 1fr));
+  align-items: start;
+  gap: 1rem;
+}
+
+.gallery-masonry-column {
+  min-width: 0;
+}
+
+.gallery-masonry-item {
+  margin: 0 0 1rem;
 }
 
 .masonry-grid--preview .masonry-item {
@@ -953,12 +966,20 @@
     column-count: 4;
     column-gap: 1rem;
   }
+
+  .gallery-masonry-grid {
+    gap: 1.25rem;
+  }
 }
 
 @media (min-width: 1280px) {
   .masonry-grid {
     column-count: 5;
     column-gap: 1.5rem;
+  }
+
+  .gallery-masonry-grid {
+    gap: 1.5rem;
   }
 }
 
