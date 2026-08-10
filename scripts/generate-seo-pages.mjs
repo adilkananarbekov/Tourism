@@ -23,8 +23,8 @@ const FOUNDER_NAME = 'Jakypbekov Insan';
 const FOUNDER_IMAGE = '/images/founder-jakypbekov-insan.webp';
 const INSTAGRAM_URL = 'https://www.instagram.com/jakypbekovv1/';
 const TELEGRAM_URL = 'https://t.me/Jakypbekovv1';
-const WHATSAPP_URL = 'https://wa.me/996502099808';
-const WHATSAPP_DISPLAY = '+996 502 099 808';
+const WHATSAPP_URL = 'https://wa.me/996880099808';
+const WHATSAPP_DISPLAY = '+996 880 099 808';
 const SITE_DESCRIPTION =
   'Private Kyrgyzstan tours, small-group trips, Song-Kul and Issyk-Kul lake routes, horse riding, yurt stays, and mountain road trips with local planning.';
 const GALLERY_IMAGES = Array.from(
