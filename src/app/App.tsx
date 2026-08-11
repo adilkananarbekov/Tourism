@@ -1,19 +1,31 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { SiteLayout } from './components/SiteLayout';
-import { AuthRoute } from './components/AuthRoute';
-import { AdminRoute } from '../admin/components/AdminRoute';
 
 // Align router base with Vite's base path for GH Pages deploys.
 const routerBase = import.meta.env.BASE_URL.replace(/\/$/, '');
 
+const SiteLayout = lazy(() =>
+  import('./components/SiteLayout').then((module) => ({ default: module.SiteLayout }))
+);
+const AuthRoute = lazy(() =>
+  import('./components/AuthRoute').then((module) => ({ default: module.AuthRoute }))
+);
+const AdminRoute = lazy(() =>
+  import('../admin/components/AdminRoute').then((module) => ({ default: module.AdminRoute }))
+);
 const HomePage = lazy(() => import('./pages/HomePage').then((module) => ({ default: module.HomePage })));
+const RussianHomePage = lazy(() => import('./pages/RussianHomePage').then((module) => ({ default: module.RussianHomePage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 const TourDetailPage = lazy(() => import('./pages/TourDetailPage').then((module) => ({ default: module.TourDetailPage })));
 const ToursPage = lazy(() => import('./pages/ToursPage').then((module) => ({ default: module.ToursPage })));
+const RussianToursPage = lazy(() => import('./pages/RussianToursPage').then((module) => ({ default: module.RussianToursPage })));
+const RussianTourDetailPage = lazy(() => import('./pages/RussianTourDetailPage').then((module) => ({ default: module.RussianTourDetailPage })));
 const GalleryPage = lazy(() => import('./pages/GalleryPage').then((module) => ({ default: module.GalleryPage })));
 const BlogsPage = lazy(() => import('./pages/BlogsPage').then((module) => ({ default: module.BlogsPage })));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage').then((module) => ({ default: module.BlogPostPage })));
+const DestinationPage = lazy(() => import('./pages/DestinationPage').then((module) => ({ default: module.DestinationPage })));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
+const LegalPage = lazy(() => import('./pages/LegalPage').then((module) => ({ default: module.LegalPage })));
 const CreateTourPage = lazy(() => import('./pages/CreateTourPage').then((module) => ({ default: module.CreateTourPage })));
 const JoinTourPage = lazy(() => import('./pages/JoinTourPage').then((module) => ({ default: module.JoinTourPage })));
 const UserDashboardPage = lazy(() => import('./pages/UserDashboardPage').then((module) => ({ default: module.UserDashboardPage })));
@@ -33,12 +45,23 @@ export default function App() {
         <Routes>
           <Route element={<SiteLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/ru" element={<RussianHomePage />} />
             <Route path="/tours" element={<ToursPage />} />
-            <Route path="/tours/:tourId" element={<TourDetailPage />} />
+            <Route path="/tours/:tourSlug" element={<TourDetailPage />} />
+            <Route path="/ru/tours" element={<RussianToursPage />} />
+            <Route path="/ru/tours/:tourSlug" element={<RussianTourDetailPage />} />
             <Route path="/join-tour" element={<JoinTourPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/blogs/:slug" element={<BlogPostPage />} />
+            <Route path="/destinations/:slug" element={<DestinationPage />} />
+            <Route path="/ru/destinations/:slug" element={<DestinationPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/ru/feedback" element={<FeedbackPage />} />
+            <Route path="/privacy-policy" element={<LegalPage kind="privacy" />} />
+            <Route path="/ru/privacy-policy" element={<LegalPage kind="privacy" />} />
+            <Route path="/terms-of-use" element={<LegalPage kind="terms" />} />
+            <Route path="/ru/terms-of-use" element={<LegalPage kind="terms" />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route element={<AuthRoute />}>
               <Route path="/dashboard" element={<UserDashboardPage />} />

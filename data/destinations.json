@@ -1,0 +1,353 @@
+[
+  {
+    "slug": "song-kul",
+    "heroImage": "/images/travel-gallery-2026/travel-032.jpg",
+    "tourIds": [2, 4, 9, 11],
+    "en": {
+      "seoTitle": "Song-Kul Tours & Horseback Riding in Kyrgyzstan",
+      "metaDescription": "Compare private Song-Kul tours in Kyrgyzstan: yurt stays, horseback riding and highland road trips. Check dates, route conditions and availability with a local team.",
+      "eyebrow": "Central Kyrgyzstan · highland lake",
+      "title": "Song-Kul Tours & Horseback Riding in Kyrgyzstan",
+      "intro": "Song-Kul is a high-mountain lake surrounded by summer pasture. A visit is usually as much about the journey, yurt stay and changing mountain weather as it is about the lake itself. Choose a route that fits your days, riding experience and preferred pace.",
+      "facts": [
+        { "label": "Best for", "value": "Yurt stays, horse riding and open highland scenery" },
+        { "label": "Travel style", "value": "Private road trip or horseback route" },
+        { "label": "Planning", "value": "Dates and route conditions confirmed personally" }
+      ],
+      "routeHeading": "Choose a Song-Kul route",
+      "routeIntro": "Start with a short horseback approach, a longer trek across the pastures, or a private road trip that combines Song-Kul with another region. Each route remains adjustable after we know your dates and group.",
+      "planningHeading": "Plan for the highlands",
+      "planningItems": [
+        "Confirm yurt-camp availability and road access for your exact dates before finalising flights.",
+        "Keep the daily plan realistic: weather, trail conditions and long mountain transfers can change the pace.",
+        "Tell us honestly about riding experience so the horse route, guide and time in the saddle fit your group."
+      ],
+      "experienceHeading": "What makes a Song-Kul trip different",
+      "experienceItems": [
+        {
+          "title": "Yurt-camp rhythm",
+          "body": "Expect a simple highland stay rather than a resort. Facilities differ by camp, so the confirmed route should state the actual accommodation and meal plan."
+        },
+        {
+          "title": "A route, not a quick stop",
+          "body": "The most rewarding visits leave time for the approach, the lake and a slow morning. This is why a short ride and a wider road trip are offered as different experiences."
+        },
+        {
+          "title": "Mountain conditions",
+          "body": "Warm sun, wind and cold evenings can all happen in one day. Layers, closed shoes and an itinerary with some flexibility make the trip more comfortable."
+        }
+      ],
+      "faqHeading": "Song-Kul planning questions",
+      "faq": [
+        {
+          "question": "Can I visit Song-Kul all year?",
+          "answer": "Most yurt stays and highland routes are planned for the warmer season. Send your travel month first, and we will confirm the realistic route and current access."
+        },
+        {
+          "question": "Is a horse trek suitable for beginners?",
+          "answer": "Some shorter rides can be adapted for beginners, while longer mountain routes need more confidence in the saddle. Tell us your recent experience before choosing a tour."
+        },
+        {
+          "question": "What should I pack for a yurt stay?",
+          "answer": "Bring layers for sun, wind and cold evenings, a waterproof outer layer, closed footwear, sun protection and any personal medication. The final packing list depends on your selected route."
+        }
+      ],
+      "ctaTitle": "Tell us your dates and travel style",
+      "ctaText": "We will confirm which Song-Kul route is practical for your group, the current availability and the next planning step.",
+      "ctaPrimary": "Ask about Song-Kul dates",
+      "ctaSecondary": "Compare all tours",
+      "notFoundTitle": "Destination not found",
+      "notFoundText": "This destination page is not available. Browse all Kyrgyzstan tours or send us your travel idea."
+    },
+    "ru": {
+      "seoTitle": "Туры на Сон-Куль и конные маршруты по Кыргызстану",
+      "metaDescription": "Выберите частный тур на Сон-Куль: юрты, конные маршруты и высокогорные автопоездки. Уточним даты, доступность и условия маршрута у местной команды.",
+      "eyebrow": "Центральный Кыргызстан · высокогорное озеро",
+      "title": "Туры на Сон-Куль и конные маршруты по Кыргызстану",
+      "intro": "Сон-Куль — высокогорное озеро среди летних пастбищ. Поездка сюда — это не только само озеро, но и дорога, ночёвка в юрте и переменчивая горная погода. Выберите маршрут под ваши даты, опыт верховой езды и желаемый темп.",
+      "facts": [
+        { "label": "Подойдёт для", "value": "Юрт, верховой езды и открытых горных пейзажей" },
+        { "label": "Формат поездки", "value": "Частный автотур или конный маршрут" },
+        { "label": "Планирование", "value": "Даты и условия маршрута подтверждаем лично" }
+      ],
+      "routeHeading": "Выберите маршрут на Сон-Куль",
+      "routeIntro": "Можно начать с короткого конного выезда, выбрать более длинный переход по пастбищам или частный автотур с Сон-Кулем и другим регионом. После ваших дат и состава группы маршрут можно адаптировать.",
+      "planningHeading": "Что важно учесть в высокогорье",
+      "planningItems": [
+        "До покупки билетов уточните доступность юрточного лагеря и состояние дорог на ваши даты.",
+        "Оставьте темп реалистичным: погода, состояние троп и длинные горные переезды могут менять план дня.",
+        "Честно расскажите об опыте верховой езды — так мы подберём подходящий маршрут, проводника и время в седле."
+      ],
+      "experienceHeading": "Чем поездка на Сон-Куль отличается",
+      "experienceItems": [
+        {
+          "title": "Ритм юрточного лагеря",
+          "body": "Это простое размещение в высокогорье, а не курорт. Условия в лагерях отличаются, поэтому в подтверждённом маршруте нужно зафиксировать реальное размещение и питание."
+        },
+        {
+          "title": "Не короткая остановка, а маршрут",
+          "body": "Лучшее впечатление даёт время на дорогу, озеро и спокойное утро. Поэтому короткий конный выезд и большой автотур — это разные форматы поездки."
+        },
+        {
+          "title": "Горные условия",
+          "body": "За один день могут быть яркое солнце, ветер и холодный вечер. Многослойная одежда, закрытая обувь и небольшой запас времени делают поездку комфортнее."
+        }
+      ],
+      "faqHeading": "Частые вопросы о Сон-Куле",
+      "faq": [
+        {
+          "question": "Можно ли приехать на Сон-Куль круглый год?",
+          "answer": "Большинство юрточных лагерей и высокогорных маршрутов работают в тёплый сезон. Сначала отправьте месяц поездки, и мы подтвердим реальный маршрут и текущий доступ."
+        },
+        {
+          "question": "Подойдёт ли конный маршрут новичкам?",
+          "answer": "Некоторые короткие прогулки можно адаптировать для новичков, но длинные горные переходы требуют уверенности в седле. Расскажите о вашем опыте до выбора тура."
+        },
+        {
+          "question": "Что взять с собой в юрточный лагерь?",
+          "answer": "Возьмите одежду слоями для солнца, ветра и холодного вечера, непромокаемый верхний слой, закрытую обувь, защиту от солнца и личные лекарства. Точный список зависит от выбранного маршрута."
+        }
+      ],
+      "ctaTitle": "Расскажите о датах и формате поездки",
+      "ctaText": "Мы подскажем, какой маршрут на Сон-Куль реалистичен для вашей группы, проверим доступность и предложим следующий шаг по планированию.",
+      "ctaPrimary": "Уточнить даты на Сон-Куль",
+      "ctaSecondary": "Смотреть все туры",
+      "notFoundTitle": "Направление не найдено",
+      "notFoundText": "Эта страница направления недоступна. Посмотрите все туры по Кыргызстану или отправьте нам идею поездки."
+    }
+  },
+  {
+    "slug": "issyk-kul",
+    "heroImage": "/images/travel-gallery-2026/travel-001.jpg",
+    "tourIds": [7, 10, 5, 3],
+    "en": {
+      "seoTitle": "Issyk-Kul Tours from Bishkek in Kyrgyzstan",
+      "metaDescription": "Compare private Issyk-Kul tours from Bishkek: 3- and 4-day lake routes, gorges, canyons, Karakol and hot springs. Choose a practical itinerary for your dates.",
+      "eyebrow": "Eastern Kyrgyzstan · lake and mountain roads",
+      "title": "Issyk-Kul Tours from Bishkek in Kyrgyzstan",
+      "intro": "Issyk-Kul works well for a first private road trip in Kyrgyzstan: lake views, mountain gorges, short walks and stops around Karakol can fit into a few days. The useful choice is not simply north shore or south shore, but a route with realistic driving time for your month and pace.",
+      "facts": [
+        { "label": "Best for", "value": "Lake scenery, gorges, short walks and a private road trip" },
+        { "label": "Starting point", "value": "Bishkek, with the route shaped around your available days" },
+        { "label": "Planning", "value": "Choose the shore and mountain stops after checking seasonal conditions" }
+      ],
+      "routeHeading": "Choose an Issyk-Kul route",
+      "routeIntro": "A three-day introduction suits travellers who want the lake and Karakol without a rushed circuit. Four days create more room for gorges, canyons or hot springs. Longer routes can link Issyk-Kul with Song-Kul or Kel-Suu when the season and road access allow it.",
+      "planningHeading": "Plan a practical Issyk-Kul road trip",
+      "planningItems": [
+        "Start with the number of nights you actually have: driving from Bishkek and between mountain stops takes longer than a map can suggest.",
+        "Tell us whether you prefer lake views, easy walks, gorges, hot springs or Karakol, so the route is not a generic circuit.",
+        "Mountain weather and some side roads change by season; the final daily plan should be confirmed close to departure."
+      ],
+      "experienceHeading": "What to expect around Issyk-Kul",
+      "experienceItems": [
+        {
+          "title": "A flexible lake circuit",
+          "body": "The lake is large enough that a complete circuit is not automatically the best plan. A private route can focus on one shore or join selected stops without packing every day with driving."
+        },
+        {
+          "title": "Gorges and highland detours",
+          "body": "Gorges, canyons and hot-spring areas add variety to a lake route. Their suitability depends on weather, road conditions and how much walking your group wants."
+        },
+        {
+          "title": "Karakol and local stops",
+          "body": "Karakol can add food, culture and access to mountain scenery. It is best planned as part of a realistic overnight route rather than a hurried detour."
+        }
+      ],
+      "faqHeading": "Issyk-Kul planning questions",
+      "faq": [
+        {
+          "question": "How many days do I need for an Issyk-Kul tour from Bishkek?",
+          "answer": "Three days can give a useful private introduction to the lake and Karakol. Four days allow more time for gorges, canyons or hot springs. The right length depends on the shore, season and how many stops you want."
+        },
+        {
+          "question": "Can Issyk-Kul be visited outside summer?",
+          "answer": "Yes, lower-elevation lake routes can work outside peak summer, but swimming, mountain access, daylight and weather are different. Tell us your month so we can recommend a route that fits current conditions."
+        },
+        {
+          "question": "Should I choose the north shore or south shore of Issyk-Kul?",
+          "answer": "Both can be worthwhile. The better choice depends on whether you prioritise a direct lake route, gorges and canyons, Karakol, short walks or a connection to another region."
+        }
+      ],
+      "ctaTitle": "Tell us how many days you have for Issyk-Kul",
+      "ctaText": "We will suggest a practical private route from Bishkek, confirm the realistic mountain stops and help you choose the right shore for your travel month.",
+      "ctaPrimary": "Ask about Issyk-Kul dates",
+      "ctaSecondary": "Compare all tours",
+      "notFoundTitle": "Destination not found",
+      "notFoundText": "This destination page is not available. Browse all Kyrgyzstan tours or send us your travel idea."
+    },
+    "ru": {
+      "seoTitle": "Туры на Иссык-Куль из Бишкека по Кыргызстану",
+      "metaDescription": "Выберите частный тур на Иссык-Куль из Бишкека: маршруты на 3–4 дня, ущелья, каньоны, Каракол и горячие источники. Подберём реальный маршрут под ваши даты.",
+      "eyebrow": "Восточный Кыргызстан · озеро и горные дороги",
+      "title": "Туры на Иссык-Куль из Бишкека по Кыргызстану",
+      "intro": "Иссык-Куль хорошо подходит для первого частного автопутешествия по Кыргызстану: озеро, горные ущелья, короткие прогулки и остановки у Каракола можно увидеть за несколько дней. Важно выбрать не просто северный или южный берег, а реалистичный маршрут под ваш месяц и темп.",
+      "facts": [
+        { "label": "Подойдёт для", "value": "Озёрных пейзажей, ущелий, коротких прогулок и автотура" },
+        { "label": "Старт маршрута", "value": "Бишкек, а маршрут строится под количество ваших дней" },
+        { "label": "Планирование", "value": "Берег и горные остановки выбираем с учётом сезона" }
+      ],
+      "routeHeading": "Выберите маршрут на Иссык-Куль",
+      "routeIntro": "Трёх дней достаточно для первого знакомства с озером и Караколом без спешки. Четыре дня дают больше времени на ущелья, каньоны или горячие источники. Более длинные маршруты можно соединить с Сон-Кулем или Кель-Суу, если позволяют сезон и дороги.",
+      "planningHeading": "Как спланировать реалистичный автотур",
+      "planningItems": [
+        "Сначала определите реальное количество ночёвок: дорога из Бишкека и между горными точками занимает больше времени, чем кажется по карте.",
+        "Расскажите, что для вас важнее: озеро, лёгкие прогулки, ущелья, горячие источники или Каракол — так маршрут не станет шаблонным кругом вокруг озера.",
+        "Погода в горах и состояние некоторых боковых дорог меняются по сезонам, поэтому финальный план лучше подтвердить ближе к выезду."
+      ],
+      "experienceHeading": "Чего ожидать на Иссык-Куле",
+      "experienceItems": [
+        {
+          "title": "Гибкий маршрут вокруг озера",
+          "body": "Озеро большое, поэтому полный круг подходит не всем. В частном маршруте можно сосредоточиться на одном берегу или выбрать несколько точек без ежедневных длинных переездов."
+        },
+        {
+          "title": "Ущелья и горные ответвления",
+          "body": "Ущелья, каньоны и зоны горячих источников добавляют впечатлений к озёрной поездке. Их выбор зависит от погоды, состояния дороги и того, сколько вы хотите ходить пешком."
+        },
+        {
+          "title": "Каракол и местные остановки",
+          "body": "Каракол добавляет еду, культуру и доступ к горным пейзажам. Лучше включать его в реалистичный маршрут с ночёвкой, а не в спешную остановку по пути."
+        }
+      ],
+      "faqHeading": "Частые вопросы об Иссык-Куле",
+      "faq": [
+        {
+          "question": "Сколько дней нужно на тур на Иссык-Куль из Бишкека?",
+          "answer": "Трёх дней достаточно для хорошего частного знакомства с озером и Караколом. Четыре дня дают больше времени на ущелья, каньоны или горячие источники. Точная длина зависит от берега, сезона и желаемых остановок."
+        },
+        {
+          "question": "Можно ли поехать на Иссык-Куль не летом?",
+          "answer": "Да, маршруты у озера на небольшой высоте возможны и вне пика лета, но купание, доступ в горы, световой день и погода будут другими. Сообщите месяц поездки — мы предложим подходящий маршрут."
+        },
+        {
+          "question": "Какой берег Иссык-Куля выбрать — северный или южный?",
+          "answer": "Оба берега интересны. Выбор зависит от того, что для вас важнее: прямой маршрут у озера, ущелья и каньоны, Каракол, короткие прогулки или соединение с другим регионом."
+        }
+      ],
+      "ctaTitle": "Расскажите, сколько дней у вас на Иссык-Куль",
+      "ctaText": "Мы предложим реалистичный частный маршрут из Бишкека, уточним доступные горные остановки и поможем выбрать берег под ваш месяц поездки.",
+      "ctaPrimary": "Уточнить даты на Иссык-Куль",
+      "ctaSecondary": "Смотреть все туры",
+      "notFoundTitle": "Направление не найдено",
+      "notFoundText": "Эта страница направления недоступна. Посмотрите все туры по Кыргызстану или отправьте нам идею поездки."
+    }
+  },
+  {
+    "slug": "kel-suu",
+    "heroImage": "/images/travel-gallery-2026/travel-054.jpg",
+    "tourIds": [11, 15, 3, 24],
+    "en": {
+      "seoTitle": "Kel-Suu Tours from Bishkek in Kyrgyzstan",
+      "metaDescription": "Plan a private Kel-Suu tour from Bishkek with realistic mountain driving days, current border-zone requirements and routes linking Song-Kul or Issyk-Kul.",
+      "eyebrow": "Naryn region · remote highland lake",
+      "title": "Kel-Suu Tours from Bishkek in Kyrgyzstan",
+      "intro": "Kel-Suu is a remote highland lake near the border zone in Naryn. It suits travellers who value a long mountain-road journey and dramatic scenery over a quick checklist. A practical route starts with your dates, group pace and the current access requirements rather than a fixed promise of every stop.",
+      "facts": [
+        { "label": "Best for", "value": "Remote landscapes, long scenic drives and a private mountain route" },
+        { "label": "Travel style", "value": "Active road journey with flexible daily timing" },
+        { "label": "Important", "value": "Access and border-zone requirements must be confirmed for your dates" }
+      ],
+      "routeHeading": "Choose a Kel-Suu route",
+      "routeIntro": "A focused four- or five-day route can link Kel-Suu with Song-Kul. A longer trip can add Issyk-Kul or another highland section. Because the road journey is substantial, we keep the itinerary honest about driving time and confirm access before finalising the route.",
+      "planningHeading": "Plan Kel-Suu around current conditions",
+      "planningItems": [
+        "Share your travel dates early: the route, overnight stops and access checks depend on the season and current local conditions.",
+        "Kel-Suu is not a short day trip from Bishkek. Leave enough nights for the approach and avoid trying to combine too many remote regions.",
+        "Border-zone rules and road conditions can change. We confirm the requirements before a booking is finalised rather than treating them as guaranteed."
+      ],
+      "experienceHeading": "What makes a Kel-Suu trip different",
+      "experienceItems": [
+        {
+          "title": "The journey is part of the route",
+          "body": "Kel-Suu rewards travellers who are comfortable with long mountain driving days and an itinerary that can shift with local conditions."
+        },
+        {
+          "title": "Remote highland planning",
+          "body": "Accommodation, road access and timing are more variable than on a city-to-lake route. A private plan keeps decisions realistic for the group."
+        },
+        {
+          "title": "Combine regions carefully",
+          "body": "Song-Kul or Issyk-Kul can complement Kel-Suu, but only when the available days allow a sensible pace rather than repeated long transfers."
+        }
+      ],
+      "faqHeading": "Kel-Suu planning questions",
+      "faq": [
+        {
+          "question": "How many days do I need for a Kel-Suu tour from Bishkek?",
+          "answer": "A practical private route normally needs several days because Kel-Suu is remote. Four or five days can work when the route is focused, while longer plans can add Song-Kul or Issyk-Kul at a more comfortable pace."
+        },
+        {
+          "question": "Do I need a permit for Kel-Suu?",
+          "answer": "Kel-Suu is near a border zone, so access requirements should be checked for your passport and dates before plans are confirmed. We verify the current process rather than relying on old information."
+        },
+        {
+          "question": "When is Kel-Suu accessible?",
+          "answer": "Access depends on snow, roads and the season. Send your travel month first so we can confirm whether a Kel-Suu route is realistic and suggest an alternative if conditions are unsuitable."
+        }
+      ],
+      "ctaTitle": "Ask whether Kel-Suu works for your dates",
+      "ctaText": "Send your month, group size and preferred pace. We will check the realistic access, explain the next planning step and suggest the right route length.",
+      "ctaPrimary": "Ask about Kel-Suu dates",
+      "ctaSecondary": "Compare all tours",
+      "notFoundTitle": "Destination not found",
+      "notFoundText": "This destination page is not available. Browse all Kyrgyzstan tours or send us your travel idea."
+    },
+    "ru": {
+      "seoTitle": "Туры на Кель-Суу из Бишкека по Кыргызстану",
+      "metaDescription": "Спланируйте частный тур на Кель-Суу из Бишкека: реальные горные переезды, актуальные требования приграничной зоны и маршруты с Сон-Кулем или Иссык-Кулем.",
+      "eyebrow": "Нарынская область · удалённое высокогорное озеро",
+      "title": "Туры на Кель-Суу из Бишкека по Кыргызстану",
+      "intro": "Кель-Суу — удалённое высокогорное озеро у приграничной зоны Нарына. Оно подойдёт тем, кто ценит долгую горную дорогу и драматичные пейзажи, а не короткий список точек. Реалистичный маршрут начинается с ваших дат, темпа группы и актуальных условий доступа, а не с обещания всех остановок заранее.",
+      "facts": [
+        { "label": "Подойдёт для", "value": "Удалённых пейзажей, долгих живописных дорог и частного горного маршрута" },
+        { "label": "Формат поездки", "value": "Активное автопутешествие с гибким временем в пути" },
+        { "label": "Важно", "value": "Доступ и требования приграничной зоны нужно подтвердить на ваши даты" }
+      ],
+      "routeHeading": "Выберите маршрут на Кель-Суу",
+      "routeIntro": "Сфокусированный маршрут на четыре–пять дней может соединить Кель-Суу и Сон-Куль. В более длинную поездку можно добавить Иссык-Куль или другой высокогорный участок. Поскольку дорога занимает много времени, мы честно закладываем переезды и подтверждаем доступ до финального планирования.",
+      "planningHeading": "Планируйте Кель-Суу по текущим условиям",
+      "planningItems": [
+        "Сообщите даты заранее: маршрут, ночёвки и проверка доступа зависят от сезона и текущих местных условий.",
+        "Кель-Суу — не короткая однодневная поездка из Бишкека. Оставьте достаточно ночёвок на дорогу и не пытайтесь соединить слишком много удалённых регионов.",
+        "Правила приграничной зоны и состояние дорог могут меняться. Мы подтверждаем требования до оформления, а не считаем их гарантированными."
+      ],
+      "experienceHeading": "Чем поездка на Кель-Суу отличается",
+      "experienceItems": [
+        {
+          "title": "Дорога — часть маршрута",
+          "body": "Кель-Суу лучше всего подойдёт тем, кому комфортны длинные дни в горах и маршрут, который может меняться по местным условиям."
+        },
+        {
+          "title": "Планирование удалённого высокогорья",
+          "body": "Размещение, доступ по дороге и тайминг здесь изменчивее, чем на маршруте «город — озеро». Частный план помогает сохранить реалистичность для группы."
+        },
+        {
+          "title": "Соединяйте регионы осторожно",
+          "body": "Сон-Куль или Иссык-Куль можно добавить к Кель-Суу, но только если дни позволяют сохранить нормальный темп без постоянных долгих переездов."
+        }
+      ],
+      "faqHeading": "Частые вопросы о Кель-Суу",
+      "faq": [
+        {
+          "question": "Сколько дней нужно на тур на Кель-Суу из Бишкека?",
+          "answer": "На реалистичный частный маршрут нужно несколько дней, потому что Кель-Суу находится далеко. Четыре–пять дней подходят для сфокусированной поездки, а в более длинный маршрут можно добавить Сон-Куль или Иссык-Куль в комфортном темпе."
+        },
+        {
+          "question": "Нужно ли разрешение для поездки на Кель-Суу?",
+          "answer": "Кель-Суу находится рядом с приграничной зоной, поэтому требования доступа нужно проверить для вашего паспорта и дат до подтверждения маршрута. Мы уточняем актуальный порядок, а не опираемся на старую информацию."
+        },
+        {
+          "question": "Когда Кель-Суу доступно?",
+          "answer": "Доступ зависит от снега, дороги и сезона. Сначала сообщите месяц поездки: мы подтвердим, реалистичен ли маршрут на Кель-Суу, и предложим альтернативу, если условия не подходят."
+        }
+      ],
+      "ctaTitle": "Уточните, подходит ли Кель-Суу под ваши даты",
+      "ctaText": "Отправьте месяц, размер группы и желаемый темп. Мы проверим реальный доступ, объясним следующий шаг и предложим подходящую продолжительность маршрута.",
+      "ctaPrimary": "Уточнить даты на Кель-Суу",
+      "ctaSecondary": "Смотреть все туры",
+      "notFoundTitle": "Направление не найдено",
+      "notFoundText": "Эта страница направления недоступна. Посмотрите все туры по Кыргызстану или отправьте нам идею поездки."
+    }
+  }
+]

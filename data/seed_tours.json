@@ -1,587 +1,3939 @@
 [
   {
     "id": 1,
-    "title": "Song-Kul Lake Expedition",
+    "title": "Song-Köl & Altyn-Arashan Adventure",
+    "isHot": false,
     "duration": "7 days",
-    "tourType": "Trekking & Culture",
-    "season": "Summer",
-    "description": "Journey to the pristine high-altitude Song-Kul Lake and experience authentic nomadic life in traditional yurts.",
-    "image": "/images/tour-songkul.jpg",
-    "price": "$890",
-    "highlights": [
-      "Stay in traditional yurts with nomadic families",
-      "Horseback riding around Song-Kul Lake",
-      "Witness traditional eagle hunting demonstrations",
-      "Experience authentic Kyrgyz cuisine",
-      "Visit ancient petroglyphs"
-    ],
-    "itinerary": [
-      {
-        "day": 1,
-        "title": "Arrival in Bishkek",
-        "description": "Pick up from airport, transfer to hotel. City orientation tour including Ala-Too Square and Osh Bazaar."
-      },
-      {
-        "day": 2,
-        "title": "Bishkek to Kochkor",
-        "description": "Drive through scenic mountain passes to Kochkor village. Visit local felt-making workshop."
-      },
-      {
-        "day": 3,
-        "title": "Trek to Song-Kul Lake",
-        "description": "Begin trek to Song-Kul Lake (3,016m). Arrive at yurt camp and settle in with nomadic family."
-      },
-      {
-        "day": 4,
-        "title": "Song-Kul Exploration",
-        "description": "Horseback riding around the lake. Optional fishing. Evening cultural performance."
-      },
-      {
-        "day": 5,
-        "title": "Song-Kul Activities",
-        "description": "Participate in daily nomadic activities. Learn traditional crafts. Sunset photography."
-      },
-      {
-        "day": 6,
-        "title": "Return to Bishkek",
-        "description": "Morning at leisure. Trek back and drive to Bishkek. Farewell dinner."
-      },
-      {
-        "day": 7,
-        "title": "Departure",
-        "description": "Transfer to airport for departure flight."
-      }
-    ],
-    "packingList": [
-      "Warm sleeping bag (temperatures can drop to 5 C)",
-      "Waterproof hiking boots",
-      "Layered clothing (thermal underwear, fleece, waterproof jacket)",
-      "Sun protection (hat, sunglasses, sunscreen)",
-      "Personal first aid kit",
-      "Reusable water bottle",
-      "Headlamp or flashlight",
-      "Camera and extra batteries"
-    ],
-    "practicalInfo": {
-      "accommodation": "Mix of hotels (Bishkek) and traditional yurts (Song-Kul)",
-      "meals": "All meals included from Day 2 lunch to Day 6 breakfast",
-      "difficulty": "Moderate - suitable for regular hikers",
-      "groupSize": "4-12 participants",
-      "included": [
-        "Airport transfers",
-        "All accommodation",
-        "Transportation in private vehicle",
-        "English-speaking guide",
-        "Entrance fees",
-        "Horse rental at Song-Kul",
-        "All meals as specified"
-      ],
-      "notIncluded": [
-        "International flights",
-        "Travel insurance",
-        "Personal expenses",
-        "Tips for guides and drivers",
-        "Alcoholic beverages"
-      ]
-    },
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 7-day route connects Bishkek, Song-Kol Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-010.jpg",
+    "price": "Price on request",
     "locations": [
       {
-        "name": "Song-Kul Lake",
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
         "lat": 41.807,
         "lng": 75.297
       },
       {
-        "name": "Bishkek",
-        "lat": 42.8746,
-        "lng": 74.5698
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
       }
-    ]
-  },
-  {
-    "id": 2,
-    "title": "Ala-Archa Gorge Adventure",
-    "duration": "3 days",
-    "tourType": "Hiking",
-    "season": "All seasons",
-    "description": "Explore the stunning Ala-Archa National Park with its dramatic gorges, alpine meadows, and snow-capped peaks.",
-    "image": "/images/tour-ala-archa.jpg",
-    "price": "$450",
+    ],
     "highlights": [
-      "Trek to Ak-Sai glacier viewpoint",
-      "Pristine alpine scenery just 40km from Bishkek",
-      "Spot rare wildlife including ibex and snow leopards",
-      "Visit local alpine research station",
-      "Photography opportunities"
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Bishkek, Song-Kol Lake, Issyk-Kol and Altyn-Arashan"
     ],
     "itinerary": [
       {
         "day": 1,
-        "title": "Bishkek to Ala-Archa",
-        "description": "Morning pickup and drive to Ala-Archa National Park. Begin hiking to base camp."
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
       },
       {
         "day": 2,
-        "title": "Glacier Trek",
-        "description": "Full day trek to Ak-Sai glacier viewpoint (3,900m). Return to base camp."
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
       },
       {
         "day": 3,
-        "title": "Return to Bishkek",
-        "description": "Morning descent and return to Bishkek. City tour if time permits."
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
       }
     ],
     "packingList": [
-      "Sturdy hiking boots",
-      "Warm layers and rain gear",
-      "Sunscreen and sunglasses",
-      "Water bottle",
-      "Snacks for trail",
-      "Camera",
-      "Small backpack (25-30L)"
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
     ],
     "practicalInfo": {
-      "accommodation": "Alpine huts or tents",
-      "meals": "All meals included",
-      "difficulty": "Moderate to challenging",
-      "groupSize": "4-10 participants",
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
       "included": [
-        "All transportation",
-        "Park entrance fees",
-        "Experienced guide",
-        "All meals",
-        "Camping equipment"
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
       ],
       "notIncluded": [
+        "International flights",
         "Travel insurance",
-        "Personal gear",
-        "Tips",
-        "Extra snacks"
+        "Personal costs and services not listed in your quotation"
       ]
-    },
+    }
+  },
+  {
+    "id": 2,
+    "title": "3-Day Song-Köl Horseback Riding Tour from Kyzart",
+    "isHot": true,
+    "duration": "3 days",
+    "tourType": "Horseback Riding",
+    "season": "May to October",
+    "description": "This 3-day Song-Köl horseback riding tour starts in Kyzart and follows the Kilemche Valley into Kyrgyzstan’s high pastures. It is a private or small-group route for travelers who want a real horse trek, a yurt night, and time beside Song-Köl rather than a rushed roadside visit.",
+    "image": "/images/travel-gallery-2026/travel-032.jpg",
+    "price": "Price on request",
     "locations": [
       {
-        "name": "Ala-Archa National Park",
-        "lat": 42.65,
-        "lng": 74.48
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
       },
       {
-        "name": "Bishkek",
-        "lat": 42.8746,
-        "lng": 74.5698
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
       }
+    ],
+    "highlights": [
+      "Horseback route from Kyzart through the Kilemche Valley",
+      "One or more nights near Song-Köl in a yurt camp, subject to the confirmed plan",
+      "A local horseman and a pace adjusted for the group",
+      "High-pasture views, mountain weather, and nomadic summer landscapes"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Meet in Kyzart and ride toward Kilemche",
+        "description": "Meet the local team in Kyzart, review riding experience and weather, then begin the route toward the Kilemche Valley. The day is paced for the group and the condition of the trail."
+      },
+      {
+        "day": 2,
+        "title": "Kilemche Valley to Song-Köl",
+        "description": "Continue on horseback across alpine pasture toward Song-Köl. The exact track and riding time are confirmed locally because mountain weather and ground conditions can change."
+      },
+      {
+        "day": 3,
+        "title": "Song-Köl morning and return",
+        "description": "Enjoy a calm morning by the lake before riding back toward Kyzart or taking the return transfer agreed in the confirmed programme."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    },
+    "seoContent": {
+      "heading": "Song-Köl horseback riding from Kyzart: route notes",
+      "paragraphs": [
+        "Kyzart is a practical trailhead for a Song-Köl horse trek. It gives the group time to meet the horseman and match a horse to each rider before moving into the Kilemche Valley.",
+        "Song-Köl sits at high altitude, so warm layers, sun protection, closed footwear, and realistic expectations about simple yurt-camp facilities matter. We confirm the camp, road access, and final riding plan before departure rather than promising conditions that depend on the mountains."
+      ],
+      "faq": [
+        {
+          "question": "Do I need previous riding experience?",
+          "answer": "Experience is helpful, but the route can be discussed around the least experienced rider. Tell us honestly how recently and how confidently you have ridden."
+        },
+        {
+          "question": "When is this Song-Köl horse tour available?",
+          "answer": "The normal highland season is May to October, with the exact opening and closing dates dependent on trail, pass, and camp conditions."
+        }
+      ]
+    },
+    "relatedTourIds": [
+      4,
+      9,
+      13
     ]
   },
   {
     "id": 3,
-    "title": "Silk Road Heritage Tour",
-    "duration": "10 days",
-    "tourType": "Cultural & Historical",
-    "season": "Spring & Autumn",
-    "description": "Follow ancient Silk Road routes through Kyrgyzstan, visiting historic caravanserais, bazaars, and UNESCO sites.",
-    "image": "/images/tour-silk-road.jpg",
-    "price": "$1,450",
+    "title": "7-Day Kyrgyzstan Tour: Song-Köl, Kel-Suu and Issyk-Köl",
+    "isHot": true,
+    "duration": "7 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A seven-day Kyrgyzstan tour for guests who want the country’s central mountain lakes and Issyk-Köl in one private route. It combines Song-Köl, Kel-Suu, and Issyk-Köl with a pace that is planned around genuine mountain-drive distances rather than an overfilled checklist.",
+    "image": "/images/travel-gallery-2026/travel-044.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      }
+    ],
     "highlights": [
-      "Explore Burana Tower and ancient Balasagun",
-      "Visit vibrant Osh Bazaar and Jayma Bazaar",
-      "Stay at Tash Rabat caravanserai",
-      "Discover Issyk-Kul Lake, the \"Pearl of Kyrgyzstan\"",
-      "Meet local craftspeople and artisans"
+      "A one-week private Kyrgyzstan route linking three major lake regions",
+      "Song-Köl highlands, Kel-Suu access planning, and Issyk-Köl scenery",
+      "Flexible balance of driving, short walks, culture, and photo stops",
+      "A better fit than a rushed two- or three-day cross-country circuit"
     ],
     "itinerary": [
       {
         "day": 1,
-        "title": "Arrival in Bishkek",
-        "description": "Airport transfer and city tour. Visit State History Museum and Ala-Too Square."
+        "title": "Arrival and Bishkek route briefing",
+        "description": "Meet the local team, confirm travel details, and prepare for the mountain section of the journey."
       },
       {
         "day": 2,
-        "title": "Bishkek to Cholpon-Ata",
-        "description": "Visit Burana Tower. Continue to Issyk-Kul Lake. Explore ancient petroglyphs."
+        "title": "Toward the Song-Köl region",
+        "description": "Travel toward the Song-Köl highlands with stops planned around the road, weather, and confirmed overnight location."
       },
       {
         "day": 3,
-        "title": "Issyk-Kul Exploration",
-        "description": "Visit Przhevalsky Museum. Relax at hot springs. Beach time at the lake."
+        "title": "Song-Köl highland day",
+        "description": "Spend time around Song-Köl at a pace suited to the group, with optional short walks or horse-related activities discussed in advance."
       },
       {
         "day": 4,
-        "title": "To Karakol",
-        "description": "Drive to Karakol. Visit Dungan Mosque and Russian Orthodox Cathedral."
+        "title": "Naryn route and Kel-Suu planning",
+        "description": "Continue through the Naryn region and prepare the next day’s Kel-Suu access around current requirements and local conditions."
       },
       {
         "day": 5,
-        "title": "Jeti-Oguz & Skazka Canyon",
-        "description": "Explore Seven Bulls rocks and Fairytale Canyon. Return to Karakol."
+        "title": "Kel-Suu access day",
+        "description": "Visit the Kel-Suu area using the access plan confirmed for your dates, then continue to the planned overnight point."
       },
       {
         "day": 6,
-        "title": "To Kochkor",
-        "description": "Cross mountain passes to Kochkor. Visit felt-making cooperative."
+        "title": "Toward Issyk-Köl",
+        "description": "Travel toward Issyk-Köl, allowing time for a scenic stop instead of treating the day as only a transfer."
       },
       {
         "day": 7,
-        "title": "To Tash Rabat",
-        "description": "Journey to the ancient Tash Rabat caravanserai. Overnight in nearby yurt camp."
-      },
-      {
-        "day": 8,
-        "title": "To Osh",
-        "description": "Long but scenic drive to Osh via Torugart Pass area."
-      },
-      {
-        "day": 9,
-        "title": "Osh Exploration",
-        "description": "Visit Solomon's Throne. Explore Jayma Bazaar. Local craft workshops."
-      },
-      {
-        "day": 10,
-        "title": "Departure from Osh",
-        "description": "Transfer to airport for departure."
+        "title": "Issyk-Köl and return connection",
+        "description": "Use the final day for the selected lakeside stop and the return or onward transfer stated in the confirmed programme."
       }
     ],
     "packingList": [
-      "Comfortable walking shoes",
-      "Light layers for varying temperatures",
-      "Sun protection",
-      "Camera with extra storage",
-      "Modest clothing for religious sites",
-      "Small daypack",
-      "Personal medications"
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
     ],
     "practicalInfo": {
-      "accommodation": "Hotels and guesthouses (mix of yurts in some locations)",
-      "meals": "Daily breakfast, selected lunches and dinners",
-      "difficulty": "Easy - mostly driving and short walks",
-      "groupSize": "6-14 participants",
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
       "included": [
-        "All transportation",
-        "Accommodation",
-        "Experienced cultural guide",
-        "Entrance fees",
-        "Most meals"
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
       ],
       "notIncluded": [
         "International flights",
         "Travel insurance",
-        "Some meals",
-        "Personal expenses",
-        "Tips"
+        "Personal costs and services not listed in your quotation"
       ]
     },
-    "locations": [
-      {
-        "name": "Issyk-Kul Lake",
-        "lat": 42.455,
-        "lng": 77.185
-      },
-      {
-        "name": "Tash Rabat",
-        "lat": 40.722,
-        "lng": 75.13
-      },
-      {
-        "name": "Osh",
-        "lat": 40.53,
-        "lng": 72.8
-      }
+    "seoContent": {
+      "heading": "A seven-day Kyrgyzstan itinerary without an unrealistic pace",
+      "paragraphs": [
+        "Song-Köl, Kel-Suu, and Issyk-Köl belong to different parts of the country, so the useful question is not only what can fit on a map but what will remain enjoyable after real mountain driving. This route leaves the order flexible until road access and your arrival details are confirmed.",
+        "It suits first-time visitors who want lakes, highland landscapes, yurt stays, and a road-trip feel in one week. If trekking, longer horse riding, or a relaxed beach stay is the main goal, we can adapt the route or suggest a more focused option."
+      ],
+      "faq": [
+        {
+          "question": "Can the order of Song-Köl, Kel-Suu, and Issyk-Köl change?",
+          "answer": "Yes. The confirmed order follows your flights, current access, weather, and the safest realistic driving plan."
+        },
+        {
+          "question": "Is this a group departure?",
+          "answer": "It can be arranged privately or for a small group. Send the dates and group size for actual availability and a quote."
+        }
+      ]
+    },
+    "relatedTourIds": [
+      11,
+      29,
+      1
     ]
   },
   {
     "id": 4,
-    "title": "Horseback Riding Expedition",
-    "duration": "5 days",
-    "tourType": "Horse Riding",
-    "season": "Summer",
-    "description": "Experience the nomadic way of life on horseback, riding through valleys, over passes, and along mountain ridges.",
-    "image": "/images/tour-horseback.jpg",
-    "price": "$780",
+    "title": "2-Day Song-Köl Horseback Riding Tour from Kyzart",
+    "isHot": false,
+    "duration": "2 days",
+    "tourType": "Horseback Riding",
+    "season": "May to October",
+    "description": "A compact 2-day Song-Köl horseback riding tour for travelers short on time who still want to reach the lake on horseback from Kyzart. The route focuses on one overnight highland experience and is planned around actual trail, weather, and rider conditions.",
+    "image": "/images/travel-gallery-2026/travel-052.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      }
+    ],
     "highlights": [
-      "Multi-day horseback adventure",
-      "Camp in remote mountain valleys",
-      "Learn traditional horse care from locals",
-      "Spectacular mountain scenery",
-      "Authentic nomadic experience"
+      "Short Song-Köl horse trek from Kyzart",
+      "Overnight in the highlands according to the confirmed route",
+      "A focused option for a private couple, friends, or small group",
+      "Local route decisions based on weather and riding ability"
     ],
     "itinerary": [
       {
         "day": 1,
-        "title": "Bishkek to Kochkor",
-        "description": "Drive to Kochkor. Meet horses and guides. Horse riding basics introduction."
+        "title": "Kyzart to the Song-Köl highlands",
+        "description": "After the riding briefing in Kyzart, begin the ascent on the route selected for current conditions. Reach the agreed yurt camp or highland overnight point."
       },
       {
         "day": 2,
-        "title": "Ride to First Camp",
-        "description": "5-6 hours riding through valleys. Set up camp near river."
-      },
-      {
-        "day": 3,
-        "title": "Mountain Pass Crossing",
-        "description": "Cross high mountain pass (3,200m). Descend to alpine meadow camp."
-      },
-      {
-        "day": 4,
-        "title": "Valley Exploration",
-        "description": "Ride through pristine valleys. Visit nomadic family. Cultural exchange."
-      },
-      {
-        "day": 5,
-        "title": "Return Journey",
-        "description": "Ride back to Kochkor. Return to Bishkek in afternoon."
+        "title": "Morning ride and return to Kyzart",
+        "description": "Take time for the lake and mountain views, then ride back by the route confirmed with the local team. Return timing depends on trail and weather conditions."
       }
     ],
     "packingList": [
-      "Riding pants or comfortable trousers",
-      "Closed-toe shoes with heel (riding boots ideal)",
-      "Warm and waterproof layers",
-      "Gloves",
-      "Sun protection",
-      "Personal toiletries",
-      "Sleeping bag",
-      "Water bottle"
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
     ],
     "practicalInfo": {
-      "accommodation": "Camping in tents",
-      "meals": "All meals included",
-      "difficulty": "Moderate - some riding experience recommended",
-      "groupSize": "4-8 participants",
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
       "included": [
-        "All transportation",
-        "Horse rental and gear",
-        "Camping equipment",
-        "Experienced guide and horse handler",
-        "All meals",
-        "National Park fees"
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
       ],
       "notIncluded": [
+        "International flights",
         "Travel insurance",
-        "Personal riding gear",
-        "Tips",
-        "Personal expenses"
+        "Personal costs and services not listed in your quotation"
       ]
     },
-    "locations": [
-      {
-        "name": "Kochkor",
-        "lat": 42.216,
-        "lng": 75.756
-      },
-      {
-        "name": "Song-Kul Lake",
-        "lat": 41.807,
-        "lng": 75.297
-      }
+    "seoContent": {
+      "heading": "A two-day horse trip to Song-Köl: is it the right format?",
+      "paragraphs": [
+        "This is the shortest horseback option in the catalogue for seeing Song-Köl from the Kyzart side. It works best for guests who accept an active schedule and simple highland accommodation.",
+        "For more time in the saddle and a slower adjustment to the altitude, the three- or four-day Kyzart routes are a better choice. We will recommend the safer option once we know your riding experience and dates."
+      ],
+      "faq": [
+        {
+          "question": "Can this be done as a private tour?",
+          "answer": "Yes. Send the preferred dates and group size so the local team can confirm horses, camp space, and transport options."
+        },
+        {
+          "question": "What should I bring?",
+          "answer": "Bring layered clothing, rain and sun protection, secure closed shoes, water, and any personal medicine. Even summer evenings can be cold at Song-Köl."
+        }
+      ]
+    },
+    "relatedTourIds": [
+      2,
+      9,
+      11
     ]
   },
   {
     "id": 5,
-    "title": "Peak Lenin Base Camp Trek",
-    "duration": "12 days",
-    "tourType": "Mountaineering",
-    "season": "Summer",
-    "description": "Challenge yourself with a trek to the base camp of Peak Lenin (7,134m), one of the most accessible 7,000m peaks.",
-    "image": "/images/tour-peak-lenin.jpg",
-    "price": "$1,680",
-    "highlights": [
-      "Trek to 4,400m base camp",
-      "Spectacular views of 7,000m+ peaks",
-      "Acclimatization and mountaineering training",
-      "Meet international climbers",
-      "Experience high-altitude camping"
-    ],
-    "itinerary": [
-      {
-        "day": 1,
-        "title": "Arrive Osh",
-        "description": "Airport transfer. City orientation. Gear check."
-      },
-      {
-        "day": 2,
-        "title": "Drive to Sary-Tash",
-        "description": "Scenic drive through Alay Valley. Overnight in guesthouse."
-      },
-      {
-        "day": 3,
-        "title": "To Achik-Tash Base (3,600m)",
-        "description": "Drive to trailhead. Begin acclimatization."
-      },
-      {
-        "day": 4,
-        "title": "Acclimatization Day",
-        "description": "Short hikes around base camp. Mountaineering briefing."
-      },
-      {
-        "day": 5,
-        "title": "Trek to Camp 1 (4,400m)",
-        "description": "Full day trek to advanced base camp. Stunning views."
-      },
-      {
-        "day": 6,
-        "title": "Rest at Camp 1",
-        "description": "Acclimatization. Optional short hikes. Photography."
-      },
-      {
-        "day": 7,
-        "title": "Explore Higher",
-        "description": "Trek to 4,800m for acclimatization. Return to Camp 1."
-      },
-      {
-        "day": 8,
-        "title": "Reserve Day",
-        "description": "Buffer for weather or acclimatization needs."
-      },
-      {
-        "day": 9,
-        "title": "Descend to Achik-Tash",
-        "description": "Return to base camp. Celebratory dinner."
-      },
-      {
-        "day": 10,
-        "title": "Return to Osh",
-        "description": "Drive back to Osh. Hotel and rest."
-      },
-      {
-        "day": 11,
-        "title": "Osh Free Day",
-        "description": "Explore Osh. Visit bazaar and Solomon's Throne."
-      },
-      {
-        "day": 12,
-        "title": "Departure",
-        "description": "Transfer to airport."
-      }
-    ],
-    "packingList": [
-      "High-altitude sleeping bag (-20 C)",
-      "Four-season tent (provided)",
-      "Mountaineering boots",
-      "Crampons and ice axe",
-      "Technical clothing layers",
-      "Altitude medication",
-      "Personal climbing gear",
-      "High-altitude food supplements"
-    ],
-    "practicalInfo": {
-      "accommodation": "Mix of guesthouses and high-altitude camping",
-      "meals": "All meals included",
-      "difficulty": "Challenging - requires good fitness and some altitude experience",
-      "groupSize": "4-8 participants",
-      "included": [
-        "All transportation",
-        "Experienced mountain guide",
-        "All accommodation and camping",
-        "All meals",
-        "Group climbing equipment",
-        "Permit fees"
-      ],
-      "notIncluded": [
-        "International flights",
-        "Personal climbing gear",
-        "Travel insurance with altitude coverage",
-        "Tips",
-        "Extra food"
-      ]
-    },
+    "title": "Issyk-Köl & Song-Köl Road Journey",
+    "isHot": false,
+    "duration": "3 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 3-day route connects Bishkek, Issyk-Kol and Song-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-071.jpg",
+    "price": "Price on request",
     "locations": [
       {
-        "name": "Peak Lenin Base Camp",
-        "lat": 39.348,
-        "lng": 72.877
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
       },
       {
-        "name": "Osh",
-        "lat": 40.53,
-        "lng": 72.8
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
       }
-    ]
-  },
-  {
-    "id": 6,
-    "title": "Issyk-Kul Circuit",
-    "duration": "6 days",
-    "tourType": "Road Trip & Culture",
-    "season": "Spring to Autumn",
-    "description": "Circle the stunning Issyk-Kul Lake, stopping at hot springs, gorges, and traditional villages along the way.",
-    "image": "/images/tour-issyk-kul.jpg",
-    "price": "$720",
+    ],
     "highlights": [
-      "Complete circuit of Issyk-Kul Lake",
-      "Relax in natural hot springs",
-      "Explore dramatic gorges and canyons",
-      "Visit eagle hunter and see demonstrations",
-      "Beach time at alpine lake"
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Issyk-Kol and Song-Kol Lake"
     ],
     "itinerary": [
       {
         "day": 1,
-        "title": "Bishkek to North Shore",
-        "description": "Drive along north shore. Stop at Burana Tower. Arrive Cholpon-Ata."
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
       },
       {
         "day": 2,
-        "title": "Cholpon-Ata & Petroglyphs",
-        "description": "Visit ancient petroglyph field. Beach time. Optional water activities."
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
       },
       {
         "day": 3,
-        "title": "To Karakol",
-        "description": "Visit hot springs at Altyn-Arashan. Explore Karakol city."
-      },
-      {
-        "day": 4,
-        "title": "Jeti-Oguz & Skazka",
-        "description": "Morning at Seven Bulls. Afternoon at Fairytale Canyon."
-      },
-      {
-        "day": 5,
-        "title": "South Shore Journey",
-        "description": "Drive south shore. Visit eagle hunter. Traditional lunch with family."
-      },
-      {
-        "day": 6,
-        "title": "Return to Bishkek",
-        "description": "Morning at leisure. Drive back to Bishkek via scenic route."
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
       }
     ],
     "packingList": [
-      "Swimsuit for hot springs and beach",
-      "Comfortable shoes",
-      "Sun protection",
-      "Light layers",
-      "Camera",
-      "Daypack",
-      "Towel"
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
     ],
     "practicalInfo": {
-      "accommodation": "Hotels and guesthouses",
-      "meals": "Daily breakfast, some lunches and dinners",
-      "difficulty": "Easy - suitable for all ages",
-      "groupSize": "4-12 participants",
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
       "included": [
-        "Private vehicle transport",
-        "Accommodation",
-        "English-speaking driver-guide",
-        "Entrance fees",
-        "Selected meals"
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
       ],
       "notIncluded": [
         "International flights",
         "Travel insurance",
-        "Some meals",
-        "Optional activities",
-        "Tips"
+        "Personal costs and services not listed in your quotation"
       ]
-    },
+    }
+  },
+  {
+    "id": 6,
+    "title": "Winter Ride to Frozen Song-Köl",
+    "isHot": false,
+    "duration": "3 days",
+    "tourType": "Winter Horseback Riding",
+    "season": "November to April",
+    "description": "A winter highland journey for prepared riders, built around snow conditions, safety checks, and the frozen landscapes of Song-Köl. This 3-day route connects Kyzart and Song-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-015.jpg",
+    "price": "Price on request",
     "locations": [
       {
-        "name": "Issyk-Kul Lake",
-        "lat": 42.455,
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      }
+    ],
+    "highlights": [
+      "Winter riding planned around snow and safety conditions",
+      "Frozen highland scenery and quiet yurt stays",
+      "Local route assessment before each departure",
+      "Route highlights: Kyzart and Song-Kol Lake"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Challenging — winter mountain experience required",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "title": "3-Day Issyk-Köl Tour from Bishkek",
+    "isHot": false,
+    "duration": "3 days",
+    "tourType": "Road Trip",
+    "season": "All year round",
+    "description": "A three-day Issyk-Köl tour from Bishkek for travelers who want a scenic private introduction to Kyrgyzstan’s largest lake without a long multi-week itinerary. The final circuit is adjusted for the chosen shore, the season, and how much time the group wants for Karakol, short walks, and lake views.",
+    "image": "/images/travel-gallery-2026/travel-008.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
         "lng": 77.185
       },
       {
         "name": "Karakol",
         "lat": 42.49,
-        "lng": 78.4
+        "lng": 78.397
       }
+    ],
+    "highlights": [
+      "A concise private Issyk-Köl trip from Bishkek",
+      "Lake, mountain, and town stops chosen for the available time",
+      "Options for Karakol and either shore of the lake",
+      "A realistic route for a short Kyrgyzstan stay"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Bishkek to Issyk-Köl",
+        "description": "Leave Bishkek for Issyk-Köl with route stops selected around the confirmed shore and the group’s interests."
+      },
+      {
+        "day": 2,
+        "title": "Issyk-Köl exploration",
+        "description": "Spend the day on the selected lake, gorge, village, or Karakol-side experiences at a comfortable pace."
+      },
+      {
+        "day": 3,
+        "title": "Scenic return to Bishkek",
+        "description": "Return to Bishkek with the route and final stops chosen around the season and driving conditions."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    },
+    "seoContent": {
+      "heading": "Three days at Issyk-Köl: what fits comfortably",
+      "paragraphs": [
+        "Three days is enough for a meaningful Issyk-Köl trip when the route is focused. Rather than treating the lake as one quick photo stop, we choose one shore and a small number of places that match your pace.",
+        "The north shore generally has more established resort services, while the south shore is often preferred for road-trip scenery and quieter stops. We recommend the better fit once we know the season and travel style."
+      ],
+      "faq": [
+        {
+          "question": "Is three days enough for Issyk-Köl?",
+          "answer": "It is enough for a focused lake trip from Bishkek. For both shores, more mountain valleys, and a slower pace, choose the four-day route or a longer Kyrgyzstan itinerary."
+        },
+        {
+          "question": "Can this be a family tour?",
+          "answer": "Yes. Share children’s ages, the preferred accommodation level, and whether you want short walks or mostly scenic driving."
+        }
+      ]
+    },
+    "relatedTourIds": [
+      10,
+      1,
+      3
     ]
+  },
+  {
+    "id": 8,
+    "title": "Easygoing Kyrgyzstan Family Journey",
+    "isHot": false,
+    "duration": "4 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 4-day route connects Bishkek, Chon-Kemin, Issyk-Kol and Song-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-031.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Chon-Kemin",
+        "lat": 42.823,
+        "lng": 75.72
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Chon-Kemin, Issyk-Kol and Song-Kol Lake"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Chon-Kemin",
+        "description": "Time in Chon-Kemin. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "title": "Kilemche and Song-Köl Horse Trek",
+    "isHot": false,
+    "duration": "4 days",
+    "tourType": "Horseback Riding",
+    "season": "May to October",
+    "description": "A private riding journey across high pastures and mountain trails, with the pace adapted to the group and local conditions. This 4-day route connects Kyzart, Kilemche Valley and Song-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-051.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      }
+    ],
+    "highlights": [
+      "Guided horseback riding matched to the route",
+      "High pastures, passes, and wide mountain views",
+      "Yurt or family stays where the route allows",
+      "Route highlights: Kyzart, Kilemche Valley and Song-Kol Lake"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Kilemche Valley",
+        "description": "Time in Kilemche Valley. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Kilemche Valley",
+        "description": "Time in Kilemche Valley. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "title": "4-Day Issyk-Köl Tour: Gorges and Hot Springs",
+    "isHot": false,
+    "duration": "4 days",
+    "tourType": "Road Trip",
+    "season": "April to November",
+    "description": "This four-day Issyk-Köl tour from Bishkek combines lake scenery with the gorges, canyons, and hot-spring areas of the eastern shore. It is a private road trip with a practical pace, leaving room for photo stops and choosing the best mountain section for the weather.",
+    "image": "/images/travel-gallery-2026/travel-001.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Skazka Canyon",
+        "lat": 41.753,
+        "lng": 77.859
+      },
+      {
+        "name": "Karakol",
+        "lat": 42.49,
+        "lng": 78.397
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Issyk-Köl lake views with a flexible road-trip pace",
+      "Gorge and canyon stops selected around the confirmed route",
+      "Karakol-area mountain options and hot-spring planning",
+      "Private transport for a couple, family, or small group"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Bishkek to Issyk-Köl",
+        "description": "Travel from Bishkek toward Issyk-Köl, with stops selected for the group and the confirmed shore itinerary."
+      },
+      {
+        "day": 2,
+        "title": "Lake shore, canyon, and gorge day",
+        "description": "Explore the selected lakeside and canyon landscapes without rushing every stop. Final timing follows weather and road conditions."
+      },
+      {
+        "day": 3,
+        "title": "Karakol-side mountain options",
+        "description": "Choose a Karakol-area valley, gorge, or hot-spring option that suits the group and is safely accessible on the day."
+      },
+      {
+        "day": 4,
+        "title": "Return to Bishkek",
+        "description": "Return to Bishkek by the route agreed in the final plan, with time for a last scenic stop where possible."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    },
+    "seoContent": {
+      "heading": "Issyk-Köl gorges and hot springs: choosing the right route",
+      "paragraphs": [
+        "The Issyk-Köl region is large, so a good four-day trip does not try to circle every shore and enter every gorge. We build the route around the places that are open, the group’s interests, and sensible drive times.",
+        "Hot springs and mountain valleys need a separate access check, particularly outside the core summer season. Tell us if swimming, short walks, photography, or an easy family pace is the priority."
+      ],
+      "faq": [
+        {
+          "question": "Does the trip start in Bishkek?",
+          "answer": "The usual plan starts and ends in Bishkek, but airport or Karakol connections can be discussed when you send the dates."
+        },
+        {
+          "question": "Can we include Skazka Canyon?",
+          "answer": "Yes, it can be considered as part of the south-shore plan when the route, weather, and time allow it."
+        }
+      ]
+    },
+    "relatedTourIds": [
+      7,
+      1,
+      29
+    ]
+  },
+  {
+    "id": 11,
+    "title": "4-Day Kel-Suu and Song-Köl Tour from Bishkek",
+    "isHot": true,
+    "duration": "4 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A four-day private Kyrgyzstan road tour linking Kel-Suu and Song-Köl for travelers who want two remote mountain lakes in one itinerary. It is an active road route: final driving times, access, and overnight stops are confirmed around current road and border-zone requirements.",
+    "image": "/images/travel-gallery-2026/travel-054.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      }
+    ],
+    "highlights": [
+      "Two signature Naryn-region lakes in one private itinerary",
+      "Route planning around Kel-Suu access and current road conditions",
+      "Song-Köl highland scenery and a realistic overnight pace",
+      "Flexible photo stops and local advice before departure"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Bishkek to the Naryn region",
+        "description": "Leave Bishkek for the Naryn region, with the first overnight point arranged around the confirmed route and sensible driving time."
+      },
+      {
+        "day": 2,
+        "title": "Kel-Suu access day",
+        "description": "Travel toward Kel-Suu using the access plan confirmed for your date. The lake approach may involve a local transfer, walking, or horse support depending on conditions."
+      },
+      {
+        "day": 3,
+        "title": "Song-Köl highlands",
+        "description": "Continue toward Song-Köl for highland scenery and the planned overnight. The route order may change when conditions require a safer or more realistic plan."
+      },
+      {
+        "day": 4,
+        "title": "Return toward Bishkek",
+        "description": "Return to Bishkek with breaks planned around road conditions and the group’s pace."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    },
+    "seoContent": {
+      "heading": "Kel-Suu and Song-Köl in four days: practical planning",
+      "paragraphs": [
+        "Kel-Suu is remote and its approach is not a standard city transfer. We check the access route, local rules, and whether any permit or support service is needed for the confirmed dates before accepting a booking.",
+        "Combining Kel-Suu with Song-Köl makes the journey varied, but it also means long mountain-road days. This route is for travelers who prefer big landscapes and flexible logistics over a resort-style schedule."
+      ],
+      "faq": [
+        {
+          "question": "Is a permit needed for Kel-Suu?",
+          "answer": "Rules and processes can change, so we verify the current requirement for your nationality and dates before the route is confirmed."
+        },
+        {
+          "question": "Is this tour suitable for children?",
+          "answer": "It depends on the children’s age, comfort with long drives, and the selected access plan. Share these details before booking so we can advise honestly."
+        }
+      ]
+    },
+    "relatedTourIds": [
+      3,
+      15,
+      29
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Lakes and Highlands of Kyrgyzstan",
+    "isHot": false,
+    "duration": "5 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 5-day route connects Bishkek, Song-Kol Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-037.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "title": "Song-Köl Horse Ride & South Shore",
+    "isHot": false,
+    "duration": "5 days",
+    "tourType": "Horseback Riding",
+    "season": "May to October",
+    "description": "A private riding journey across high pastures and mountain trails, with the pace adapted to the group and local conditions. This 5-day route connects Kyzart, Song-Kol Lake and Issyk-Kol South Shore.",
+    "image": "/images/travel-gallery-2026/travel-047.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      }
+    ],
+    "highlights": [
+      "Guided horseback riding matched to the route",
+      "High pastures, passes, and wide mountain views",
+      "Yurt or family stays where the route allows",
+      "Route highlights: Kyzart, Song-Kol Lake and Issyk-Kol South Shore"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Issyk-Kol South Shore",
+        "description": "Time in Issyk-Kol South Shore. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "title": "Nomad Trails Horseback Journey",
+    "isHot": false,
+    "duration": "5 days",
+    "tourType": "Horseback Riding",
+    "season": "June to September",
+    "description": "A private riding journey across high pastures and mountain trails, with the pace adapted to the group and local conditions. This 5-day route connects Kyzart, Remote Valleys and Song-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-050.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      }
+    ],
+    "highlights": [
+      "Guided horseback riding matched to the route",
+      "High pastures, passes, and wide mountain views",
+      "Yurt or family stays where the route allows",
+      "Route highlights: Kyzart, Remote Valleys and Song-Kol Lake"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Remote Valleys",
+        "description": "Time in Remote Valleys. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Remote Valleys",
+        "description": "Time in Remote Valleys. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "title": "Kel-Suu & Song-Köl Explorer",
+    "isHot": false,
+    "duration": "5 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 5-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake and Issyk-Kol.",
+    "image": "/images/travel-gallery-2026/travel-060.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake and Issyk-Kol"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "title": "Active Song-Köl and Altyn-Arashan",
+    "isHot": false,
+    "duration": "5 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 5-day route connects Kyzart, Song-Kol Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-026.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Kyzart, Song-Kol Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "title": "Four Days to Song-Köl on Horseback",
+    "isHot": false,
+    "duration": "6 days",
+    "tourType": "Horseback Riding",
+    "season": "May to October",
+    "description": "A private riding journey across high pastures and mountain trails, with the pace adapted to the group and local conditions. This 6-day route connects Kyzart, Kilemche Valley, Song-Kol Lake and Issyk-Kol.",
+    "image": "/images/travel-gallery-2026/travel-053.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      }
+    ],
+    "highlights": [
+      "Guided horseback riding matched to the route",
+      "High pastures, passes, and wide mountain views",
+      "Yurt or family stays where the route allows",
+      "Route highlights: Kyzart, Kilemche Valley, Song-Kol Lake and Issyk-Kol"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Kilemche Valley",
+        "description": "Time in Kilemche Valley. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Kilemche Valley",
+        "description": "Time in Kilemche Valley. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "title": "Active Highlands: Song-Köl & Altyn-Arashan",
+    "isHot": false,
+    "duration": "6 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 6-day route connects Kyzart, Song-Kol Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-055.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Kyzart, Song-Kol Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "title": "Remote Valleys Horseback Expedition",
+    "isHot": false,
+    "duration": "6 days",
+    "tourType": "Horseback Riding",
+    "season": "May to September",
+    "description": "A private riding journey across high pastures and mountain trails, with the pace adapted to the group and local conditions. This 6-day route connects Kyzart, Remote Valleys and Song-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-056.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      }
+    ],
+    "highlights": [
+      "Guided horseback riding matched to the route",
+      "High pastures, passes, and wide mountain views",
+      "Yurt or family stays where the route allows",
+      "Route highlights: Kyzart, Remote Valleys and Song-Kol Lake"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Remote Valleys",
+        "description": "Time in Remote Valleys. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Remote Valleys",
+        "description": "Time in Remote Valleys. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Remote Valleys",
+        "description": "Time in Remote Valleys. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "title": "Quiet Valleys of Kyrgyzstan Road Trip",
+    "isHot": false,
+    "duration": "7 days",
+    "tourType": "Road Trip",
+    "season": "June to September",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 7-day route connects Bishkek, Kochkor, Song-Kol Lake, Issyk-Kol and Village Stays.",
+    "image": "/images/travel-gallery-2026/travel-070.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Kochkor",
+        "lat": 42.215,
+        "lng": 75.756
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Kochkor, Song-Kol Lake, Issyk-Kol and Village Stays"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Kochkor",
+        "description": "Time in Kochkor. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Kochkor",
+        "description": "Time in Kochkor. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "title": "Comfortable Kyrgyzstan Discovery",
+    "isHot": false,
+    "duration": "7 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 7-day route connects Bishkek, Song-Kol Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-009.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "title": "Song-Köl Horseback & Ala-Köl Trek",
+    "isHot": false,
+    "duration": "7 days",
+    "tourType": "Active Adventure",
+    "season": "June to September",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 7-day route connects Kyzart, Song-Kol Lake, Ala-Kol Lake and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-025.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Ala-Kol Lake",
+        "lat": 42.278,
+        "lng": 78.517
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Kyzart, Song-Kol Lake, Ala-Kol Lake and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "title": "Grand Song-Köl Horseback Route",
+    "isHot": false,
+    "duration": "7 days",
+    "tourType": "Horseback Riding",
+    "season": "May to October",
+    "description": "A private riding journey across high pastures and mountain trails, with the pace adapted to the group and local conditions. This 7-day route connects Kyzart, Kilemche Valley, Song-Kol Lake and Issyk-Kol.",
+    "image": "/images/travel-gallery-2026/travel-045.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      }
+    ],
+    "highlights": [
+      "Guided horseback riding matched to the route",
+      "High pastures, passes, and wide mountain views",
+      "Yurt or family stays where the route allows",
+      "Route highlights: Kyzart, Kilemche Valley, Song-Kol Lake and Issyk-Kol"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Kilemche Valley",
+        "description": "Time in Kilemche Valley. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Kilemche Valley",
+        "description": "Time in Kilemche Valley. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 24,
+    "title": "Kyrgyzstan Lakes & Passes Road Trip",
+    "isHot": false,
+    "duration": "7 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 7-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-024.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 25,
+    "title": "Song-Köl to Kol-Ukok Horse Trails",
+    "isHot": false,
+    "duration": "7 days",
+    "tourType": "Horseback Riding",
+    "season": "June to September",
+    "description": "A private riding journey across high pastures and mountain trails, with the pace adapted to the group and local conditions. This 7-day route connects Song-Kol Lake, Kol-Ukok Lake and Remote Valleys.",
+    "image": "/images/travel-gallery-2026/travel-062.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kol-Ukok Lake",
+        "lat": 42.16,
+        "lng": 75.69
+      }
+    ],
+    "highlights": [
+      "Guided horseback riding matched to the route",
+      "High pastures, passes, and wide mountain views",
+      "Yurt or family stays where the route allows",
+      "Route highlights: Song-Kol Lake, Kol-Ukok Lake and Remote Valleys"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Kol-Ukok Lake",
+        "description": "Time in Kol-Ukok Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Kol-Ukok Lake",
+        "description": "Time in Kol-Ukok Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Kol-Ukok Lake",
+        "description": "Time in Kol-Ukok Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kol-Ukok Lake",
+        "description": "Time in Kol-Ukok Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Remote Valleys",
+        "description": "Time in Remote Valleys. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 26,
+    "title": "Eight Days of Active Kyrgyzstan",
+    "isHot": false,
+    "duration": "8 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 8-day route connects Kyzart, Song-Kol Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-043.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Kyzart, Song-Kol Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 27,
+    "title": "Kyrgyzstan Adventure Essentials",
+    "isHot": false,
+    "duration": "8 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 8-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-061.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 28,
+    "title": "Village Roads and Nomad Stays",
+    "isHot": false,
+    "duration": "8 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 8-day route connects Bishkek, Kochkor, Song-Kol Lake, Issyk-Kol and Village Stays.",
+    "image": "/images/travel-gallery-2026/travel-074.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Kochkor",
+        "lat": 42.215,
+        "lng": 75.756
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Kochkor, Song-Kol Lake, Issyk-Kol and Village Stays"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Kochkor",
+        "description": "Time in Kochkor. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Kochkor",
+        "description": "Time in Kochkor. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 29,
+    "title": "Kyrgyzstan Ultimate Lakes Route",
+    "isHot": false,
+    "duration": "8 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 8-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-069.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 30,
+    "title": "Kyrgyzstan Lakes & Hot Springs",
+    "isHot": false,
+    "duration": "9 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 9-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-028.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 31,
+    "title": "Best of Kyrgyzstan Active Journey",
+    "isHot": false,
+    "duration": "9 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 9-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-016.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 32,
+    "title": "Kyrgyzstan Road Trip at an Easy Pace",
+    "isHot": false,
+    "duration": "10 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 10-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-057.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 10,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 33,
+    "title": "Song-Köl & Ala-Köl Active Expedition",
+    "isHot": false,
+    "duration": "10 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 10-day route connects Kyzart, Song-Kol Lake, Ala-Kol Lake and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-067.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Ala-Kol Lake",
+        "lat": 42.278,
+        "lng": 78.517
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Kyzart, Song-Kol Lake, Ala-Kol Lake and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 10,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 34,
+    "title": "Kyrgyzstan Horseback Adventure Extended",
+    "isHot": false,
+    "duration": "10 days",
+    "tourType": "Horseback Riding",
+    "season": "June to September",
+    "description": "A private riding journey across high pastures and mountain trails, with the pace adapted to the group and local conditions. This 10-day route connects Kyzart, Song-Kol Lake, Issyk-Kol, Ala-Kol Lake and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-065.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Kyzart",
+        "lat": 41.916,
+        "lng": 75.615
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Ala-Kol Lake",
+        "lat": 42.278,
+        "lng": 78.517
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Guided horseback riding matched to the route",
+      "High pastures, passes, and wide mountain views",
+      "Yurt or family stays where the route allows",
+      "Route highlights: Kyzart, Song-Kol Lake, Issyk-Kol, Ala-Kol Lake and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 10,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "Comfortable riding trousers",
+      "Footwear that stays secure in the stirrup",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — riding experience is helpful",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 35,
+    "title": "Kyrgyzstan Adventure Grand Tour",
+    "isHot": false,
+    "duration": "10 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 10-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Ala-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-076.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Ala-Kol Lake",
+        "lat": 42.278,
+        "lng": 78.517
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Ala-Kol Lake"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 10,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 36,
+    "title": "Kyrgyzstan Active Explorer",
+    "isHot": false,
+    "duration": "11 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 11-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Ala-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-029.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Ala-Kol Lake",
+        "lat": 42.278,
+        "lng": 78.517
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Ala-Kol Lake"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 10,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 11,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 37,
+    "title": "Kyrgyzstan Road Trip Without Rush",
+    "isHot": false,
+    "duration": "11 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 11-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-075.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 10,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 11,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 38,
+    "title": "Grand Kyrgyzstan Road Journey",
+    "isHot": false,
+    "duration": "12 days",
+    "tourType": "Road Trip",
+    "season": "May to October",
+    "description": "A private overland route combining scenic drives, mountain lakes, short walks, and local stops at a comfortable, realistic pace. This 12-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Altyn-Arashan.",
+    "image": "/images/travel-gallery-2026/travel-063.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Altyn-Arashan",
+        "lat": 42.313,
+        "lng": 78.526
+      }
+    ],
+    "highlights": [
+      "Private transport across Kyrgyzstan’s changing landscapes",
+      "Mountain lakes, canyons, and panoramic road sections",
+      "Flexible photo and cultural stops",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Altyn-Arashan"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 10,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 11,
+        "title": "Travel to Altyn-Arashan",
+        "description": "Time in Altyn-Arashan. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 12,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A light jacket for cool evenings",
+      "Swimwear if your confirmed route includes hot springs",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Easy — suitable for most travelers",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
+  },
+  {
+    "id": 39,
+    "title": "Complete Kyrgyzstan Active Expedition",
+    "isHot": false,
+    "duration": "12 days",
+    "tourType": "Active Adventure",
+    "season": "May to October",
+    "description": "A varied private adventure that combines road travel with riding or hiking, linking Kyrgyzstan’s best-known mountain regions in one route. This 12-day route connects Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Ala-Kol Lake.",
+    "image": "/images/travel-gallery-2026/travel-027.jpg",
+    "price": "Price on request",
+    "locations": [
+      {
+        "name": "Bishkek",
+        "lat": 42.8746,
+        "lng": 74.5698
+      },
+      {
+        "name": "Song-Kol Lake",
+        "lat": 41.807,
+        "lng": 75.297
+      },
+      {
+        "name": "Kel-Suu Lake",
+        "lat": 40.938,
+        "lng": 76.276
+      },
+      {
+        "name": "Issyk-Kol",
+        "lat": 42.454,
+        "lng": 77.185
+      },
+      {
+        "name": "Ala-Kol Lake",
+        "lat": 42.278,
+        "lng": 78.517
+      }
+    ],
+    "highlights": [
+      "A balanced mix of driving, riding, and walking",
+      "Nomadic highlands and alpine lake landscapes",
+      "Route pacing adapted to the group",
+      "Route highlights: Bishkek, Song-Kol Lake, Kel-Suu Lake, Issyk-Kol and Ala-Kol Lake"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival and route briefing",
+        "description": "Meet the local team, confirm practical details, and begin the journey. The final timing is confirmed before departure."
+      },
+      {
+        "day": 2,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 3,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 4,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 5,
+        "title": "Travel to Song-Kol Lake",
+        "description": "Time in Song-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 6,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 7,
+        "title": "Travel to Kel-Suu Lake",
+        "description": "Time in Kel-Suu Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 8,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 9,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 10,
+        "title": "Travel to Issyk-Kol",
+        "description": "Time in Issyk-Kol. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 11,
+        "title": "Travel to Ala-Kol Lake",
+        "description": "Time in Ala-Kol Lake. Today is paced around weather, road conditions, and the group’s comfort."
+      },
+      {
+        "day": 12,
+        "title": "Route completion",
+        "description": "Return to the final route point or take the transfer agreed in your confirmed plan."
+      }
+    ],
+    "packingList": [
+      "A small daypack for active days",
+      "A windproof and waterproof layer",
+      "Layered clothing for changing mountain weather",
+      "Sun protection and a reusable water bottle",
+      "Comfortable closed footwear",
+      "A small first-aid kit and personal medication"
+    ],
+    "practicalInfo": {
+      "accommodation": "Yurts, guesthouses, or hotels according to the confirmed route",
+      "meals": "Meals and their format are confirmed in your individual quotation",
+      "difficulty": "Moderate — active days with flexible pacing",
+      "groupSize": "Private departure or small group",
+      "included": [
+        "Route planning for your group",
+        "Local team and transport as confirmed in the itinerary",
+        "Accommodation as confirmed in the booking"
+      ],
+      "notIncluded": [
+        "International flights",
+        "Travel insurance",
+        "Personal costs and services not listed in your quotation"
+      ]
+    }
   }
 ]

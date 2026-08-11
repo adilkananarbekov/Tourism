@@ -1,34 +1,35 @@
 import { ArrowRight, Camera, Compass, Mountain, TentTree } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
+import { tourPath } from '../lib/tourRoutes';
 
 const ideas = [
   {
     title: 'First time in Kyrgyzstan',
     description: 'Lake views, canyons, hot springs, Karakol, and flexible stops around Issyk-Kul.',
-    to: '/tours/6',
-    action: 'See Issyk-Kul route',
+    to: '/destinations/issyk-kul',
+    action: 'Explore Issyk-Kul routes',
     icon: Compass,
   },
   {
-    title: 'Big mountain photos',
-    description: 'Ala-Archa hikes, glacier viewpoints, dramatic gorges, and easy access from Bishkek.',
-    to: '/tours/2',
-    action: 'See mountain trip',
+    title: 'Horseback highlands',
+    description: 'Ride from Kyzart through Kilemche Valley to Song-Kul, with yurt stays and wide mountain scenery.',
+    to: tourPath(2),
+    action: 'See horse route',
     icon: Camera,
   },
   {
     title: 'Nomad lake experience',
     description: 'Song-Kul yurts, horse riding, local families, open pastures, and high-altitude scenery.',
-    to: '/tours/1',
-    action: 'See Song-Kul tour',
+    to: '/destinations/song-kul',
+    action: 'Explore Song-Kul routes',
     icon: TentTree,
   },
   {
-    title: 'Silk Road culture',
-    description: 'Burana, Tash Rabat, Osh, bazaars, craft workshops, and heritage routes.',
-    to: '/tours/3',
-    action: 'See heritage route',
+    title: 'A week of mountain lakes',
+    description: 'A private 7-day route connecting Song-Kul, Kel-Suu, and Issyk-Kul at a practical pace.',
+    to: tourPath(3),
+    action: 'See 7-day route',
     icon: Mountain,
   },
 ];
@@ -56,7 +57,7 @@ export function TripIdeas() {
           {ideas.map((idea) => {
             const Icon = idea.icon;
             return (
-              <article key={idea.title} className="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <article key={idea.title} className="interactive-card rounded-lg border border-border bg-card p-5 shadow-sm">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-md bg-primary text-primary-foreground">
                   <Icon className="h-5 w-5" />
                 </div>

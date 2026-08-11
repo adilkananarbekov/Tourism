@@ -1,7 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/outfit-latin.woff2") format("woff2");
+}
 
 :root {
-  --font-heading: "Poppins", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Open Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Outfit", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-family: var(--font-body);
 }

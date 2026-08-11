@@ -2,11 +2,15 @@ import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { localizedPath, useSiteLocale } from '../lib/locale';
 import { cn } from './ui/utils';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const locale = useSiteLocale();
+  const isRussian = locale === 'ru';
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 12);
@@ -16,10 +20,10 @@ export function Header() {
   }, []);
 
   const navLinks = [
-    { label: 'Home', to: '/' },
-    { label: 'Tours', to: '/tours' },
-    { label: 'Gallery', to: '/gallery' },
-    { label: 'Contact', to: '/feedback' },
+    { label: isRussian ? 'Главная' : 'Home', to: localizedPath('/', locale) },
+    { label: isRussian ? 'Туры' : 'Tours', to: localizedPath('/tours', locale) },
+    ...(isRussian ? [] : [{ label: 'Gallery', to: '/gallery' }]),
+    { label: isRussian ? 'Связаться' : 'Contact', to: localizedPath('/feedback', locale) },
   ];
 
   return (
@@ -34,8 +38,8 @@ export function Header() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={cn('flex items-center justify-between transition-all', isScrolled ? 'h-14' : 'h-16')}>
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 via-emerald-700 to-orange-700 text-white shadow-md ring-1 ring-white/25">
+          <Link to={localizedPath('/', locale)} className="flex items-center space-x-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#315d4c] via-[#264c3e] to-[#b95f42] text-white shadow-md ring-1 ring-white/25">
               <span className="text-sm font-semibold">KT</span>
             </div>
             <span className="text-xl font-medium text-foreground">Go Kyrgyzstan Travel</span>
@@ -54,6 +58,7 @@ export function Header() {
                 {link.label}
               </NavLink>
             ))}
+            <LanguageSwitcher />
             <ThemeToggle />
           </div>
 
@@ -61,7 +66,7 @@ export function Header() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-3 text-muted-foreground hover:text-foreground"
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={mobileMenuOpen ? (isRussian ? 'Закрыть меню' : 'Close menu') : (isRussian ? 'Открыть меню' : 'Open menu')}
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -89,7 +94,10 @@ export function Header() {
                 </NavLink>
               ))}
               <div className="px-4">
-                <ThemeToggle />
+                <div className="flex items-center gap-3">
+                  <LanguageSwitcher />
+                  <ThemeToggle />
+                </div>
               </div>
             </div>
           </div>

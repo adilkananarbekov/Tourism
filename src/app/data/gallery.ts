@@ -2,9 +2,13 @@ export type GalleryItem = {
   src: string;
   alt: string;
   orientation: 'landscape' | 'portrait' | 'square';
+  width: number;
+  height: number;
 };
 
-export const galleryItems: GalleryItem[] = [
+type RawGalleryItem = Omit<GalleryItem, 'width' | 'height'>;
+
+const rawGalleryItems: RawGalleryItem[] = [
   {
     src: '/images/gallery/gallery-01.jpg',
     alt: 'Go Kyrgyzstan Travel photo 01',
@@ -227,10 +231,78 @@ export const galleryItems: GalleryItem[] = [
   },
 ];
 
+const galleryAltText = [
+  'Hiker entering a forested mountain gorge in Kyrgyzstan',
+  'Red sandstone canyon formations under a blue Kyrgyzstan sky',
+  'Traveler sitting at a panoramic red canyon viewpoint in Kyrgyzstan',
+  'Layered red mountain ridge and green valley in Kyrgyzstan',
+  'Traveler standing beside a wide alpine lake in Kyrgyzstan',
+  'Traditional Kyrgyz yurt at a high mountain camp',
+  'Traveler walking through a red sandstone canyon in Kyrgyzstan',
+  'Camper beside a conifer valley and mountain camp in Kyrgyzstan',
+  'Striped canyon landscape at sunset in Kyrgyzstan',
+  'Sunlit canyon beneath dramatic storm clouds in Kyrgyzstan',
+  'Mountain badlands and rain clouds in Kyrgyzstan',
+  'Storm light over a layered canyon landscape in Kyrgyzstan',
+  'Milky Way above a traditional yurt camp in Kyrgyzstan',
+  'Sunrise behind yurts in a mountain valley in Kyrgyzstan',
+  'Wooden cabin in a conifer forest in Kyrgyzstan',
+  'Mountain river and bridge beneath snow-capped Kyrgyz peaks',
+  'Hiker on a dry canyon ridge in Kyrgyzstan',
+  'Off-road expedition van on a pine forest track in Kyrgyzstan',
+  'Yurt camp beside a high-altitude lake in Kyrgyzstan',
+  'Sun breaking through clouds above a Kyrgyz mountain lake',
+  'Traditional yurts overlooking an alpine lake in Kyrgyzstan',
+  'Local guide beside an orange off-road vehicle in Kyrgyzstan',
+  'Kyrgyz eagle hunter holding a golden eagle',
+  'Traveler preparing for a horse ride at a Kyrgyz village camp',
+  'International tour group taking a mountain selfie in Kyrgyzstan',
+  'Traveler overlooking a turquoise lake inside a rocky gorge',
+  'Group of hikers on a forest trail in the Kyrgyz mountains',
+  'Hiker descending through a broad mountain valley in Kyrgyzstan',
+  'Turquoise alpine lake between steep mountain cliffs in Kyrgyzstan',
+  'Mountain lake framed by tall pine trees in Kyrgyzstan',
+  'Clear alpine lake below forested Kyrgyz mountains',
+  'Horseback travel through a mountain valley in Kyrgyzstan',
+  'Two horseback riders on a green Kyrgyz mountain pasture',
+  'Horseback rider approaching a rocky mountain pass in Kyrgyzstan',
+  'Yurt camp at sunset in a remote Kyrgyz valley',
+  'Highland yurt camp beneath snow-covered Kyrgyz peaks',
+  'Expedition vehicle on a remote mountain road in Kyrgyzstan',
+  'Traditional yurts on a high-altitude plateau in Kyrgyzstan',
+  'Traveler at a red canyon viewpoint in Kyrgyzstan',
+  'Milky Way and stars above illuminated Kyrgyz yurts',
+  'Winding river through a colorful canyon valley in Kyrgyzstan',
+  'Panoramic multicolored mountain landscape in Kyrgyzstan',
+  'Yurt camp beneath a sunlit mountain range in Kyrgyzstan',
+  'Horse riders beneath a rainbow on an open Kyrgyz pasture',
+];
+
+const galleryDimensions = [
+  [1080, 608], [1080, 608], [1080, 608], [1007, 566],
+  [1080, 608], [1080, 608], [1080, 608], [1080, 608],
+  [720, 480], [720, 480], [720, 480], [720, 480],
+  [1080, 1191], [576, 1234], [720, 1280], [721, 1280],
+  [721, 1280], [721, 1280], [960, 1280], [960, 1280],
+  [960, 1280], [960, 1280], [900, 1600], [960, 1280],
+  [1280, 960], [960, 1280], [960, 1280], [960, 1280],
+  [576, 1280], [720, 1280], [720, 1280], [576, 1234],
+  [1280, 960], [1080, 957], [1078, 812], [1080, 964],
+  [1080, 948], [1080, 948], [771, 1024], [1080, 1240],
+  [720, 480], [720, 480], [1080, 719], [1080, 1347],
+] as const;
+
+const legacyGalleryItems: GalleryItem[] = rawGalleryItems.map((item, index) => ({
+  ...item,
+  alt: galleryAltText[index] || item.alt,
+  width: galleryDimensions[index]?.[0] || 1200,
+  height: galleryDimensions[index]?.[1] || 800,
+}));
+
 const previewIndices = [7, 11, 14, 15, 18, 22, 24, 32, 43];
 
-export const galleryPreviewItems = previewIndices
-  .map((index) => galleryItems[index])
+const legacyGalleryPreviewItems = previewIndices
+  .map((index) => legacyGalleryItems[index])
   .filter((item): item is GalleryItem => Boolean(item));
 
 export const galleryVideo = {
@@ -238,3 +310,10 @@ export const galleryVideo = {
   poster: '/images/gallery/video-poster.jpg',
   title: 'Night sky timelapse in Kyrgyzstan',
 };
+
+// Generated from the original photo library. The legacy list stays here only
+// to preserve the source history; the public gallery uses the de-duplicated set.
+export {
+  generatedGalleryItems as galleryItems,
+  generatedGalleryPreviewItems as galleryPreviewItems,
+} from './gallery.generated';

@@ -1,5 +1,6 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
+import type { SiteLocale } from '../lib/locale';
 
 type MapLocation = {
   name: string;
@@ -22,9 +23,11 @@ const defaultIcon = new L.Icon({
 export function MapSection({
   title,
   locations = [],
+  locale = 'en',
 }: {
   title: string;
   locations?: MapLocation[];
+  locale?: SiteLocale;
 }) {
   const center = locations.length
     ? [locations[0].lat, locations[0].lng]
@@ -32,9 +35,11 @@ export function MapSection({
 
   return (
     <div className="space-y-3">
-      <h3 className="text-2xl text-foreground">Map Preview</h3>
+      <h3 className="text-2xl text-foreground">{locale === 'ru' ? 'Карта маршрута' : 'Map Preview'}</h3>
       <p className="text-sm text-muted-foreground">
-        Explore the route and key highlights for {title}.
+        {locale === 'ru'
+          ? `Посмотрите маршрут и ключевые точки тура «${title}».`
+          : `Explore the route and key highlights for ${title}.`}
       </p>
       <div className="h-64 w-full overflow-hidden rounded-lg border border-border sm:h-72">
         <MapContainer

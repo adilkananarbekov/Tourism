@@ -1,5 +1,14 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { type UserRecord, upsertUserProfile } from '../lib/dataStore';
+import {
+  apiEnabled,
+  clearApiUserSession,
+  fetchApiCurrentUser,
+  hasApiUserSession,
+  signInApiUser,
+  signUpApiUser,
+  updateApiCurrentUser,
+} from '../lib/api';
 
 type AppUser = {
   uid: string;
@@ -66,29 +75,105 @@ function accountToProfile(account: StoredAccount): UserRecord {
   };
 }
 
+function profileToUser(profile: UserRecord): AppUser {
+  return {
+    uid: profile.id,
+    email: profile.email || '',
+    displayName: profile.name,
+  };
+}
+
+async function restoreApiAccount(account: StoredAccount) {
+  try {
+    return await signUpApiUser({
+      name: account.displayName || account.email,
+      email: account.email,
+      password: account.password,
+      role: account.role,
+    });
+  } catch {
+    return signInApiUser(account.email, account.password);
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null);
   const [profile, setProfile] = useState<UserRecord | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const session = safeParse<{ uid?: string } | null>(localStorage.getItem(SESSION_KEY), null);
-    const account = session?.uid
-      ? readAccounts().find((item) => item.uid === session.uid) || null
-      : null;
+    let active = true;
 
-    if (account) {
-      setUser({
-        uid: account.uid,
-        email: account.email,
-        displayName: account.displayName,
-      });
-      setProfile(accountToProfile(account));
-    }
-    setLoading(false);
+    const restoreSession = async () => {
+      const session = safeParse<{ uid?: string } | null>(localStorage.getItem(SESSION_KEY), null);
+      const account = session?.uid
+        ? readAccounts().find((item) => item.uid === session.uid) || null
+        : null;
+
+      if (apiEnabled) {
+        try {
+          let remoteProfile: UserRecord;
+
+          if (hasApiUserSession()) {
+            try {
+              remoteProfile = await fetchApiCurrentUser();
+            } catch (error) {
+              if (!account) {
+                throw error;
+              }
+              remoteProfile = await restoreApiAccount(account);
+            }
+          } else if (account) {
+            remoteProfile = await restoreApiAccount(account);
+          } else {
+            if (active) {
+              setLoading(false);
+            }
+            return;
+          }
+
+          if (active) {
+            setUser(profileToUser(remoteProfile));
+            setProfile(remoteProfile);
+          }
+        } catch {
+          clearApiUserSession();
+        } finally {
+          if (active) {
+            setLoading(false);
+          }
+        }
+        return;
+      }
+
+      if (account && active) {
+        setUser({
+          uid: account.uid,
+          email: account.email,
+          displayName: account.displayName,
+        });
+        setProfile(accountToProfile(account));
+      }
+      if (active) {
+        setLoading(false);
+      }
+    };
+
+    void restoreSession();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    if (apiEnabled) {
+      const remoteProfile = await signInApiUser(email, password);
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ uid: remoteProfile.id }));
+      setUser(profileToUser(remoteProfile));
+      setProfile(remoteProfile);
+      return;
+    }
+
     const normalizedEmail = email.trim().toLowerCase();
     const account = readAccounts().find(
       (item) => item.email.trim().toLowerCase() === normalizedEmail && item.password === password
@@ -108,6 +193,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async ({ name, email, password, role }: SignUpPayload) => {
+    if (apiEnabled) {
+      const remoteProfile = await signUpApiUser({ name, email, password, role });
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ uid: remoteProfile.id }));
+      setUser(profileToUser(remoteProfile));
+      setProfile(remoteProfile);
+      return;
+    }
+
     const normalizedEmail = email.trim().toLowerCase();
     const accounts = readAccounts();
     if (accounts.some((account) => account.email.trim().toLowerCase() === normalizedEmail)) {
@@ -133,6 +226,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
+    clearApiUserSession();
     localStorage.removeItem(SESSION_KEY);
     setUser(null);
     setProfile(null);
@@ -141,6 +235,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updateRole = async (role: 'buyer' | 'seller') => {
     if (!user) {
       throw new Error('No authenticated user.');
+    }
+
+    if (apiEnabled) {
+      const remoteProfile = await updateApiCurrentUser({
+        name: profile?.name || user.displayName || user.email,
+        role,
+      });
+      setUser(profileToUser(remoteProfile));
+      setProfile(remoteProfile);
+      return;
     }
 
     const accounts = readAccounts();

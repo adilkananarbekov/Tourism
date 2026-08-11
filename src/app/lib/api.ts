@@ -1,19 +1,34 @@
 import type { Tour } from '../components/tour-data';
-import type { BlogPost, BookingRequest, ContentSettings, CustomTourRequest, Sight } from './dataStore';
+import type {
+  BlogPost,
+  BookingRequest,
+  ContentSettings,
+  CustomTourRequest,
+  FeedbackEntry,
+  SellerSubmission,
+  Sight,
+  UserRecord,
+} from './dataStore';
 
 type ApiTourRow = Partial<Tour> & {
   tour_type?: string;
   packing_list?: string[];
   practical_info?: Tour['practicalInfo'];
+  is_hot?: boolean;
   is_active?: boolean;
 };
 
-const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') || '';
+const configuredApiBaseUrl =
+  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') || '';
+const apiBaseUrl =
+  configuredApiBaseUrl ||
+  (import.meta.env.PROD && typeof window !== 'undefined' ? window.location.origin : '');
 const toursPath = (import.meta.env.VITE_API_TOURS_PATH as string | undefined) || '/api/tours';
 const guestRequestsPath =
   (import.meta.env.VITE_API_GUEST_REQUESTS_PATH as string | undefined) || '/api/guest-requests';
 const eventsPath = (import.meta.env.VITE_API_EVENTS_PATH as string | undefined) || '/api/events';
 const adminTokenKey = 'go-kyrgyzstan-travel-admin-token';
+const userTokenKey = 'go-kyrgyzstan-travel-user-token';
 
 export const apiEnabled = Boolean(apiBaseUrl);
 
@@ -55,6 +70,7 @@ function normalizeTour(row: ApiTourRow): Tour {
   return {
     id: Number(row.id),
     title: row.title || '',
+    isHot: Boolean(row.isHot ?? row.is_hot),
     duration: row.duration || '',
     tourType: row.tourType || row.tour_type || '',
     season: row.season || '',
@@ -114,6 +130,84 @@ export async function fetchApiSights(): Promise<Sight[]> {
   return result.sights || [];
 }
 
+async function requestUserJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem(userTokenKey) : '';
+  return requestJson<T>(path, {
+    ...init,
+    headers: {
+      Authorization: token ? `Bearer ${token}` : '',
+      ...init?.headers,
+    },
+  });
+}
+
+type UserSessionResponse = {
+  token: string;
+  user: UserRecord;
+};
+
+function storeUserSession(session: UserSessionResponse) {
+  if (typeof localStorage !== 'undefined' && session.token) {
+    localStorage.setItem(userTokenKey, session.token);
+  }
+  return session.user;
+}
+
+export function clearApiUserSession() {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.removeItem(userTokenKey);
+  }
+}
+
+export function hasApiUserSession() {
+  return (
+    typeof localStorage !== 'undefined' &&
+    Boolean(localStorage.getItem(userTokenKey))
+  );
+}
+
+export async function signUpApiUser(payload: {
+  name: string;
+  email: string;
+  password: string;
+  role: 'buyer' | 'seller';
+}) {
+  const result = await requestJson<UserSessionResponse>('/api/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  return storeUserSession(result);
+}
+
+export async function signInApiUser(email: string, password: string) {
+  const result = await requestJson<UserSessionResponse>('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+  return storeUserSession(result);
+}
+
+export async function fetchApiCurrentUser() {
+  const result = await requestUserJson<{ user: UserRecord }>('/api/auth/me');
+  return result.user;
+}
+
+export async function updateApiCurrentUser(payload: {
+  name?: string;
+  role?: 'buyer' | 'seller';
+}) {
+  const result = await requestUserJson<UserSessionResponse>('/api/auth/profile', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+  return storeUserSession(result);
+}
+
+export async function fetchApiAdminSights(): Promise<Sight[]> {
+  const result = await requestAdminJson<{ sights?: Sight[] }>('/api/admin/sights');
+  return result.sights || [];
+}
+
 export async function createApiSight(sight: Omit<Sight, 'id'>): Promise<Sight> {
   const result = await requestAdminJson<{ sight: Sight }>('/api/admin/sights', {
     method: 'POST',
@@ -138,6 +232,11 @@ export async function deleteApiSight(sightId: string): Promise<void> {
 
 export async function fetchApiBlogPosts(): Promise<BlogPost[]> {
   const result = await requestJson<{ posts?: BlogPost[] }>('/api/blog-posts');
+  return result.posts || [];
+}
+
+export async function fetchApiAdminBlogPosts(): Promise<BlogPost[]> {
+  const result = await requestAdminJson<{ posts?: BlogPost[] }>('/api/admin/blog-posts');
   return result.posts || [];
 }
 
@@ -208,6 +307,8 @@ export async function submitApiBookingRequest(data: BookingRequest) {
     tourId: data.tourId,
     tourTitle: data.tourTitle,
     name: data.name,
+    countryOfResidence: data.countryOfResidence || '',
+    contactPreference: data.contactPreference || '',
     email: data.email,
     telegramUsername: data.telegramUsername || '',
     phone: data.phone || '',
@@ -234,6 +335,8 @@ export async function submitApiCustomTourRequest(data: CustomTourRequest) {
     pace: data.pace,
     accommodation: data.accommodation,
     name: data.name,
+    countryOfResidence: data.countryOfResidence || '',
+    contactPreference: data.contactPreference || '',
     email: data.email,
     telegramUsername: data.telegramUsername || '',
     phone: data.phone,
@@ -256,8 +359,10 @@ export function postApiEvent(payload: Record<string, unknown>) {
 }
 
 export async function fetchApiEventSummary() {
-  return requestJson<{
+  return requestAdminJson<{
     totals: Record<string, number>;
+    paths: Array<{ path: string; count: number }>;
+    interests: Array<{ label: string; count: number }>;
     recent: Array<{
       source: string;
       event_name: string;
@@ -265,7 +370,7 @@ export async function fetchApiEventSummary() {
       label: string;
       created_at: string;
     }>;
-  }>(eventsPath);
+  }>('/api/admin/events');
 }
 
 export type ApiGuestRequest = {
@@ -273,6 +378,10 @@ export type ApiGuestRequest = {
   type: 'booking' | 'custom_tour_request';
   payload: Record<string, unknown>;
   status?: string;
+  telegram_delivery_status?: string;
+  telegram_attempts?: number;
+  telegram_sent_at?: string;
+  telegram_error?: string;
   created_at?: string;
   updated_at?: string;
 };
@@ -287,4 +396,106 @@ export async function updateApiAdminGuestRequestStatus(requestId: string, status
     method: 'PATCH',
     body: JSON.stringify({ status }),
   });
+}
+
+export type TelegramAdminStatus = {
+  configured: boolean;
+  registeredChatCount: number;
+  allowedUsernameCount: number;
+  webhookConfigured: boolean;
+  pollingEnabled: boolean;
+  undeliveredRequestCount: number;
+};
+
+export async function fetchApiTelegramStatus() {
+  return requestAdminJson<TelegramAdminStatus>('/api/admin/telegram/status');
+}
+
+export async function sendApiTelegramTest() {
+  return requestAdminJson<{ sent: number; failed: number; errors?: string[] }>(
+    '/api/admin/telegram/test',
+    { method: 'POST' }
+  );
+}
+
+export async function retryApiTelegramRequests() {
+  return requestAdminJson<{ status: string; undeliveredRequestCount: number }>(
+    '/api/admin/telegram/retry',
+    { method: 'POST' }
+  );
+}
+
+export async function fetchApiUserBookings() {
+  const result = await requestUserJson<{ bookings?: ApiGuestRequest[] }>('/api/user/bookings');
+  return result.bookings || [];
+}
+
+export async function createApiSellerSubmission(
+  submission: Omit<SellerSubmission, 'id' | 'status'>
+) {
+  const result = await requestUserJson<{ submission: SellerSubmission }>('/api/seller-submissions', {
+    method: 'POST',
+    body: JSON.stringify(submission),
+  });
+  return result.submission;
+}
+
+export async function fetchApiSellerSubmissions() {
+  const result = await requestUserJson<{ submissions?: SellerSubmission[] }>('/api/seller-submissions');
+  return result.submissions || [];
+}
+
+export async function fetchApiAdminSellerSubmissions() {
+  const result = await requestAdminJson<{ submissions?: SellerSubmission[] }>(
+    '/api/admin/seller-submissions'
+  );
+  return result.submissions || [];
+}
+
+export async function updateApiAdminSellerSubmissionStatus(id: string, status: string) {
+  const result = await requestAdminJson<{ submission: SellerSubmission }>(
+    `/api/admin/seller-submissions/${id}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }
+  );
+  return result.submission;
+}
+
+export async function createApiFeedback(feedback: Omit<FeedbackEntry, 'id'>) {
+  const result = await requestJson<{ feedback: FeedbackEntry }>('/api/feedback', {
+    method: 'POST',
+    body: JSON.stringify(feedback),
+  });
+  return result.feedback;
+}
+
+export async function fetchApiAdminFeedback() {
+  const result = await requestAdminJson<{ feedback?: FeedbackEntry[] }>('/api/admin/feedback');
+  return result.feedback || [];
+}
+
+export async function updateApiAdminFeedback(
+  id: string,
+  updates: Pick<FeedbackEntry, 'adminResponse'> & { isPublished?: boolean }
+) {
+  const result = await requestAdminJson<{ feedback: FeedbackEntry }>(`/api/admin/feedback/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(updates),
+  });
+  return result.feedback;
+}
+
+export async function fetchApiAdminUsers() {
+  const result = await requestAdminJson<{ users?: UserRecord[] }>('/api/admin/users');
+  return result.users || [];
+}
+
+export async function updateApiAdminUserRole(id: string, role: string) {
+  const result = await requestAdminJson<{ user: UserRecord }>(`/api/admin/users/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ role }),
+  });
+  return result.user;
 }

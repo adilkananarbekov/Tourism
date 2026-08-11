@@ -1,0 +1,58 @@
+[
+  {
+    "id": "song-kul",
+    "name": "Song-Kul Lake",
+    "region": "Naryn Region",
+    "description": "High-altitude lake, summer pastures, yurt stays, walking, and horse-riding routes.",
+    "imageUrl": "/images/tour-songkul-960.webp"
+  },
+  {
+    "id": "issyk-kul",
+    "name": "Issyk-Kul Lake",
+    "region": "Issyk-Kul Region",
+    "description": "A large mountain lake with contrasting north and south shores, villages, canyons, and access to Karakol.",
+    "imageUrl": "/images/tour-issyk-kul-960.webp"
+  },
+  {
+    "id": "ala-archa",
+    "name": "Ala-Archa",
+    "region": "Chui Region",
+    "description": "Mountain valley close to Bishkek with options ranging from relaxed walks to demanding hikes.",
+    "imageUrl": "/images/tour-ala-archa-960.webp"
+  },
+  {
+    "id": "burana",
+    "name": "Burana Tower",
+    "region": "Chui Region",
+    "description": "Historic minaret and archaeological landscape connected with the medieval Chui Valley.",
+    "imageUrl": "/images/tour-silk-road-960.webp"
+  },
+  {
+    "id": "karakol",
+    "name": "Karakol",
+    "region": "Issyk-Kul Region",
+    "description": "Eastern lake town used as a base for regional culture, food, valleys, and trekking routes.",
+    "imageUrl": "/images/gallery/gallery-39-960.webp"
+  },
+  {
+    "id": "skazka",
+    "name": "Skazka Canyon",
+    "region": "Issyk-Kul Region",
+    "description": "Eroded red-rock landscape on the southern side of Issyk-Kul, suitable for a short scenic walk.",
+    "imageUrl": "/images/gallery/gallery-31-960.webp"
+  },
+  {
+    "id": "tash-rabat",
+    "name": "Tash-Rabat",
+    "region": "Naryn Region",
+    "description": "Historic stone caravanserai in an Inner Tien Shan valley, often combined with Naryn routes.",
+    "imageUrl": "/images/tour-silk-road-960.webp"
+  },
+  {
+    "id": "peak-lenin",
+    "name": "Peak Lenin Base Camp",
+    "region": "Osh Region",
+    "description": "High-mountain landscape in the Alay area for acclimatization walks and expedition-style routes.",
+    "imageUrl": "/images/tour-peak-lenin-960.webp"
+  }
+]

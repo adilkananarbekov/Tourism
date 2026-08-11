@@ -8,12 +8,14 @@ import {
   WHATSAPP_DISPLAY,
   WHATSAPP_URL,
 } from './contact';
+import type { SiteLocale } from './locale';
+import { tourPath } from './tourRoutes';
 
 export const SITE_NAME = 'Go Kyrgyzstan Travel';
 export const SITE_URL = 'https://kyrgyz.tours';
 export const DEFAULT_SOCIAL_IMAGE = '/images/go-kyrgyzstan-hero.webp';
 export const SITE_DESCRIPTION =
-  'Private Kyrgyzstan tours, small-group trips, nomad culture experiences, horse riding, mountain trekking, and Silk Road routes with local planning.';
+  'Private Kyrgyzstan tours, small-group trips, Song-Kul and Issyk-Kul lake routes, horse riding, yurt stays, and mountain road trips with local planning.';
 
 export type JsonLd = Record<string, unknown>;
 
@@ -27,8 +29,19 @@ export function absoluteUrl(path = '/') {
 }
 
 function parseUsdPrice(price: string) {
-  const value = Number(price.replace(/[^0-9.]/g, ''));
-  return Number.isFinite(value) && value > 0 ? value : undefined;
+  const values = price
+    .match(/\d+(?:\.\d+)?/g)
+    ?.map(Number)
+    .filter((value) => Number.isFinite(value) && value > 0);
+  return values?.length ? Math.min(...values) : undefined;
+}
+
+function optimizedImagePath(value: string, width = 960) {
+  return value.replace(/\.(jpe?g)$/i, `-${width}.webp`);
+}
+
+function tourDisplayTitle(title: string) {
+  return /\btour\b/i.test(title) ? title : `${title} Tour`;
 }
 
 export function organizationJsonLd(): JsonLd {
@@ -105,32 +118,37 @@ export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>): 
   };
 }
 
-export function tourListJsonLd(tours: Tour[]): JsonLd {
+export function tourListJsonLd(tours: Tour[], locale: SiteLocale = 'en'): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Kyrgyzstan tour packages',
+    name: locale === 'ru' ? 'Туры по Кыргызстану' : 'Kyrgyzstan tour packages',
+    inLanguage: locale,
     itemListElement: tours.map((tour, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: absoluteUrl(`/tours/${tour.id}`),
+      url: absoluteUrl(tourPath(tour, locale)),
       name: tour.title,
     })),
   };
 }
 
-export function tourJsonLd(tour: Tour): JsonLd {
+export function tourJsonLd(tour: Tour, locale: SiteLocale = 'en'): JsonLd {
   const price = parseUsdPrice(tour.price);
+  const path = tourPath(tour, locale);
 
   return {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
-    '@id': `${SITE_URL}/tours/${tour.id}#tour`,
-    name: `${tour.title} in Kyrgyzstan`,
+    '@id': `${SITE_URL}${path}#tour`,
+    name: locale === 'ru' ? tour.title : `${tourDisplayTitle(tour.title)} in Kyrgyzstan`,
     description: tour.description,
-    image: absoluteUrl(tour.image),
-    url: absoluteUrl(`/tours/${tour.id}`),
-    touristType: ['International travelers', 'Adventure travelers', 'Culture travelers'],
+    image: [absoluteUrl(optimizedImagePath(tour.image)), absoluteUrl(tour.image)],
+    url: absoluteUrl(path),
+    inLanguage: locale,
+    touristType: locale === 'ru'
+      ? ['Иностранные путешественники', 'Любители активного отдыха', 'Ценители культуры']
+      : ['International travelers', 'Adventure travelers', 'Culture travelers'],
     itinerary: (tour.locations || []).map((location) => ({
       '@type': 'TouristDestination',
       name: location.name,
@@ -149,7 +167,7 @@ export function tourJsonLd(tour: Tour): JsonLd {
           price,
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
-          url: absoluteUrl(`/tours/${tour.id}`),
+          url: absoluteUrl(path),
         }
       : undefined,
   };

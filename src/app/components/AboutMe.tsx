@@ -1,7 +1,7 @@
 import { BadgeCheck, Instagram, Languages, MapPin, MessageCircle, Phone, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
-import { withBasePath } from '../lib/assets';
+import { ResponsiveImage } from './ResponsiveImage';
 import {
   FOUNDER_IMAGE,
   FOUNDER_NAME,
@@ -42,9 +42,19 @@ export function AboutMe() {
       <div className="max-w-7xl mx-auto grid gap-10 lg:grid-cols-[1fr_1.2fr] items-center">
         <div className="relative">
           <div className="aspect-[4/5] overflow-hidden rounded-2xl shadow-lg">
-            <img
-              src={withBasePath(FOUNDER_IMAGE)}
+            <ResponsiveImage
+              src={FOUNDER_IMAGE}
+              variants={[
+                { src: '/images/founder-jakypbekov-insan-480.webp', width: 480 },
+                { src: '/images/founder-jakypbekov-insan-960.webp', width: 960 },
+              ]}
+              mobileVariants={[
+                { src: '/images/founder-jakypbekov-insan-480.webp', width: 480 },
+              ]}
+              sizes="(min-width: 1024px) 40vw, 100vw"
               alt={`${FOUNDER_NAME}, founder of Go Kyrgyzstan Travel`}
+              width={1200}
+              height={1600}
               className="h-full w-full object-cover object-[center_38%]"
               loading="lazy"
               decoding="async"
