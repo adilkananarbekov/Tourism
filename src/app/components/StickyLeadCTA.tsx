@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
@@ -7,10 +8,25 @@ export function StickyLeadCTA() {
   const { pathname } = useLocation();
   const locale = useSiteLocale();
   const isRussian = locale === 'ru';
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
   const hiddenRoutes = ['/feedback', '/privacy-policy', '/terms-of-use', '/admin', '/auth', '/dashboard'];
   const shouldHide = hiddenRoutes.some((route) => pathname === route || pathname.startsWith(`/ru${route}`));
 
-  if (shouldHide) {
+  useEffect(() => {
+    const footer = document.getElementById('site-footer');
+    if (!footer || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsFooterVisible(entry.isIntersecting),
+      { threshold: 0.02 },
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
+
+  if (shouldHide || isFooterVisible) {
     return null;
   }
 
