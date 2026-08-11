@@ -4,6 +4,7 @@ import {
   apiEnabled,
   clearApiUserSession,
   fetchApiCurrentUser,
+  hasApiUserSession,
   signInApiUser,
   signUpApiUser,
   updateApiCurrentUser,
@@ -82,6 +83,19 @@ function profileToUser(profile: UserRecord): AppUser {
   };
 }
 
+async function restoreApiAccount(account: StoredAccount) {
+  try {
+    return await signUpApiUser({
+      name: account.displayName || account.email,
+      email: account.email,
+      password: account.password,
+      role: account.role,
+    });
+  } catch {
+    return signInApiUser(account.email, account.password);
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null);
   const [profile, setProfile] = useState<UserRecord | null>(null);
@@ -99,23 +113,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (apiEnabled) {
         try {
           let remoteProfile: UserRecord;
-          try {
-            remoteProfile = await fetchApiCurrentUser();
-          } catch (error) {
-            if (!account) {
-              throw error;
-            }
+
+          if (hasApiUserSession()) {
             try {
-              remoteProfile = await signUpApiUser({
-                name: account.displayName || account.email,
-                email: account.email,
-                password: account.password,
-                role: account.role,
-              });
-            } catch {
-              remoteProfile = await signInApiUser(account.email, account.password);
+              remoteProfile = await fetchApiCurrentUser();
+            } catch (error) {
+              if (!account) {
+                throw error;
+              }
+              remoteProfile = await restoreApiAccount(account);
             }
+          } else if (account) {
+            remoteProfile = await restoreApiAccount(account);
+          } else {
+            if (active) {
+              setLoading(false);
+            }
+            return;
           }
+
           if (active) {
             setUser(profileToUser(remoteProfile));
             setProfile(remoteProfile);

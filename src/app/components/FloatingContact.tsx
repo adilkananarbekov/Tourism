@@ -21,7 +21,7 @@ export function FloatingContact() {
 
   return (
     <div
-      className={`fixed bottom-24 right-4 z-[100] flex flex-col gap-3 transition-all duration-300 sm:bottom-6 sm:right-6 ${
+      className={`fixed bottom-24 right-4 z-[100] hidden flex-col gap-3 transition-all duration-300 sm:bottom-6 sm:right-6 sm:flex ${
         isFooterVisible ? 'pointer-events-none translate-y-3 opacity-0' : 'translate-y-0 opacity-100'
       }`}
       aria-hidden={isFooterVisible}

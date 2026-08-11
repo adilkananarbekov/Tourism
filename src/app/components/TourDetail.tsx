@@ -1,5 +1,5 @@
 import { ArrowLeft, Calendar, Check, MapPin, Tag, Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -106,6 +106,9 @@ type BookingDetailsValues = z.infer<typeof bookingDetailsSchema>;
 export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetailProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const bookingPanelRef = useRef<HTMLDivElement>(null);
+  const bookingHeadingRef = useRef<HTMLHeadingElement>(null);
+  const shouldFocusBookingRef = useRef(false);
   const navigate = useNavigate();
   const location = useLocation();
   const isRussian = locale === 'ru';
@@ -115,7 +118,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
         about: 'О туре', details: 'Детали тура', duration: 'Длительность', season: 'Сезон', type: 'Формат тура', difficulty: 'Сложность',
         dayByDay: 'Программа по дням', day: 'День', tourHighlights: 'Главные впечатления', whatToPack: 'Что взять с собой',
         accommodation: 'Размещение', meals: 'Питание', groupSize: 'Размер группы', included: 'Включено', notIncluded: 'Не включено',
-        tourInformation: 'Информация о туре', startingFrom: 'Стоимость от', perPerson: 'за человека', request: 'Оставить заявку', bestSeason: 'Лучший сезон',
+        tourInformation: 'Информация о туре', startingFrom: 'Стоимость от', perPerson: 'за человека', request: 'Оставить заявку', bookingFormTitle: 'Заявка на этот тур', bestSeason: 'Лучший сезон',
         routeNotes: 'Что важно знать о маршруте', commonQuestions: 'Частые вопросы', relatedTours: 'Похожие маршруты', viewTour: 'Смотреть тур',
       }
     : {
@@ -123,7 +126,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
         about: 'About This Tour', details: 'Tour Details', duration: 'Duration', season: 'Season', type: 'Tour Type', difficulty: 'Difficulty',
         dayByDay: 'Day by Day Itinerary', day: 'Day', tourHighlights: 'Tour Highlights', whatToPack: 'What to Pack',
         accommodation: 'Accommodation', meals: 'Meals', groupSize: 'Group Size', included: "What's Included", notIncluded: 'Not Included',
-        tourInformation: 'Tour information', startingFrom: 'Starting from', perPerson: 'per person', request: 'Request This Tour', bestSeason: 'Best Season',
+        tourInformation: 'Tour information', startingFrom: 'Starting from', perPerson: 'per person', request: 'Request This Tour', bookingFormTitle: 'Request this tour', bestSeason: 'Best Season',
         routeNotes: 'Route notes', commonQuestions: 'Common questions', relatedTours: 'Related routes', viewTour: 'View tour',
       };
   const toursPath = localizedPath('/tours', locale);
@@ -131,10 +134,34 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (params.get('book') === 'true') {
+    if (params.get('book') === 'true' && tour) {
+      shouldFocusBookingRef.current = true;
       setShowBookingForm(true);
     }
-  }, [location.search]);
+  }, [location.search, tour?.id]);
+
+  useEffect(() => {
+    if (!showBookingForm || !shouldFocusBookingRef.current) {
+      return;
+    }
+
+    let focusFrame = 0;
+    const scrollFrame = window.requestAnimationFrame(() => {
+      bookingPanelRef.current?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+      focusFrame = window.requestAnimationFrame(() => {
+        bookingHeadingRef.current?.focus({ preventScroll: true });
+        shouldFocusBookingRef.current = false;
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(scrollFrame);
+      window.cancelAnimationFrame(focusFrame);
+    };
+  }, [location.search, showBookingForm, tour?.id]);
 
   if (!tour) {
     return (
@@ -514,6 +541,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
                       navigate(`${localizedPath('/feedback', locale)}?tour=${encodeURIComponent(tour.title)}`);
                       return;
                     }
+                    shouldFocusBookingRef.current = true;
                     setShowBookingForm(true);
                   }}
                   className="w-full btn-micro btn-action mb-4"
@@ -523,7 +551,16 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
                   {text.request}
                 </Button>
               ) : (
-                <BookingFlow tour={tour} onCancel={() => setShowBookingForm(false)} locale={locale} />
+                <div ref={bookingPanelRef} className="scroll-mt-24">
+                  <h2
+                    ref={bookingHeadingRef}
+                    tabIndex={-1}
+                    className="mb-5 rounded-sm text-xl text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
+                    {text.bookingFormTitle}
+                  </h2>
+                  <BookingFlow tour={tour} onCancel={() => setShowBookingForm(false)} locale={locale} />
+                </div>
               )}
 
               <div className="border-t border-border pt-6 mt-6 space-y-4">

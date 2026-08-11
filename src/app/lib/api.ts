@@ -159,6 +159,13 @@ export function clearApiUserSession() {
   }
 }
 
+export function hasApiUserSession() {
+  return (
+    typeof localStorage !== 'undefined' &&
+    Boolean(localStorage.getItem(userTokenKey))
+  );
+}
+
 export async function signUpApiUser(payload: {
   name: string;
   email: string;

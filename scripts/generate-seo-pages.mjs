@@ -181,31 +181,36 @@ function breadcrumbJsonLd(items) {
   };
 }
 
-function tourListJsonLd(tours) {
+function tourListJsonLd(tours, locale = 'en') {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Kyrgyzstan tour packages',
+    name: locale === 'ru' ? 'Туры по Кыргызстану' : 'Kyrgyzstan tour packages',
+    inLanguage: locale,
     itemListElement: tours.map((tour, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: absoluteUrl(tourPath(tour)),
+      url: absoluteUrl(tourPath(tour, locale)),
       name: tour.title,
     })),
   };
 }
 
-function tourJsonLd(tour) {
+function tourJsonLd(tour, locale = 'en') {
   const price = parseUsdPrice(tour.price);
+  const path = tourPath(tour, locale);
   return {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
-    '@id': `${SITE_URL}${tourPath(tour)}#tour`,
-    name: `${tourDisplayTitle(tour.title)} in Kyrgyzstan`,
+    '@id': `${SITE_URL}${path}#tour`,
+    name: locale === 'ru' ? tour.title : `${tourDisplayTitle(tour.title)} in Kyrgyzstan`,
     description: tour.description,
     image: [absoluteUrl(optimizedImagePath(tour.image)), absoluteUrl(tour.image)],
-    url: absoluteUrl(tourPath(tour)),
-    touristType: ['International travelers', 'Adventure travelers', 'Culture travelers'],
+    url: absoluteUrl(path),
+    inLanguage: locale,
+    touristType: locale === 'ru'
+      ? ['Иностранные путешественники', 'Любители активного отдыха', 'Ценители культуры']
+      : ['International travelers', 'Adventure travelers', 'Culture travelers'],
     provider: { '@id': `${SITE_URL}/#organization` },
     itinerary: (tour.locations || []).map((location) => ({
       '@type': 'TouristDestination',
@@ -222,7 +227,7 @@ function tourJsonLd(tour) {
           price,
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
-          url: absoluteUrl(tourPath(tour)),
+          url: absoluteUrl(path),
         }
       : undefined,
   };
@@ -308,8 +313,7 @@ function relatedToursMarkup(tour, tours, locale = 'en') {
     <section>
       <h2>${title}</h2>
       <ul>${relatedTours.map((relatedTour) => {
-        const path = locale === 'ru' ? `/ru/tours/${relatedTour.id}` : `/tours/${relatedTour.id}`;
-        return `<li><a href="${path}">${escapeHtml(relatedTour.title)}</a> — ${duration}: ${escapeHtml(relatedTour.duration)}</li>`;
+        return `<li><a href="${tourPath(relatedTour, locale)}">${escapeHtml(relatedTour.title)}</a> — ${duration}: ${escapeHtml(relatedTour.duration)}</li>`;
       }).join('')}</ul>
     </section>`;
 }
@@ -985,7 +989,10 @@ pages.push(
     image: DEFAULT_IMAGE,
     images: russianTours.map((tour) => optimizedImagePath(tour.image)),
     alternates: localeAlternates('/tours'),
-    jsonLd: [breadcrumbJsonLd([{ name: 'Главная', path: '/ru' }, { name: 'Туры', path: '/ru/tours' }])],
+    jsonLd: [
+      breadcrumbJsonLd([{ name: 'Главная', path: '/ru' }, { name: 'Туры', path: '/ru/tours' }]),
+      tourListJsonLd(russianTours, 'ru'),
+    ],
   },
   {
     path: '/ru/feedback',
@@ -1049,11 +1056,14 @@ pages.push(
     image: tour.image,
     images: [optimizedImagePath(tour.image)],
     alternates: localeAlternates(tourPath(tour)),
-    jsonLd: [breadcrumbJsonLd([
-      { name: 'Главная', path: '/ru' },
-      { name: 'Туры', path: '/ru/tours' },
-      { name: tour.title, path: tourPath(tour, 'ru') },
-    ])],
+    jsonLd: [
+      tourJsonLd(tour, 'ru'),
+      breadcrumbJsonLd([
+        { name: 'Главная', path: '/ru' },
+        { name: 'Туры', path: '/ru/tours' },
+        { name: tour.title, path: tourPath(tour, 'ru') },
+      ]),
+    ],
   })),
 );
 

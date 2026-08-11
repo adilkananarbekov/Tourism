@@ -8,6 +8,7 @@ import {
   WHATSAPP_DISPLAY,
   WHATSAPP_URL,
 } from './contact';
+import type { SiteLocale } from './locale';
 import { tourPath } from './tourRoutes';
 
 export const SITE_NAME = 'Go Kyrgyzstan Travel';
@@ -117,32 +118,37 @@ export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>): 
   };
 }
 
-export function tourListJsonLd(tours: Tour[]): JsonLd {
+export function tourListJsonLd(tours: Tour[], locale: SiteLocale = 'en'): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Kyrgyzstan tour packages',
+    name: locale === 'ru' ? 'Туры по Кыргызстану' : 'Kyrgyzstan tour packages',
+    inLanguage: locale,
     itemListElement: tours.map((tour, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: absoluteUrl(tourPath(tour)),
+      url: absoluteUrl(tourPath(tour, locale)),
       name: tour.title,
     })),
   };
 }
 
-export function tourJsonLd(tour: Tour): JsonLd {
+export function tourJsonLd(tour: Tour, locale: SiteLocale = 'en'): JsonLd {
   const price = parseUsdPrice(tour.price);
+  const path = tourPath(tour, locale);
 
   return {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
-    '@id': `${SITE_URL}${tourPath(tour)}#tour`,
-    name: `${tourDisplayTitle(tour.title)} in Kyrgyzstan`,
+    '@id': `${SITE_URL}${path}#tour`,
+    name: locale === 'ru' ? tour.title : `${tourDisplayTitle(tour.title)} in Kyrgyzstan`,
     description: tour.description,
     image: [absoluteUrl(optimizedImagePath(tour.image)), absoluteUrl(tour.image)],
-    url: absoluteUrl(tourPath(tour)),
-    touristType: ['International travelers', 'Adventure travelers', 'Culture travelers'],
+    url: absoluteUrl(path),
+    inLanguage: locale,
+    touristType: locale === 'ru'
+      ? ['Иностранные путешественники', 'Любители активного отдыха', 'Ценители культуры']
+      : ['International travelers', 'Adventure travelers', 'Culture travelers'],
     itinerary: (tour.locations || []).map((location) => ({
       '@type': 'TouristDestination',
       name: location.name,
@@ -161,7 +167,7 @@ export function tourJsonLd(tour: Tour): JsonLd {
           price,
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
-          url: absoluteUrl(tourPath(tour)),
+          url: absoluteUrl(path),
         }
       : undefined,
   };

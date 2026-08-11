@@ -5,7 +5,7 @@ import { ToursGrid } from '../components/ToursGrid';
 import { useToursData } from '../hooks/useTours';
 import { localizeTour } from '../lib/localizedTours';
 import { localeAlternates } from '../lib/locale';
-import { breadcrumbJsonLd } from '../lib/seo';
+import { breadcrumbJsonLd, tourListJsonLd } from '../lib/seo';
 
 export function RussianToursPage() {
   const { tours, loading, error } = useToursData();
@@ -19,10 +19,13 @@ export function RussianToursPage() {
         path="/ru/tours"
         language="ru"
         alternates={localeAlternates('/tours')}
-        jsonLd={breadcrumbJsonLd([
-          { name: 'Главная', path: '/ru' },
-          { name: 'Туры', path: '/ru/tours' },
-        ])}
+        jsonLd={[
+          breadcrumbJsonLd([
+            { name: 'Главная', path: '/ru' },
+            { name: 'Туры', path: '/ru/tours' },
+          ]),
+          tourListJsonLd(translatedTours, 'ru'),
+        ]}
       />
       <section className="border-b border-border bg-muted px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_auto] lg:items-end">

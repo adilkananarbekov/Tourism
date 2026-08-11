@@ -305,19 +305,38 @@ export function FeedbackPage() {
           </div>
 
           {submitted && (
-            <div className="flex items-start gap-3 rounded-md border border-secondary/30 bg-secondary/10 p-4 text-sm text-foreground">
+            <div
+              id="feedback-form-success"
+              role="status"
+              aria-live="polite"
+              className="flex items-start gap-3 rounded-md border border-secondary/30 bg-secondary/10 p-4 text-sm text-foreground"
+            >
               <Check className="mt-0.5 h-5 w-5 text-secondary" />
               <p>
                 {text.sent}
               </p>
             </div>
           )}
-          {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
+          {errorMessage && (
+            <p id="feedback-form-error" role="alert" className="text-sm text-red-600">
+              {errorMessage}
+            </p>
+          )}
 
           <div>
             <Label htmlFor="name">{text.name}</Label>
-            <Input id="name" placeholder="Adilkan" {...register('name')} />
-            {errors.name && <p className="text-xs text-red-600">{errors.name.message}</p>}
+            <Input
+              id="name"
+              placeholder="Adilkan"
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? 'feedback-name-error' : undefined}
+              {...register('name')}
+            />
+            {errors.name && (
+              <p id="feedback-name-error" className="text-xs text-red-600">
+                {errors.name.message}
+              </p>
+            )}
           </div>
 
           <div>
@@ -327,13 +346,21 @@ export function FeedbackPage() {
               list="country-options"
               autoComplete="country-name"
               placeholder={isRussian ? 'Например, Кыргызстан' : 'For example, Kyrgyzstan'}
+              aria-invalid={Boolean(errors.countryOfResidence)}
+              aria-describedby={errors.countryOfResidence
+                ? 'feedback-country-hint feedback-country-error'
+                : 'feedback-country-hint'}
               {...register('countryOfResidence')}
             />
             <datalist id="country-options">
               {countryOptions.map((country) => <option key={country.code} value={country.value} />)}
             </datalist>
-            <p className="mt-1 text-xs text-muted-foreground">{text.countryHint}</p>
-            {errors.countryOfResidence && <p className="text-xs text-red-600">{errors.countryOfResidence.message}</p>}
+            <p id="feedback-country-hint" className="mt-1 text-xs text-muted-foreground">{text.countryHint}</p>
+            {errors.countryOfResidence && (
+              <p id="feedback-country-error" className="text-xs text-red-600">
+                {errors.countryOfResidence.message}
+              </p>
+            )}
           </div>
 
           <div>
@@ -341,6 +368,10 @@ export function FeedbackPage() {
             <select
               id="contactPreference"
               className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+              aria-invalid={Boolean(errors.contactPreference)}
+              aria-describedby={errors.contactPreference
+                ? 'feedback-contact-hint feedback-contact-error'
+                : 'feedback-contact-hint'}
               {...register('contactPreference')}
             >
               <option value="" disabled>{isRussian ? 'Выберите способ связи' : 'Choose a contact method'}</option>
@@ -348,36 +379,64 @@ export function FeedbackPage() {
               <option value="telegram">{text.telegramOption}</option>
               <option value="email">{text.emailOption}</option>
             </select>
-            <p className="mt-1 text-xs text-muted-foreground">{text.contactHint}</p>
-            {errors.contactPreference && <p className="text-xs text-red-600">{errors.contactPreference.message}</p>}
+            <p id="feedback-contact-hint" className="mt-1 text-xs text-muted-foreground">{text.contactHint}</p>
+            {errors.contactPreference && (
+              <p id="feedback-contact-error" className="text-xs text-red-600">
+                {errors.contactPreference.message}
+              </p>
+            )}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-            <Label htmlFor="telegramUsername">{text.telegram}</Label>
+              <Label htmlFor="telegramUsername">{text.telegram}</Label>
               <Input
                 id="telegramUsername"
                 placeholder="@username"
+                aria-invalid={Boolean(errors.telegramUsername)}
+                aria-describedby={errors.telegramUsername ? 'feedback-telegram-error' : undefined}
                 {...register('telegramUsername')}
               />
+              {errors.telegramUsername && (
+                <p id="feedback-telegram-error" className="text-xs text-red-600">
+                  {errors.telegramUsername.message}
+                </p>
+              )}
             </div>
             <div>
-            <Label htmlFor="phone">{text.phone}</Label>
+              <Label htmlFor="phone">{text.phone}</Label>
               <Input
                 id="phone"
                 type="tel"
                 inputMode="tel"
                 placeholder="+1 803 555 0123"
+                aria-invalid={Boolean(errors.phone)}
+                aria-describedby={errors.phone ? 'feedback-phone-error' : undefined}
                 {...register('phone')}
               />
-              {errors.phone && <p className="text-xs text-red-600">{errors.phone.message}</p>}
+              {errors.phone && (
+                <p id="feedback-phone-error" className="text-xs text-red-600">
+                  {errors.phone.message}
+                </p>
+              )}
             </div>
           </div>
 
           <div>
             <Label htmlFor="email">{text.email}</Label>
-            <Input id="email" type="email" placeholder="you@example.com" {...register('email')} />
-            {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? 'feedback-email-error' : undefined}
+              {...register('email')}
+            />
+            {errors.email && (
+              <p id="feedback-email-error" className="text-xs text-red-600">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -395,10 +454,14 @@ export function FeedbackPage() {
                 id="groupSize"
                 type="number"
                 min="1"
+                aria-invalid={Boolean(errors.groupSize)}
+                aria-describedby={errors.groupSize ? 'feedback-group-size-error' : undefined}
                 {...register('groupSize', { valueAsNumber: true })}
               />
               {errors.groupSize && (
-                <p className="text-xs text-red-600">{errors.groupSize.message}</p>
+                <p id="feedback-group-size-error" className="text-xs text-red-600">
+                  {errors.groupSize.message}
+                </p>
               )}
             </div>
           </div>
@@ -418,9 +481,15 @@ export function FeedbackPage() {
               id="message"
               rows={4}
               placeholder={text.messagePlaceholder}
+              aria-invalid={Boolean(errors.message)}
+              aria-describedby={errors.message ? 'feedback-message-error' : undefined}
               {...register('message')}
             />
-            {errors.message && <p className="text-xs text-red-600">{errors.message.message}</p>}
+            {errors.message && (
+              <p id="feedback-message-error" className="text-xs text-red-600">
+                {errors.message.message}
+              </p>
+            )}
           </div>
 
           <Button
