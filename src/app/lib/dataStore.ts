@@ -437,12 +437,13 @@ export async function deleteSight(sightId: string) {
   );
 }
 
-export async function fetchBlogPosts(): Promise<BlogPost[]> {
+export async function fetchBlogPosts(fallbackPosts: BlogPost[] = []): Promise<BlogPost[]> {
   if (apiEnabled) {
     return sortNewest(await fetchApiBlogPosts());
   }
 
-  return sortNewest(readCollection<Stored<BlogPost>>('blogPosts'));
+  const localPosts = readCollection<Stored<BlogPost>>('blogPosts');
+  return sortNewest(localPosts.length > 0 ? localPosts : fallbackPosts);
 }
 
 export async function fetchAdminBlogPosts(): Promise<BlogPost[]> {

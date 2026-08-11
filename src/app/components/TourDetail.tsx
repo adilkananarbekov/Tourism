@@ -241,11 +241,12 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (params.get('book') === 'true' && tour) {
+    const bookingRequested = params.get('book') === 'true' || location.hash === '#booking';
+    if (bookingRequested && tour) {
       shouldFocusBookingRef.current = true;
       setShowBookingForm(true);
     }
-  }, [location.search, tour?.id]);
+  }, [location.hash, location.search, tour?.id]);
 
   useEffect(() => {
     if (!showBookingForm || !shouldFocusBookingRef.current) {
@@ -268,7 +269,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
       window.cancelAnimationFrame(scrollFrame);
       window.cancelAnimationFrame(focusFrame);
     };
-  }, [location.search, showBookingForm, tour?.id]);
+  }, [location.hash, location.search, showBookingForm, tour?.id]);
 
   if (!tour) {
     return (
@@ -654,7 +655,7 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
                   {text.request}
                 </Button>
               ) : (
-                <div ref={bookingPanelRef} className="scroll-mt-24">
+                <div id="booking" ref={bookingPanelRef} className="scroll-mt-24">
                   <h2
                     ref={bookingHeadingRef}
                     tabIndex={-1}

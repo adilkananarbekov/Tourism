@@ -154,7 +154,7 @@ export function HotToursSection() {
                       Dates and final price confirmed personally
                     </span>
                     <Link
-                      to={`${publicTourPath}?book=true`}
+                      to={`${publicTourPath}#booking`}
                       className="card-cta shrink-0 text-sm font-medium text-primary"
                       data-track-event="home_hot_tour_request_click"
                       data-track-label={tour.title}

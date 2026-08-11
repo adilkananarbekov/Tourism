@@ -527,26 +527,87 @@ function deleteContentItem(name, id) {
   return next.length !== items.length;
 }
 
-function seedContentIfNeeded() {
-  if (getMeta('content_seed_version') === '1') {
+const contentSeedVersion = 2;
+
+function parseContentUpdatedAt(value) {
+  if (typeof value !== 'string' || !value.trim()) {
+    return null;
+  }
+
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? timestamp : null;
+}
+
+function shouldUpdateContentFromSeed(existing, seed) {
+  const seedUpdatedAt = parseContentUpdatedAt(seed?.updatedAt);
+  if (seedUpdatedAt === null) {
+    return false;
+  }
+
+  if (typeof existing?.updatedAt !== 'string' || !existing.updatedAt.trim()) {
+    return true;
+  }
+
+  const existingUpdatedAt = parseContentUpdatedAt(existing.updatedAt);
+  return existingUpdatedAt !== null && seedUpdatedAt > existingUpdatedAt;
+}
+
+function mergeNewerSeedContent(existingItems, seedItems) {
+  const seedById = new Map(
+    seedItems
+      .filter((item) => isObject(item) && item.id !== undefined && item.id !== null)
+      .map((item) => [String(item.id), item]),
+  );
+  let changed = false;
+
+  const items = existingItems.map((existing) => {
+    const seed = seedById.get(String(existing?.id));
+    if (!seed || !shouldUpdateContentFromSeed(existing, seed)) {
+      return existing;
+    }
+
+    changed = true;
+    return {
+      ...existing,
+      ...seed,
+      id: existing.id,
+      createdAt: existing.createdAt || seed.createdAt,
+    };
+  });
+
+  return { items, changed };
+}
+
+function seedContentCollection(name, seedFilePath) {
+  const seedItems = readJsonFile(seedFilePath, []);
+  if (!Array.isArray(seedItems)) {
     return;
   }
 
-  if (getContentCollection('blogPosts').length === 0) {
-    const posts = readJsonFile(seedBlogPostsPath, []);
-    if (Array.isArray(posts)) {
-      setContentCollection('blogPosts', posts);
-    }
+  const existingItems = getContentCollection(name);
+  if (existingItems.length === 0) {
+    setContentCollection(name, seedItems);
+    return;
   }
 
-  if (getContentCollection('sights').length === 0) {
-    const sights = readJsonFile(seedSightsPath, []);
-    if (Array.isArray(sights)) {
-      setContentCollection('sights', sights);
-    }
+  const merged = mergeNewerSeedContent(existingItems, seedItems);
+  if (merged.changed) {
+    setContentCollection(name, merged.items);
+  }
+}
+
+function seedContentIfNeeded() {
+  const appliedVersion = Number.parseInt(getMeta('content_seed_version') || '0', 10);
+  if (Number.isFinite(appliedVersion) && appliedVersion >= contentSeedVersion) {
+    return;
   }
 
-  setMeta('content_seed_version', '1');
+  const applySeedMigration = sqlite.transaction(() => {
+    seedContentCollection('blogPosts', seedBlogPostsPath);
+    seedContentCollection('sights', seedSightsPath);
+    setMeta('content_seed_version', String(contentSeedVersion));
+  });
+  applySeedMigration();
 }
 
 function getNextTourId() {

@@ -29,6 +29,7 @@ const guideRouteLinks: Record<string, { eyebrow: string; title: string; descript
     description: 'Summer highland plans need different access checks from a winter trip. Compare a Song-Kul route with a winter option, then confirm conditions before booking.',
     links: [
       { to: '/destinations/song-kul', label: 'Compare Song-Kul summer routes' },
+      { to: '/blogs/kyrgyzstan-horse-riding-guide', label: 'Plan the right horse-riding season' },
       { to: tourPath(6), label: 'See the winter Song-Kul horse ride' },
     ],
   },
@@ -36,7 +37,11 @@ const guideRouteLinks: Record<string, { eyebrow: string; title: string; descript
     eyebrow: 'Song-Kul routes',
     title: 'Compare horse treks and private road trips',
     description: 'Choose a Song-Kul route by your available days, riding experience and preferred pace, then confirm current access and yurt-camp availability with the local team.',
-    links: [{ to: '/destinations/song-kul', label: 'Explore Song-Kul tours' }],
+    links: [
+      { to: '/destinations/song-kul', label: 'Explore the Song-Kul route hub' },
+      { to: tourPath(4), label: 'Compare the 2-day horse ride' },
+      { to: tourPath(2), label: 'Compare the 3-day horse trek' },
+    ],
   },
   'issyk-kul-road-trip-guide': {
     eyebrow: 'Issyk-Kul routes',
@@ -65,13 +70,30 @@ const guideRouteLinks: Record<string, { eyebrow: string; title: string; descript
   },
 };
 
+function formatArticleDate(value?: string) {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return new Intl.DateTimeFormat('en', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+}
+
 export function BlogPostPage() {
   const { slug } = useParams();
   const [posts, setPosts] = useState<BlogPost[]>(fallbackBlogPosts);
 
   useEffect(() => {
     let active = true;
-    fetchBlogPosts()
+    fetchBlogPosts(fallbackBlogPosts)
       .then((data) => {
         if (active) {
           setPosts(data);
@@ -111,6 +133,8 @@ export function BlogPostPage() {
   const editorial = (blogSeoOverrides as Record<string, BlogSeoOverride>)[post.slug];
   const seoTitle = editorial?.seoTitle || post.seoTitle || post.title;
   const seoDescription = editorial?.seoDescription || post.seoDescription || post.excerpt;
+  const publishedDate = formatArticleDate(post.publishedAt || post.createdAt);
+  const updatedDate = formatArticleDate(post.updatedAt);
   const sanitizedContent = DOMPurify.sanitize(post.content, {
     ADD_ATTR: ['target', 'rel'],
   });
@@ -183,6 +207,12 @@ export function BlogPostPage() {
               <Clock className="h-4 w-4" />
               {post.readTime || 'Practical guide'}
             </span>
+            <span>By Go Kyrgyzstan Travel</span>
+            {updatedDate ? (
+              <time dateTime={post.updatedAt}>Updated {updatedDate}</time>
+            ) : publishedDate ? (
+              <time dateTime={post.publishedAt || post.createdAt}>Published {publishedDate}</time>
+            ) : null}
           </div>
           <h1 className="mt-5 text-4xl text-foreground sm:text-5xl">{post.title}</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{post.excerpt}</p>
@@ -202,7 +232,7 @@ export function BlogPostPage() {
         />
 
         <div
-          className="blog-content mx-auto mt-10 max-w-3xl text-base leading-8 text-muted-foreground [&_a]:text-primary [&_a]:underline [&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:text-3xl [&_h2]:text-foreground [&_li]:mb-2 [&_p]:mb-5 [&_ul]:mb-6 [&_ul]:list-disc [&_ul]:pl-6"
+          className="blog-content mx-auto mt-10 max-w-3xl text-base leading-8 text-muted-foreground [&_a]:text-primary [&_a]:underline [&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:text-3xl [&_h2]:text-foreground [&_h3]:mb-3 [&_h3]:mt-8 [&_h3]:text-xl [&_h3]:text-foreground [&_li]:mb-2 [&_p]:mb-5 [&_strong]:font-medium [&_strong]:text-foreground [&_ul]:mb-6 [&_ul]:list-disc [&_ul]:pl-6"
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
 

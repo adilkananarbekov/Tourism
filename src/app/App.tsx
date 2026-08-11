@@ -1,12 +1,18 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { SiteLayout } from './components/SiteLayout';
-import { AuthRoute } from './components/AuthRoute';
-import { AdminRoute } from '../admin/components/AdminRoute';
 
 // Align router base with Vite's base path for GH Pages deploys.
 const routerBase = import.meta.env.BASE_URL.replace(/\/$/, '');
 
+const SiteLayout = lazy(() =>
+  import('./components/SiteLayout').then((module) => ({ default: module.SiteLayout }))
+);
+const AuthRoute = lazy(() =>
+  import('./components/AuthRoute').then((module) => ({ default: module.AuthRoute }))
+);
+const AdminRoute = lazy(() =>
+  import('../admin/components/AdminRoute').then((module) => ({ default: module.AdminRoute }))
+);
 const HomePage = lazy(() => import('./pages/HomePage').then((module) => ({ default: module.HomePage })));
 const RussianHomePage = lazy(() => import('./pages/RussianHomePage').then((module) => ({ default: module.RussianHomePage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));

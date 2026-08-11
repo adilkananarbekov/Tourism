@@ -39,6 +39,7 @@ const routeHighlights = [
     description: 'Compare a compact overnight ride with a longer trek from Kyzart.',
     links: [
       { to: '/destinations/song-kul', label: 'Song-Kul route hub' },
+      { to: tourPath(4), label: '2-day horse ride' },
       { to: tourPath(2), label: '3-day horse trek' },
     ],
   },

@@ -193,7 +193,7 @@ export function ToursGrid({ tours, loading = false, error, stagger = false, loca
                     className="w-full btn-micro btn-action-outline"
                   >
                     <Link
-                      to={`${tourPath(tour, locale)}?book=true`}
+                      to={`${tourPath(tour, locale)}#booking`}
                       data-track-event="tour_card_request_click"
                       data-track-label={tour.title}
                     >

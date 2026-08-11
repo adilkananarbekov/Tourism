@@ -26,7 +26,7 @@ export function BlogsPage() {
 
   useEffect(() => {
     let active = true;
-    fetchBlogPosts()
+    fetchBlogPosts(fallbackBlogPosts)
       .then((data) => {
         if (active) {
           setPosts(data);

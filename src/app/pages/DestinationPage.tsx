@@ -11,6 +11,21 @@ import { absoluteUrl, breadcrumbJsonLd } from '../lib/seo';
 import { localizeTour } from '../lib/localizedTours';
 import { tourPath } from '../lib/tourRoutes';
 
+const destinationGuideLinks: Record<string, Array<{ to: string; label: string }>> = {
+  'song-kul': [
+    { to: '/blogs/song-kul-lake-travel-guide', label: 'Song-Kul lake travel guide' },
+    { to: '/blogs/kyrgyzstan-horse-riding-guide', label: 'Horse riding in Kyrgyzstan' },
+    { to: '/blogs/best-time-to-visit-kyrgyzstan', label: 'Best months for highland travel' },
+  ],
+  'issyk-kul': [
+    { to: '/blogs/issyk-kul-road-trip-guide', label: 'Issyk-Kul road trip guide' },
+    { to: '/blogs/best-time-to-visit-kyrgyzstan', label: 'Best months for lake routes' },
+  ],
+  'kel-suu': [
+    { to: '/blogs/best-time-to-visit-kyrgyzstan', label: 'Best months for remote mountain roads' },
+  ],
+};
+
 function imageVariants(image: string) {
   if (!/\.(jpe?g)$/i.test(image)) {
     return [];
@@ -83,6 +98,7 @@ export function DestinationPage() {
 
   const pagePath = localizedPath(`/destinations/${destination.slug}`, locale);
   const requestPath = `${localizedPath('/feedback', locale)}?tour=${encodeURIComponent(copy.title)}`;
+  const guideLinks = isRussian ? [] : destinationGuideLinks[destination.slug] || [];
   const labels = isRussian
     ? {
         home: 'Главная',
@@ -92,6 +108,11 @@ export function DestinationPage() {
         request: 'Уточнить этот маршрут',
         season: 'Сезон',
         type: 'Формат',
+        duration: 'Длительность',
+        price: 'Цена',
+        compareHeading: 'Сравните маршруты',
+        compareText: 'Сопоставьте продолжительность, формат и сезон, затем откройте подробную программу подходящего маршрута.',
+        compareLabel: 'Сравнение туров',
         allTours: 'Все туры по Кыргызстану',
       }
     : {
@@ -102,6 +123,11 @@ export function DestinationPage() {
         request: 'Ask about this route',
         season: 'Season',
         type: 'Travel style',
+        duration: 'Duration',
+        price: 'Price',
+        compareHeading: 'Compare routes at a glance',
+        compareText: 'Check the duration, travel style and season first, then open the detailed itinerary that best fits your trip.',
+        compareLabel: 'Tour comparison',
         allTours: 'All Kyrgyzstan tours',
       };
 
@@ -259,7 +285,7 @@ export function DestinationPage() {
                     <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
                       <span className="text-sm font-medium text-primary">{tour.price}</span>
                       <Link
-                        to={`${publicTourPath}?book=true`}
+                        to={`${publicTourPath}#booking`}
                         className="card-cta text-sm font-medium text-primary"
                         data-track-event="destination_tour_request_click"
                         data-track-label={tour.title}
@@ -273,6 +299,115 @@ export function DestinationPage() {
               );
             })}
           </div>
+
+          {selectedTours.length > 1 ? (
+            <div className="mt-12">
+              <div className="max-w-3xl">
+                <h2 className="text-2xl text-foreground sm:text-3xl">{labels.compareHeading}</h2>
+                <p className="mt-3 leading-7 text-muted-foreground">{labels.compareText}</p>
+              </div>
+              <div
+                className="mt-6 hidden overflow-x-auto rounded-xl border border-border bg-card shadow-sm sm:block"
+                role="region"
+                aria-label={labels.compareLabel}
+                tabIndex={0}
+              >
+                <table className="w-full min-w-[720px] border-collapse text-left">
+                  <thead className="bg-muted/70 text-sm text-foreground">
+                    <tr>
+                      <th scope="col" className="px-5 py-4 font-medium">{labels.route}</th>
+                      <th scope="col" className="px-5 py-4 font-medium">{labels.duration}</th>
+                      <th scope="col" className="px-5 py-4 font-medium">{labels.type}</th>
+                      <th scope="col" className="px-5 py-4 font-medium">{labels.season}</th>
+                      <th scope="col" className="px-5 py-4 font-medium">{labels.price}</th>
+                      <th scope="col" className="px-5 py-4"><span className="sr-only">{labels.details}</span></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border text-sm text-muted-foreground">
+                    {selectedTours.map((tour) => {
+                      const publicTourPath = tourPath(tour, locale);
+                      return (
+                        <tr key={tour.id} className="transition-colors hover:bg-muted/40">
+                          <th scope="row" className="max-w-xs px-5 py-4 font-medium text-foreground">
+                            <Link to={publicTourPath} className="hover:text-primary hover:underline">
+                              {tour.title}
+                            </Link>
+                          </th>
+                          <td className="whitespace-nowrap px-5 py-4">{tour.duration}</td>
+                          <td className="px-5 py-4">{tour.tourType}</td>
+                          <td className="px-5 py-4">{tour.season}</td>
+                          <td className="whitespace-nowrap px-5 py-4 font-medium text-primary">{tour.price}</td>
+                          <td className="px-5 py-4 text-right">
+                            <Link to={publicTourPath} className="card-cta whitespace-nowrap font-medium text-primary">
+                              {labels.details}
+                              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                            </Link>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div
+                className="mt-6 grid gap-3 sm:hidden"
+                role="region"
+                aria-label={labels.compareLabel}
+              >
+                {selectedTours.map((tour) => {
+                  const publicTourPath = tourPath(tour, locale);
+                  return (
+                    <article key={tour.id} className="rounded-xl border border-border bg-card p-5 shadow-sm">
+                      <h3 className="text-lg leading-snug text-foreground">
+                        <Link to={publicTourPath} className="hover:text-primary hover:underline">
+                          {tour.title}
+                        </Link>
+                      </h3>
+                      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                        <div>
+                          <dt className="text-xs uppercase tracking-wide text-muted-foreground">{labels.duration}</dt>
+                          <dd className="mt-1 text-foreground">{tour.duration}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs uppercase tracking-wide text-muted-foreground">{labels.type}</dt>
+                          <dd className="mt-1 text-foreground">{tour.tourType}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs uppercase tracking-wide text-muted-foreground">{labels.season}</dt>
+                          <dd className="mt-1 text-foreground">{tour.season}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs uppercase tracking-wide text-muted-foreground">{labels.price}</dt>
+                          <dd className="mt-1 font-medium text-primary">{tour.price}</dd>
+                        </div>
+                      </dl>
+                      <Link to={publicTourPath} className="card-cta mt-4 text-sm font-medium text-primary">
+                        {labels.details}
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </Link>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+
+          {guideLinks.length ? (
+            <aside className="mt-8 rounded-xl border border-secondary/30 bg-secondary/10 p-5 sm:p-6">
+              <h2 className="text-xl text-foreground">Plan the route before you choose</h2>
+              <p className="mt-2 max-w-3xl leading-7 text-muted-foreground">
+                Check season, road access and activity details in these practical guides, then return to the route comparison above.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+                {guideLinks.map((link) => (
+                  <Link key={link.to} to={link.to} className="card-cta text-sm font-medium text-primary">
+                    {link.label}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                ))}
+              </div>
+            </aside>
+          ) : null}
         </div>
       </section>
 
