@@ -35,6 +35,12 @@ async function preloadCurrentRoute() {
   if (/^\/blogs\/[a-z0-9-]+$/.test(path)) return import('./app/pages/BlogPostPage');
   if (/^\/(?:ru\/)?destinations\/[a-z0-9-]+$/.test(path)) return import('./app/pages/DestinationPage');
   if (path === '/feedback' || path === '/ru/feedback') return import('./app/pages/FeedbackPage');
+  if (
+    path === '/privacy-policy' ||
+    path === '/ru/privacy-policy' ||
+    path === '/terms-of-use' ||
+    path === '/ru/terms-of-use'
+  ) return import('./app/pages/LegalPage');
   if (path === '/auth') return import('./app/pages/AuthPage');
   if (path === '/dashboard') return import('./app/pages/UserDashboardPage');
   if (path === '/create-tour') return import('./app/pages/CreateTourPage');
@@ -43,8 +49,28 @@ async function preloadCurrentRoute() {
   return import('./app/pages/NotFoundPage');
 }
 
+function AppReadySignal() {
+  React.useEffect(() => {
+    const shell = document.querySelector<HTMLElement>('[data-initial-app-shell]');
+    const frame = window.requestAnimationFrame(() => {
+      shell?.setAttribute('aria-hidden', 'true');
+      root.removeAttribute('inert');
+      root.removeAttribute('aria-busy');
+      document.documentElement.classList.add('app-ready');
+    });
+    const cleanupTimer = window.setTimeout(() => shell?.remove(), 500);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(cleanupTimer);
+    };
+  }, []);
+
+  return null;
+}
+
 async function bootstrap() {
-  void preloadCurrentRoute().catch(() => {
+  await preloadCurrentRoute().catch(() => {
     // The normal React lazy boundary still handles a transient route-chunk failure.
   });
 
@@ -56,6 +82,7 @@ async function bootstrap() {
     <React.StrictMode>
       <HelmetProvider>
         <AuthProvider>
+          <AppReadySignal />
           <App />
         </AuthProvider>
       </HelmetProvider>

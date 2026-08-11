@@ -741,6 +741,11 @@ function renderPage(template, page) {
     `<div id="root">${staticContentMarkup(page, tours)}</div>`
   );
 
+  html = html.replace(
+    'aria-label="Loading page"',
+    `aria-label="${language === 'ru' ? 'Загружаем страницу' : 'Loading page'}"`
+  );
+
   return html;
 }
 

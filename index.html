@@ -36,6 +36,233 @@
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>Go Kyrgyzstan Travel | Kyrgyzstan Tours & Private Trips</title>
+    <script>
+      document.documentElement.classList.add('js');
+      window.setTimeout(function () {
+        document.documentElement.classList.add('app-boot-timeout');
+        var loadingPanel = document.querySelector('[data-initial-app-loading]');
+        var errorPanel = document.querySelector('[data-initial-app-error]');
+        if (loadingPanel) {
+          loadingPanel.hidden = true;
+        }
+        if (errorPanel) {
+          errorPanel.hidden = false;
+          if (document.documentElement.lang === 'ru') {
+            errorPanel.querySelector('[data-initial-app-error-title]').textContent = 'Страница загружается дольше обычного';
+            errorPanel.querySelector('[data-initial-app-error-copy]').textContent = 'Проверьте соединение и попробуйте ещё раз или откройте упрощённую версию.';
+            errorPanel.querySelector('[data-initial-app-retry]').textContent = 'Попробовать снова';
+            errorPanel.querySelector('[data-initial-app-basic]').textContent = 'Открыть упрощённую версию';
+          }
+        }
+      }, 8000);
+    </script>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      [data-initial-app-shell] {
+        display: none;
+      }
+
+      html.js:not(.app-ready):not(.app-basic-fallback) {
+        overflow: hidden;
+      }
+
+      html.js [data-initial-app-shell] {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        min-height: 100vh;
+        min-height: 100svh;
+        background: #f4f6f0;
+        color: #15382d;
+        font-family: Inter, system-ui, sans-serif;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 180ms ease, visibility 180ms ease;
+      }
+
+      html.app-ready [data-initial-app-shell],
+      html.app-basic-fallback [data-initial-app-shell] {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      html.dark [data-initial-app-shell] {
+        background: #101a14;
+        color: #f8faf7;
+      }
+
+      .initial-app-shell__header {
+        display: flex;
+        min-height: 4rem;
+        align-items: center;
+        border-bottom: 1px solid rgba(21, 56, 45, 0.12);
+        padding: 0 1.25rem;
+      }
+
+      html.dark .initial-app-shell__header {
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .initial-app-shell__brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1rem;
+        font-weight: 650;
+      }
+
+      .initial-app-shell__mark {
+        display: grid;
+        width: 2.25rem;
+        height: 2.25rem;
+        place-items: center;
+        border-radius: 999px;
+        background: #1f6b50;
+        color: #fff;
+        font-size: 0.75rem;
+      }
+
+      .initial-app-shell__stage {
+        display: grid;
+        min-height: calc(100vh - 4rem);
+        min-height: calc(100svh - 4rem);
+        place-items: center;
+        padding: 2rem 1.25rem;
+        background:
+          radial-gradient(circle at 18% 20%, rgba(242, 177, 121, 0.18), transparent 30%),
+          linear-gradient(145deg, rgba(31, 107, 80, 0.13), transparent 58%);
+        box-sizing: border-box;
+      }
+
+      .initial-app-shell__card {
+        width: min(38rem, 100%);
+      }
+
+      [data-initial-app-error][hidden] {
+        display: none;
+      }
+
+      .initial-app-shell__error {
+        border: 1px solid rgba(21, 56, 45, 0.14);
+        border-radius: 1.25rem;
+        background: rgba(255, 255, 255, 0.82);
+        padding: 1.5rem;
+        box-shadow: 0 1rem 3rem rgba(21, 56, 45, 0.12);
+        backdrop-filter: blur(12px);
+      }
+
+      html.dark .initial-app-shell__error {
+        border-color: rgba(255, 255, 255, 0.12);
+        background: rgba(16, 26, 20, 0.88);
+      }
+
+      .initial-app-shell__error h1 {
+        margin: 0;
+        font-size: clamp(1.35rem, 4vw, 1.8rem);
+        line-height: 1.2;
+      }
+
+      .initial-app-shell__error p {
+        margin: 0.75rem 0 0;
+        color: #4d675e;
+        line-height: 1.6;
+      }
+
+      html.dark .initial-app-shell__error p {
+        color: #c5d0cb;
+      }
+
+      .initial-app-shell__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+      }
+
+      .initial-app-shell__actions button {
+        min-height: 2.75rem;
+        border: 1px solid #1f6b50;
+        border-radius: 999px;
+        padding: 0.6rem 1rem;
+        background: #1f6b50;
+        color: #fff;
+        font: inherit;
+        font-weight: 650;
+        cursor: pointer;
+      }
+
+      .initial-app-shell__actions button + button {
+        background: transparent;
+        color: #1f6b50;
+      }
+
+      html.dark .initial-app-shell__actions button + button {
+        color: #d6eee4;
+      }
+
+      .initial-app-shell__actions button:focus-visible {
+        outline: 3px solid rgba(31, 107, 80, 0.3);
+        outline-offset: 3px;
+      }
+
+      .initial-app-shell__line,
+      .initial-app-shell__button {
+        display: block;
+        border-radius: 999px;
+        background: rgba(21, 56, 45, 0.14);
+        animation: initial-shell-pulse 1.2s ease-in-out infinite alternate;
+      }
+
+      html.dark .initial-app-shell__line,
+      html.dark .initial-app-shell__button {
+        background: rgba(255, 255, 255, 0.13);
+      }
+
+      .initial-app-shell__line {
+        height: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .initial-app-shell__line--eyebrow {
+        width: 7rem;
+      }
+
+      .initial-app-shell__line--title {
+        width: 92%;
+        height: 2.5rem;
+      }
+
+      .initial-app-shell__line--copy {
+        width: 76%;
+      }
+
+      .initial-app-shell__button {
+        width: 10rem;
+        height: 3rem;
+        margin-top: 1.75rem;
+      }
+
+      @keyframes initial-shell-pulse {
+        from { opacity: 0.48; }
+        to { opacity: 0.88; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html.js [data-initial-app-shell] {
+          transition: none;
+        }
+
+        .initial-app-shell__line,
+        .initial-app-shell__button {
+          animation: none;
+        }
+      }
+    </style>
     <script type="text/javascript">
       (function (l) {
         if (l.search[1] === '/') {
@@ -66,7 +293,49 @@
     </script>
   </head>
   <body>
+    <div data-initial-app-shell>
+      <div class="initial-app-shell__header">
+        <div class="initial-app-shell__brand">
+          <span class="initial-app-shell__mark" aria-hidden="true">KT</span>
+          <span>Go Kyrgyzstan Travel</span>
+        </div>
+      </div>
+      <div class="initial-app-shell__stage">
+        <div class="initial-app-shell__card">
+          <div data-initial-app-loading role="status" aria-label="Loading page">
+            <div aria-hidden="true">
+              <span class="initial-app-shell__line initial-app-shell__line--eyebrow"></span>
+              <span class="initial-app-shell__line initial-app-shell__line--title"></span>
+              <span class="initial-app-shell__line initial-app-shell__line--copy"></span>
+              <span class="initial-app-shell__line initial-app-shell__line--copy"></span>
+              <span class="initial-app-shell__button"></span>
+            </div>
+          </div>
+          <div class="initial-app-shell__error" data-initial-app-error role="alert" hidden>
+            <h1 data-initial-app-error-title>Page is taking longer than usual</h1>
+            <p data-initial-app-error-copy>Check your connection and try again, or open the basic version of this page.</p>
+            <div class="initial-app-shell__actions">
+              <button type="button" data-initial-app-retry>Try again</button>
+              <button type="button" data-initial-app-basic>Open basic version</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="root"></div>
+    <script>
+      var appRoot = document.getElementById('root');
+      appRoot.setAttribute('inert', '');
+      appRoot.setAttribute('aria-busy', 'true');
+      document.querySelector('[data-initial-app-retry]').addEventListener('click', function () {
+        window.location.reload();
+      });
+      document.querySelector('[data-initial-app-basic]').addEventListener('click', function () {
+        document.documentElement.classList.add('app-basic-fallback');
+        appRoot.removeAttribute('inert');
+        appRoot.removeAttribute('aria-busy');
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

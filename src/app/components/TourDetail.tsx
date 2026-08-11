@@ -36,72 +36,179 @@ interface TourDetailProps {
 
 const formString = z.string();
 const requiredFormString = (message: string) => formString.pipe(z.string().trim().min(1, message));
-const optionalEmail = formString.pipe(
-  z.string().refine((value) => !value || z.string().email().safeParse(value).success, {
-    message: 'Use a valid email or leave it empty.',
-  })
-);
 
-const bookingDetailsSchema = z
-  .object({
-    name: requiredFormString('Name is required.'),
-    countryOfResidence: requiredFormString('Choose your country of residence.'),
-    contactPreference: requiredFormString('Choose how we should contact you.'),
-    email: optionalEmail,
-    telegramUsername: formString,
-    phone: formString,
-    participants: z.number().min(1, 'Add at least 1 participant.'),
-    startDate: formString,
-    endDate: formString,
-    dateFlexibility: formString,
-    notes: formString,
-  })
-  .superRefine((values, ctx) => {
-    if (values.contactPreference === 'whatsapp') {
-      const phone = values.phone.replace(/[\s()-]/g, '');
-      if (!phone) {
+const bookingCopy = {
+  en: {
+    nameLabel: 'Name *',
+    namePlaceholder: 'For example, Adilkan',
+    countryLabel: 'Country of residence *',
+    countryPlaceholder: 'For example, Kyrgyzstan',
+    countryHint: 'Start typing, then choose a country from the list.',
+    contactLabel: 'How should we contact you? *',
+    contactPlaceholder: 'Choose a contact method',
+    contactHint: 'WhatsApp or Telegram is preferred. Email also works well for written communication.',
+    telegramLabel: 'Telegram username',
+    telegramPlaceholder: '@username',
+    whatsappLabel: 'WhatsApp number',
+    whatsappPlaceholder: '+1 803 555 0123',
+    emailLabel: 'Email',
+    emailPlaceholder: 'you@example.com',
+    startDateLabel: 'Preferred Start Date',
+    endDateLabel: 'Preferred End Date',
+    flexibilityLabel: 'Flexible Timing',
+    flexibilityPlaceholder: 'Any week in July, weekend only, or not sure yet',
+    participantsLabel: 'Number of Participants',
+    notesLabel: 'Additional Notes',
+    notesPlaceholder: 'Any special requests, questions, or preferred contact time...',
+    summaryTitle: 'Request summary',
+    summaryTour: 'Tour',
+    summaryTravelers: 'Travelers',
+    summaryEstimatedTotal: 'Estimated total',
+    summaryPrice: 'Price',
+    summaryNote: 'The final price and availability will be confirmed before booking.',
+    sending: 'Sending...',
+    send: 'Send Tour Request',
+    cancel: 'Cancel',
+    successTitle: 'Thank you!',
+    successMessage: 'Your request was sent to Go Kyrgyzstan Travel. We will contact you through the method you chose.',
+    close: 'Close',
+    backendError: 'The request service is temporarily unavailable. Please contact us through WhatsApp or Telegram.',
+    submitError: 'Unable to submit your booking request. Please try again or contact us through WhatsApp or Telegram.',
+    validation: {
+      nameRequired: 'Name is required.',
+      countryRequired: 'Choose your country of residence.',
+      contactRequired: 'Choose how we should contact you.',
+      invalidEmail: 'Use a valid email or leave it empty.',
+      participantsMinimum: 'Add at least 1 participant.',
+      phoneRequired: 'Add the phone number with its country code.',
+      phoneInvalid: 'Use international format, for example +1 803 555 0123.',
+      telegramRequired: 'Add your Telegram username.',
+      emailRequired: 'Add your email address.',
+      endDateInvalid: 'End date should be after the start date.',
+    },
+  },
+  ru: {
+    nameLabel: 'Имя *',
+    namePlaceholder: 'Например, Айдана',
+    countryLabel: 'Страна проживания *',
+    countryPlaceholder: 'Например, Кыргызстан',
+    countryHint: 'Начните вводить название и выберите страну из списка.',
+    contactLabel: 'Как с вами связаться? *',
+    contactPlaceholder: 'Выберите способ связи',
+    contactHint: 'Предпочтительнее WhatsApp или Telegram. По email тоже можно вести переписку.',
+    telegramLabel: 'Имя пользователя Telegram',
+    telegramPlaceholder: '@имя_пользователя',
+    whatsappLabel: 'Номер WhatsApp',
+    whatsappPlaceholder: '+996 555 123 456',
+    emailLabel: 'Электронная почта',
+    emailPlaceholder: 'you@example.com',
+    startDateLabel: 'Желаемая дата начала',
+    endDateLabel: 'Желаемая дата окончания',
+    flexibilityLabel: 'Гибкость по датам',
+    flexibilityPlaceholder: 'Например, любая неделя июля или только выходные',
+    participantsLabel: 'Количество участников',
+    notesLabel: 'Дополнительные пожелания',
+    notesPlaceholder: 'Особые пожелания, вопросы или удобное время для связи...',
+    summaryTitle: 'Кратко о заявке',
+    summaryTour: 'Тур',
+    summaryTravelers: 'Участники',
+    summaryEstimatedTotal: 'Предварительная стоимость',
+    summaryPrice: 'Стоимость',
+    summaryNote: 'Итоговую стоимость и наличие мест мы подтвердим до бронирования.',
+    sending: 'Отправляем...',
+    send: 'Отправить заявку',
+    cancel: 'Отменить',
+    successTitle: 'Спасибо!',
+    successMessage: 'Заявка отправлена в Go Kyrgyzstan Travel. Мы свяжемся с вами выбранным способом.',
+    close: 'Закрыть',
+    backendError: 'Сервис заявок временно недоступен. Напишите нам в WhatsApp или Telegram.',
+    submitError: 'Не удалось отправить заявку. Попробуйте ещё раз или напишите нам в WhatsApp либо Telegram.',
+    validation: {
+      nameRequired: 'Укажите имя.',
+      countryRequired: 'Выберите страну проживания.',
+      contactRequired: 'Выберите удобный способ связи.',
+      invalidEmail: 'Укажите корректный email или оставьте поле пустым.',
+      participantsMinimum: 'Укажите как минимум одного участника.',
+      phoneRequired: 'Укажите номер телефона с кодом страны.',
+      phoneInvalid: 'Используйте международный формат, например +996 555 123 456.',
+      telegramRequired: 'Укажите имя пользователя Telegram.',
+      emailRequired: 'Укажите адрес электронной почты.',
+      endDateInvalid: 'Дата окончания должна быть позже даты начала.',
+    },
+  },
+} as const;
+
+function createBookingDetailsSchema(locale: SiteLocale) {
+  const messages = bookingCopy[locale].validation;
+  const optionalEmail = formString.pipe(
+    z.string().refine((value) => !value || z.string().email().safeParse(value).success, {
+      message: messages.invalidEmail,
+    })
+  );
+
+  return z
+    .object({
+      name: requiredFormString(messages.nameRequired),
+      countryOfResidence: requiredFormString(messages.countryRequired),
+      contactPreference: requiredFormString(messages.contactRequired),
+      email: optionalEmail,
+      telegramUsername: formString,
+      phone: formString,
+      participants: z
+        .number({ error: messages.participantsMinimum })
+        .min(1, messages.participantsMinimum),
+      startDate: formString,
+      endDate: formString,
+      dateFlexibility: formString,
+      notes: formString,
+    })
+    .superRefine((values, ctx) => {
+      if (values.contactPreference === 'whatsapp') {
+        const phone = values.phone.replace(/[\s()-]/g, '');
+        if (!phone) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['phone'],
+            message: messages.phoneRequired,
+          });
+        } else if (!/^\+\d{7,15}$/.test(phone)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['phone'],
+            message: messages.phoneInvalid,
+          });
+        }
+      }
+      if (values.contactPreference === 'telegram' && !values.telegramUsername?.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          path: ['phone'],
-          message: 'Add the phone number with its country code.',
-        });
-      } else if (!/^\+\d{7,15}$/.test(phone)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['phone'],
-          message: 'Use international format, for example +1 803 555 0123.',
+          path: ['telegramUsername'],
+          message: messages.telegramRequired,
         });
       }
-    }
-    if (values.contactPreference === 'telegram' && !values.telegramUsername?.trim()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['telegramUsername'],
-        message: 'Add your Telegram username.',
-      });
-    }
-    if (values.contactPreference === 'email' && !values.email?.trim()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['email'],
-        message: 'Add your email address.',
-      });
-    }
+      if (values.contactPreference === 'email' && !values.email?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['email'],
+          message: messages.emailRequired,
+        });
+      }
 
-    if (
-      values.startDate &&
-      values.endDate &&
-      Date.parse(values.endDate) < Date.parse(values.startDate)
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['endDate'],
-        message: 'End date should be after the start date.',
-      });
-    }
-  });
+      if (
+        values.startDate &&
+        values.endDate &&
+        Date.parse(values.endDate) < Date.parse(values.startDate)
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['endDate'],
+          message: messages.endDateInvalid,
+        });
+      }
+    });
+}
 
-type BookingDetailsValues = z.infer<typeof bookingDetailsSchema>;
+type BookingDetailsValues = z.infer<ReturnType<typeof createBookingDetailsSchema>>;
 
 export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetailProps) {
   const [activeTab, setActiveTab] = useState('overview');
@@ -537,10 +644,6 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
               {!showBookingForm ? (
                 <Button
                   onClick={() => {
-                    if (isRussian) {
-                      navigate(`${localizedPath('/feedback', locale)}?tour=${encodeURIComponent(tour.title)}`);
-                      return;
-                    }
                     shouldFocusBookingRef.current = true;
                     setShowBookingForm(true);
                   }}
@@ -596,13 +699,14 @@ export function TourDetail({ tour, locale = 'en', relatedTours = [] }: TourDetai
 
 function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => void; locale: SiteLocale }) {
   const { user, profile } = useAuth();
-  const isRussian = locale === 'ru';
+  const copy = bookingCopy[locale];
   const [step, setStep] = useState<'details' | 'done'>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
+  const detailsSchema = useMemo(() => createBookingDetailsSchema(locale), [locale]);
   const detailsForm = useForm<BookingDetailsValues>({
-    resolver: zodResolver(bookingDetailsSchema),
+    resolver: zodResolver(detailsSchema),
     defaultValues: {
       name: profile?.name || '',
       countryOfResidence: '',
@@ -628,6 +732,9 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
 
   const participantsCount = Math.max(1, detailsForm.watch('participants') || 1);
   const totalPrice = pricePerPerson * participantsCount;
+  const displayTourPrice = locale === 'ru' && tour.price === 'Price on request'
+    ? 'По запросу'
+    : tour.price;
 
   useEffect(() => {
     if (profile?.name || profile?.email || user?.email) {
@@ -646,7 +753,7 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
     setErrorMessage(null);
 
     if (!guestSubmissionBackendEnabled) {
-      setErrorMessage('Backend is not configured. Please update your .env file.');
+      setErrorMessage(copy.backendError);
       return;
     }
 
@@ -685,9 +792,11 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
       }
       setStep('done');
     } catch (err) {
-      setErrorMessage(
-        err instanceof Error ? err.message : 'Unable to submit your booking request.'
-      );
+      if (locale === 'en' && err instanceof Error && err.message) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage(copy.submitError);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -697,14 +806,10 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
     return (
       <div className="text-center py-6">
         <Check className="h-12 w-12 text-secondary mx-auto mb-4" />
-        <h4 className="text-lg text-foreground mb-2">Thank you!</h4>
-        <p className="text-sm text-muted-foreground mb-4">
-          {isRussian
-            ? 'Заявка отправлена в Go Kyrgyzstan Travel. Мы свяжемся с вами выбранным способом.'
-            : 'Your request was sent to Go Kyrgyzstan Travel. We will contact you through the method you chose.'}
-        </p>
+        <h4 className="text-lg text-foreground mb-2">{copy.successTitle}</h4>
+        <p className="text-sm text-muted-foreground mb-4">{copy.successMessage}</p>
         <Button onClick={onCancel} variant="outline" size="sm">
-          Close
+          {copy.close}
         </Button>
       </div>
     );
@@ -715,10 +820,10 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
       {step === 'details' && (
         <form onSubmit={detailsForm.handleSubmit(handleDetailsSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="name">Name *</Label>
+            <Label htmlFor="name">{copy.nameLabel}</Label>
             <Input
               id="name"
-              placeholder="Adilkan"
+              placeholder={copy.namePlaceholder}
               {...detailsForm.register('name')}
             />
             {detailsForm.formState.errors.name && (
@@ -728,58 +833,59 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
             )}
           </div>
           <div>
-            <Label htmlFor="countryOfResidence">{isRussian ? 'Страна проживания *' : 'Country of residence *'}</Label>
+            <Label htmlFor="countryOfResidence">{copy.countryLabel}</Label>
             <Input
               id="countryOfResidence"
               list="booking-country-options"
               autoComplete="country-name"
-              placeholder={isRussian ? 'Например, Кыргызстан' : 'For example, Kyrgyzstan'}
+              placeholder={copy.countryPlaceholder}
               {...detailsForm.register('countryOfResidence')}
             />
             <datalist id="booking-country-options">
               {countryOptions.map((country) => <option key={country.code} value={country.value} />)}
             </datalist>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {isRussian ? 'Начните вводить название и выберите страну из списка.' : 'Start typing, then choose a country from the list.'}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{copy.countryHint}</p>
             {detailsForm.formState.errors.countryOfResidence && (
               <p className="text-xs text-red-600">{detailsForm.formState.errors.countryOfResidence.message}</p>
             )}
           </div>
           <div>
-            <Label htmlFor="contactPreference">{isRussian ? 'Как с вами связаться? *' : 'How should we contact you? *'}</Label>
+            <Label htmlFor="contactPreference">{copy.contactLabel}</Label>
             <select
               id="contactPreference"
               className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
               {...detailsForm.register('contactPreference')}
             >
-              <option value="" disabled>{isRussian ? 'Выберите способ связи' : 'Choose a contact method'}</option>
+              <option value="" disabled>{copy.contactPlaceholder}</option>
               <option value="whatsapp">WhatsApp</option>
               <option value="telegram">Telegram</option>
               <option value="email">Email</option>
             </select>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {isRussian ? 'Предпочтительнее WhatsApp или Telegram. По email тоже можно вести переписку.' : 'WhatsApp or Telegram is preferred. Email also works well for written communication.'}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{copy.contactHint}</p>
             {detailsForm.formState.errors.contactPreference && (
               <p className="text-xs text-red-600">{detailsForm.formState.errors.contactPreference.message}</p>
             )}
           </div>
           <div>
-            <Label htmlFor="telegramUsername">{isRussian ? 'Имя пользователя Telegram' : 'Telegram username'}</Label>
+            <Label htmlFor="telegramUsername">{copy.telegramLabel}</Label>
             <Input
               id="telegramUsername"
-              placeholder="@adilkan_dev"
+              placeholder={copy.telegramPlaceholder}
               {...detailsForm.register('telegramUsername')}
             />
+            {detailsForm.formState.errors.telegramUsername && (
+              <p className="text-xs text-red-600">
+                {detailsForm.formState.errors.telegramUsername.message}
+              </p>
+            )}
           </div>
           <div>
-            <Label htmlFor="phone">{isRussian ? 'Номер WhatsApp' : 'WhatsApp number'}</Label>
+            <Label htmlFor="phone">{copy.whatsappLabel}</Label>
             <Input
               id="phone"
               type="tel"
               inputMode="tel"
-              placeholder="+1 803 555 0123"
+              placeholder={copy.whatsappPlaceholder}
               {...detailsForm.register('phone')}
             />
             {detailsForm.formState.errors.phone && (
@@ -789,11 +895,11 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
             )}
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{copy.emailLabel}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder={copy.emailPlaceholder}
               {...detailsForm.register('email')}
             />
             {detailsForm.formState.errors.email && (
@@ -804,7 +910,7 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="startDate">Preferred Start Date</Label>
+              <Label htmlFor="startDate">{copy.startDateLabel}</Label>
               <Input
                 id="startDate"
                 type="date"
@@ -817,7 +923,7 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
               )}
             </div>
             <div>
-              <Label htmlFor="endDate">Preferred End Date</Label>
+              <Label htmlFor="endDate">{copy.endDateLabel}</Label>
               <Input
                 id="endDate"
                 type="date"
@@ -831,15 +937,15 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
             </div>
           </div>
           <div>
-            <Label htmlFor="dateFlexibility">Flexible Timing</Label>
+            <Label htmlFor="dateFlexibility">{copy.flexibilityLabel}</Label>
             <Input
               id="dateFlexibility"
-              placeholder="Any week in July, weekend only, or not sure yet"
+              placeholder={copy.flexibilityPlaceholder}
               {...detailsForm.register('dateFlexibility')}
             />
           </div>
           <div>
-            <Label htmlFor="participants">Number of Participants</Label>
+            <Label htmlFor="participants">{copy.participantsLabel}</Label>
             <Input
               id="participants"
               type="number"
@@ -853,13 +959,33 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
             )}
           </div>
           <div>
-            <Label htmlFor="notes">Additional Notes</Label>
+            <Label htmlFor="notes">{copy.notesLabel}</Label>
             <Textarea
               id="notes"
-              placeholder="Any special requests, questions, or preferred contact time..."
+              placeholder={copy.notesPlaceholder}
               rows={3}
               {...detailsForm.register('notes')}
             />
+          </div>
+          <div className="rounded-xl border border-border bg-muted/40 p-4" aria-live="polite">
+            <h3 className="text-sm font-medium text-foreground">{copy.summaryTitle}</h3>
+            <dl className="mt-3 space-y-2 text-sm">
+              <div className="flex items-start justify-between gap-4">
+                <dt className="text-muted-foreground">{copy.summaryTour}</dt>
+                <dd className="max-w-[65%] text-right text-foreground">{tour.title}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <dt className="text-muted-foreground">{copy.summaryTravelers}</dt>
+                <dd className="text-foreground">{participantsCount}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4 border-t border-border pt-2 font-medium">
+                <dt className="text-foreground">
+                  {totalPrice ? copy.summaryEstimatedTotal : copy.summaryPrice}
+                </dt>
+                <dd className="text-foreground">{totalPrice ? `$${totalPrice}` : displayTourPrice}</dd>
+              </div>
+            </dl>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{copy.summaryNote}</p>
           </div>
           {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
           <div className="flex flex-col sm:flex-row gap-2">
@@ -870,10 +996,10 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
               data-track-event="tour_detail_request_submit"
               data-track-label={tour.title}
             >
-              {isSubmitting ? 'Sending...' : 'Send Tour Request'}
+              {isSubmitting ? copy.sending : copy.send}
             </Button>
             <Button type="button" onClick={onCancel} variant="outline">
-              Cancel
+              {copy.cancel}
             </Button>
           </div>
         </form>

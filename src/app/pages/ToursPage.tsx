@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ToursGrid } from '../components/ToursGrid';
 import { Button } from '../components/ui/button';
@@ -11,17 +11,27 @@ import { breadcrumbJsonLd, tourListJsonLd } from '../lib/seo';
 import { localeAlternates } from '../lib/locale';
 import { tourPath } from '../lib/tourRoutes';
 
-const filters = [
-  'All',
-  'Mountains',
-  'Lakes',
-  'Culture',
-  'Adventure',
-  'Family',
-  'Short trips',
-  'Road trip',
-  'Weekend',
+type FilterKey =
+  | 'all'
+  | 'horseback'
+  | 'road-trip'
+  | 'active-adventure'
+  | 'family'
+  | 'two-three-days'
+  | 'four-six-days'
+  | 'seven-plus-days';
+
+const filters: { key: FilterKey; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'horseback', label: 'Horse riding' },
+  { key: 'road-trip', label: 'Road trips' },
+  { key: 'active-adventure', label: 'Active tours' },
+  { key: 'family', label: 'Family' },
+  { key: 'two-three-days', label: '2–3 days' },
+  { key: 'four-six-days', label: '4–6 days' },
+  { key: 'seven-plus-days', label: '7+ days' },
 ];
+const filterKeys = new Set<FilterKey>(filters.map((filter) => filter.key));
 
 const routeHighlights = [
   {
@@ -58,50 +68,64 @@ const routeHighlights = [
   },
 ];
 
-function tourMatchesFilter(tourText: string, duration: string, filter: string) {
-  if (filter === 'All') {
+function getDurationDays(duration: string) {
+  const days = Number(duration.match(/\d+/)?.[0]);
+  return Number.isFinite(days) ? days : 0;
+}
+
+function tourMatchesFilter(
+  tourTitle: string,
+  tourType: string,
+  duration: string,
+  filter: FilterKey
+) {
+  if (filter === 'all') {
     return true;
   }
 
-  const lowerFilter = filter.toLowerCase();
-  if (lowerFilter === 'short trips') {
-    const days = Number(duration.replace(/[^0-9]/g, ''));
-    return Number.isFinite(days) && days > 0 && days <= 3;
+  const normalizedType = normalizeSearchText(tourType);
+  if (filter === 'horseback') {
+    return normalizedType.includes('horseback') || normalizedType.includes('horse riding');
+  }
+  if (filter === 'road-trip') {
+    return normalizedType.includes('road trip');
+  }
+  if (filter === 'active-adventure') {
+    return normalizedType.includes('active adventure');
+  }
+  if (filter === 'family') {
+    return normalizeSearchText(tourTitle).includes('family');
   }
 
-  if (lowerFilter === 'lakes') {
-    return tourText.includes('lake') || tourText.includes('kul') || tourText.includes('song-kul');
+  const days = getDurationDays(duration);
+  if (filter === 'two-three-days') {
+    return days >= 2 && days <= 3;
   }
-
-  if (lowerFilter === 'mountains') {
-    return tourText.includes('mountain') || tourText.includes('peak') || tourText.includes('gorge') || tourText.includes('archa');
+  if (filter === 'four-six-days') {
+    return days >= 4 && days <= 6;
   }
-
-  if (lowerFilter === 'road trip') {
-    return tourText.includes('road') || tourText.includes('circuit') || tourText.includes('drive');
-  }
-
-  if (lowerFilter === 'weekend') {
-    const days = Number(duration.replace(/[^0-9]/g, ''));
-    return Number.isFinite(days) && days > 0 && days <= 3;
-  }
-
-  return tourText.includes(lowerFilter);
+  return days >= 7;
 }
 
 function normalizeSearchText(value: string) {
   return value
     .toLowerCase()
     .normalize('NFKD')
+    .replace(/\p{M}+/gu, '')
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
+}
+
+function isFilterKey(value: string | null): value is FilterKey {
+  return Boolean(value && filterKeys.has(value as FilterKey));
 }
 
 export function ToursPage() {
   const { tours, loading, error } = useToursData();
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get('q') || '';
-  const [activeFilter, setActiveFilter] = useState('All');
+  const filterParam = searchParams.get('filter');
+  const activeFilter: FilterKey = isFilterKey(filterParam) ? filterParam : 'all';
 
   const filteredTours = useMemo(() => {
     return tours.filter((tour) => {
@@ -115,7 +139,12 @@ export function ToursPage() {
         .join(' '));
       const queryTokens = normalizeSearchText(search).split(' ').filter(Boolean);
       const matchesSearch = queryTokens.every((token) => tourText.includes(token));
-      const matchesFilter = tourMatchesFilter(tourText, tour.duration, activeFilter);
+      const matchesFilter = tourMatchesFilter(
+        tour.title,
+        tour.tourType,
+        tour.duration,
+        activeFilter
+      );
       return matchesSearch && matchesFilter;
     });
   }, [activeFilter, search, tours]);
@@ -129,6 +158,30 @@ export function ToursPage() {
     ],
     [tours]
   );
+
+  const updateSearch = (query: string) => {
+    setSearchParams((currentParams) => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (query) {
+        nextParams.set('q', query);
+      } else {
+        nextParams.delete('q');
+      }
+      return nextParams;
+    }, { replace: true });
+  };
+
+  const updateFilter = (filter: FilterKey) => {
+    setSearchParams((currentParams) => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (filter === 'all') {
+        nextParams.delete('filter');
+      } else {
+        nextParams.set('filter', filter);
+      }
+      return nextParams;
+    });
+  };
 
   return (
     <div className="bg-background pb-20 md:pb-0">
@@ -157,14 +210,17 @@ export function ToursPage() {
 
           <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+              <label htmlFor="tour-search" className="sr-only">Search tours</label>
+              <Search
+                className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
               <Input
+                id="tour-search"
+                type="search"
                 placeholder="Search by route, region, lake, mountain, culture..."
                 value={search}
-                onChange={(event) => {
-                  const query = event.target.value;
-                  setSearchParams(query ? { q: query } : {}, { replace: true });
-                }}
+                onChange={(event) => updateSearch(event.target.value)}
                 className="h-12 pl-10"
               />
             </div>
@@ -207,28 +263,32 @@ export function ToursPage() {
         </div>
       </section>
 
-      <section className="sticky top-14 z-30 border-b border-border/50 bg-background/60 px-4 backdrop-blur-xl shadow-sm sm:px-6 lg:px-8">
+      <section
+        className="sticky top-14 z-30 border-b border-border/50 bg-background/60 px-4 backdrop-blur-xl shadow-sm sm:px-6 lg:px-8"
+        aria-label="Tour filters"
+      >
         <div className="mx-auto flex max-w-6xl gap-3 overflow-x-auto py-4 scrollbar-hide">
           {filters.map((filter) => (
             <button
-              key={filter}
+              key={filter.key}
               type="button"
-              onClick={() => setActiveFilter(filter)}
+              onClick={() => updateFilter(filter.key)}
+              aria-pressed={activeFilter === filter.key}
               className={cn(
                 'min-h-[40px] whitespace-nowrap rounded-full border px-5 text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95',
-                activeFilter === filter
+                activeFilter === filter.key
                   ? 'border-primary bg-primary text-primary-foreground shadow-md'
                   : 'border-border/50 bg-background/50 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-muted'
               )}
             >
-              {filter}
+              {filter.label}
             </button>
           ))}
         </div>
       </section>
 
       <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground" aria-live="polite" aria-atomic="true">
           Showing {filteredTours.length} of {tours.length} tours
         </p>
       </div>
