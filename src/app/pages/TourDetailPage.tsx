@@ -6,7 +6,7 @@ import { useToursData } from '../hooks/useTours';
 import { breadcrumbJsonLd, tourJsonLd } from '../lib/seo';
 import { localeAlternates } from '../lib/locale';
 import { tourIdFromSlug, tourPath } from '../lib/tourRoutes';
-import { tourMetaDescription } from '../lib/tourSeo';
+import { tourMetaDescription, tourMetaTitle } from '../lib/tourSeo';
 
 export function TourDetailPage() {
   const { tourSlug } = useParams();
@@ -19,11 +19,7 @@ export function TourDetailPage() {
     }
     return tours.find((tour) => tour.id === id) ?? null;
   }, [tourSlug, tours]);
-  const selectedTourTitle = selectedTour
-    ? /\btour\b/i.test(selectedTour.title)
-      ? selectedTour.title
-      : `${selectedTour.title} Tour`
-    : 'Tour';
+  const selectedTourTitle = selectedTour ? tourMetaTitle(selectedTour) : 'Tour';
   const relatedTours = useMemo(() => {
     if (!selectedTour?.relatedTourIds?.length) {
       return [];

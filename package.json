@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/generate-seo-pages.mjs",
+    "build": "vite build && node scripts/generate-seo-pages.mjs && node scripts/check-seo-output.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check": "npm run typecheck && node --check backend/server.mjs && npm run build",
+    "seo:check": "node scripts/check-seo-output.mjs",
     "preview": "vite preview",
     "server:start": "node backend/server.mjs",
     "server:dev": "node --watch backend/server.mjs",

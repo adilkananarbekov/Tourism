@@ -148,6 +148,15 @@ function nowIso() {
   return new Date().toISOString();
 }
 
+function sitemapDate(value) {
+  if (typeof value !== 'string' || !value.trim()) {
+    return '';
+  }
+
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString().slice(0, 10) : '';
+}
+
 function isObject(value) {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -724,7 +733,7 @@ function deleteContentItem(name, id) {
   return next.length !== items.length;
 }
 
-const contentSeedVersion = 2;
+const contentSeedVersion = 3;
 
 function parseContentUpdatedAt(value) {
   if (typeof value !== 'string' || !value.trim()) {
@@ -856,6 +865,8 @@ function mapTourRow(row) {
     id: Number(row.id),
     title: row.title,
     is_active: Boolean(row.is_active),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
   };
 }
 
@@ -2245,8 +2256,8 @@ app.get('/api/sitemap.xml', (_req, res) => {
       const optimizedHeroImage = heroImage.replace(/\.(jpe?g)$/i, '-960.webp');
       const images = optimizedHeroImage.startsWith('/') ? [optimizedHeroImage] : [];
       return [
-        { path: `/destinations/${slug}`, priority: '0.8', changefreq: 'monthly', images },
-        { path: `/ru/destinations/${slug}`, priority: '0.7', changefreq: 'monthly', images },
+        { path: `/destinations/${slug}`, priority: '0.8', changefreq: 'monthly', lastmod: sitemapDate(destination.updatedAt), images },
+        { path: `/ru/destinations/${slug}`, priority: '0.7', changefreq: 'monthly', lastmod: sitemapDate(destination.updatedAt), images },
       ];
     });
   const staticRoutes = [
@@ -2274,6 +2285,7 @@ app.get('/api/sitemap.xml', (_req, res) => {
       path,
       priority: '0.8',
       changefreq: 'monthly',
+      lastmod: sitemapDate(tour.updatedAt || tour.createdAt),
       images: tour.image ? [tour.image] : [],
       } : null;
     })
@@ -2288,6 +2300,7 @@ app.get('/api/sitemap.xml', (_req, res) => {
       path,
       priority: '0.7',
       changefreq: 'monthly',
+      lastmod: sitemapDate(tour.updatedAt || tour.createdAt),
       images: tour.image ? [tour.image] : [],
       } : null;
     })
@@ -2298,10 +2311,13 @@ app.get('/api/sitemap.xml', (_req, res) => {
       path: `/blogs/${encodeURIComponent(asString(post.slug || post.id, 180))}`,
       priority: post.featured ? '0.8' : '0.7',
       changefreq: 'monthly',
-      lastmod: asString(post.updatedAt || post.publishedAt || post.createdAt, 40).slice(0, 10),
+      lastmod: sitemapDate(post.updatedAt || post.publishedAt || post.createdAt),
     }))
     .filter((route) => !route.path.endsWith('/'));
-  const routes = [...staticRoutes, ...destinationRoutes, ...tourRoutes, ...russianTourRoutes, ...blogRoutes];
+  const routes = [...new Map(
+    [...staticRoutes, ...destinationRoutes, ...tourRoutes, ...russianTourRoutes, ...blogRoutes]
+      .map((route) => [route.path, route])
+  ).values()];
   const localizedRouteAlternates = (routePath) => {
     const englishPath = routePath === '/ru'
       ? '/'
@@ -2331,7 +2347,12 @@ app.get('/api/sitemap.xml', (_req, res) => {
       const lastmod = route.lastmod ? `<lastmod>${escapeHtml(route.lastmod)}</lastmod>` : '';
       const alternates = localizedRouteAlternates(route.path);
       const images = (route.images || [])
-        .map((image) => `<image:image><image:loc>${escapeHtml(`${publicSiteUrl}${image}`)}</image:loc></image:image>`)
+        .map((image) => {
+          const imageUrl = /^https?:\/\//i.test(image)
+            ? image
+            : `${publicSiteUrl}${image.startsWith('/') ? image : `/${image}`}`;
+          return `<image:image><image:loc>${escapeHtml(imageUrl)}</image:loc></image:image>`;
+        })
         .join('');
       return [
         '<url>',

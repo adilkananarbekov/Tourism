@@ -40,7 +40,14 @@ export function SEO({
   const metaDescription = description || SITE_DESCRIPTION;
   const metaImage = absoluteUrl(withBasePath(image || DEFAULT_SOCIAL_IMAGE));
   const canonicalUrl = url || absoluteUrl(path || (typeof window !== 'undefined' ? window.location.pathname : '/'));
-  const robots = noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+  const hasServiceQuery =
+    typeof window !== 'undefined' &&
+    ['book', 'filter', 'q', 'tour'].some((parameter) => new URLSearchParams(window.location.search).has(parameter));
+  const robots = noindex
+    ? 'noindex, nofollow'
+    : hasServiceQuery
+      ? 'noindex, follow'
+      : 'index, follow, max-image-preview:large';
   const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
   const ogLocale = language === 'ru' ? 'ru_RU' : 'en_US';
 

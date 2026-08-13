@@ -15,6 +15,7 @@ const tourSlugsPath = path.join(rootDir, 'data', 'tour_slugs.json');
 const galleryCaptionsPath = path.join(rootDir, 'data', 'gallery_captions.json');
 const blogSeoOverridesPath = path.join(rootDir, 'data', 'blog_seo_overrides.json');
 const tourMetaDescriptionsPath = path.join(rootDir, 'data', 'tour_seo_descriptions.json');
+const tourMetaTitlesPath = path.join(rootDir, 'data', 'tour_seo_titles.json');
 
 const SITE_NAME = 'Go Kyrgyzstan Travel';
 const SITE_URL = 'https://kyrgyz.tours';
@@ -61,6 +62,24 @@ function optimizedImagePath(value, width = 960) {
 
 function tourDisplayTitle(title) {
   return /\btour\b/i.test(title) ? title : `${title} Tour`;
+}
+
+function tourMetaTitle(tour, locale = 'en') {
+  if (locale === 'en' && tourMetaTitles[String(tour.id)]) {
+    return tourMetaTitles[String(tour.id)];
+  }
+
+  const displayTitle = tourDisplayTitle(tour.title);
+  return locale === 'en' ? `${displayTitle} in Kyrgyzstan` : displayTitle;
+}
+
+function sitemapDate(value) {
+  if (typeof value !== 'string' || !value.trim()) {
+    return '';
+  }
+
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString().slice(0, 10) : '';
 }
 
 function shortenMetaDescription(value, limit = 160) {
@@ -771,6 +790,7 @@ const tourSlugs = JSON.parse(fs.readFileSync(tourSlugsPath, 'utf8'));
 const galleryCaptions = JSON.parse(fs.readFileSync(galleryCaptionsPath, 'utf8'));
 const blogSeoOverrides = JSON.parse(fs.readFileSync(blogSeoOverridesPath, 'utf8'));
 const tourMetaDescriptions = JSON.parse(fs.readFileSync(tourMetaDescriptionsPath, 'utf8'));
+const tourMetaTitles = JSON.parse(fs.readFileSync(tourMetaTitlesPath, 'utf8'));
 const russianTours = tours.map((tour) => localizeTourRu(tour, russianTourTranslations));
 const blogPosts = JSON.parse(fs.readFileSync(blogPostsPath, 'utf8'))
   .filter((post) => post.status !== 'draft' && post.status !== 'archived')
@@ -901,6 +921,7 @@ const pages = [
       destinationTours,
       title: `${destination.en.seoTitle} | ${SITE_NAME}`,
       description: destination.en.metaDescription,
+      lastmod: sitemapDate(destination.updatedAt),
       image: destination.heroImage,
       images: [optimizedImagePath(destination.heroImage)],
       preloadImage: {
@@ -920,8 +941,9 @@ const pages = [
   ...tours.map((tour) => ({
     path: tourPath(tour),
     tour,
-    title: `${tourDisplayTitle(tour.title)} in Kyrgyzstan | ${SITE_NAME}`,
+    title: `${tourMetaTitle(tour)} | ${SITE_NAME}`,
     description: tourMetaDescription(tour),
+    lastmod: sitemapDate(tour.updatedAt || tour.createdAt),
     image: tour.image,
     images: [optimizedImagePath(tour.image)],
     preloadImage: {
@@ -944,6 +966,7 @@ const pages = [
       blogPost: post,
       title: `${post.seoTitle || post.title} | ${SITE_NAME}`,
       description: post.seoDescription || post.excerpt,
+      lastmod: sitemapDate(post.updatedAt || post.publishedAt || post.createdAt),
       image: post.coverImage || DEFAULT_IMAGE,
       images: [post.coverImage || DEFAULT_IMAGE],
       jsonLd: [
@@ -1076,7 +1099,6 @@ for (const page of pages) {
   writeRouteHtml(page.path, renderPage(template, page));
 }
 
-const lastModified = new Date().toISOString().slice(0, 10);
 const sitemap = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
@@ -1089,7 +1111,8 @@ const sitemap = [
       const alternates = (page.alternates || [])
         .map((alternate) => `<xhtml:link rel="alternate" hreflang="${escapeHtml(alternate.hrefLang)}" href="${escapeHtml(absoluteUrl(alternate.path))}" />`)
         .join('');
-      return `  <url><loc>${escapeHtml(absoluteUrl(page.path))}</loc><lastmod>${lastModified}</lastmod>${alternates}${images}</url>`;
+      const lastmod = page.lastmod ? `<lastmod>${escapeHtml(page.lastmod)}</lastmod>` : '';
+      return `  <url><loc>${escapeHtml(absoluteUrl(page.path))}</loc>${lastmod}${alternates}${images}</url>`;
     }),
   '</urlset>',
   '',
