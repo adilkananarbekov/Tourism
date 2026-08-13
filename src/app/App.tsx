@@ -69,6 +69,7 @@ export default function App() {
             <Route element={<AuthRoute requiredRole="seller" />}>
               <Route path="/create-tour" element={<CreateTourPage />} />
             </Route>
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route element={<AdminRoute />}>
@@ -77,7 +78,6 @@ export default function App() {
               <Route path="dashboard" element={<AdminDashboardPage />} />
             </Route>
           </Route>
-          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
