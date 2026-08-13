@@ -363,6 +363,23 @@ export async function fetchApiEventSummary() {
     totals: Record<string, number>;
     paths: Array<{ path: string; count: number }>;
     interests: Array<{ label: string; count: number }>;
+    sources?: Array<{ source: string; count: number }>;
+    landings?: Array<{ landing: string; count: number }>;
+    conversionSources?: Array<{ source: string; count: number }>;
+    conversionLandings?: Array<{ landing: string; count: number }>;
+    daily?: Array<{
+      date: string;
+      events: number;
+      pageViews: number;
+      submitSuccesses: number;
+    }>;
+    storage?: {
+      rawEvents: number;
+      aggregateRows?: number;
+      rawRetentionDays: number;
+      aggregateRetentionMonths: number;
+      rawLimit?: number;
+    };
     recent: Array<{
       source: string;
       event_name: string;

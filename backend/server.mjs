@@ -53,6 +53,69 @@ const heifUploadContentTypes = new Set([
   'image/heif-sequence',
 ]);
 
+const analyticsRawRetentionDays = 7;
+const analyticsRawEventLimit = 500;
+const analyticsAggregateRetentionMonths = 13;
+const analyticsCleanupIntervalMs = 60 * 60 * 1000;
+const analyticsLegacyAggregateMigrationKey = 'site_event_daily_aggregates_v1';
+const analyticsAggregateMigrationKey = 'site_event_daily_aggregates_v2';
+const analyticsStorageCompactionKey = 'site_event_storage_compacted_v1';
+const analyticsDailyDimensionLimit = 100;
+const analyticsEventNames = new Set([
+  'about_request_click',
+  'analytics_consent_granted',
+  'contact_strip_direct_link_click',
+  'contact_strip_request_click',
+  'cta_browse_tours_click',
+  'cta_request_click',
+  'destination_faq_request_click',
+  'destination_request_click',
+  'destination_tour_image_click',
+  'destination_tour_request_click',
+  'destination_tour_title_click',
+  'floating_telegram_click',
+  'floating_whatsapp_click',
+  'footer_request_click',
+  'footer_telegram_click',
+  'footer_whatsapp_click',
+  'founder_instagram_click',
+  'founder_telegram_card_click',
+  'founder_telegram_click',
+  'founder_whatsapp_click',
+  'home_hot_tour_image_click',
+  'home_hot_tour_request_click',
+  'home_hot_tour_title_click',
+  'home_hot_tours_all_click',
+  'landing_navigation_click',
+  'page_view',
+  'request_form_submit_click',
+  'request_form_submit_success',
+  'request_page_browse_tours_click',
+  'request_page_instagram_click',
+  'request_page_telegram_click',
+  'request_page_whatsapp_click',
+  'ru_home_song_kul_destination_click',
+  'scroll_depth',
+  'sticky_mobile_lead_click',
+  'story_request_click',
+  'theme_menu_open',
+  'theme_preference_select',
+  'tour_card_image_click',
+  'tour_card_request_click',
+  'tour_card_title_click',
+  'tour_card_view_click',
+  'tour_detail_request_open',
+  'tour_detail_request_submit',
+  'tour_request_submit_success',
+  'tours_request_click',
+  'trip_idea_click',
+]);
+const analyticsInterestEventNames = new Set(
+  [...analyticsEventNames].filter(
+    (eventName) => !['page_view', 'scroll_depth', 'analytics_consent_granted'].includes(eventName)
+  )
+);
+
 function readJsonFile(filePath, fallback) {
   if (!fs.existsSync(filePath)) {
     return fallback;
@@ -241,8 +304,27 @@ sqlite.exec(`
     path TEXT,
     label TEXT,
     metadata_json TEXT NOT NULL DEFAULT '{}',
-    created_at TEXT NOT NULL
+    created_at TEXT NOT NULL,
+    analytics_aggregated_at TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS site_event_daily_aggregates (
+    event_date TEXT NOT NULL,
+    dimension TEXT NOT NULL CHECK (
+      dimension IN (
+        'event',
+        'path',
+        'interest',
+        'source',
+        'landing',
+        'conversion_source',
+        'conversion_landing'
+      )
+    ),
+    value TEXT NOT NULL,
+    count INTEGER NOT NULL DEFAULT 0 CHECK (count >= 0),
+    PRIMARY KEY (event_date, dimension, value)
+  ) WITHOUT ROWID;
 
   CREATE TABLE IF NOT EXISTS app_users (
     id TEXT PRIMARY KEY,
@@ -292,13 +374,21 @@ function ensureColumn(tableName, columnName, definition) {
   const columns = sqlite.prepare(`PRAGMA table_info(${tableName})`).all();
   if (!columns.some((column) => column.name === columnName)) {
     sqlite.exec(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition}`);
+    return true;
   }
+  return false;
 }
 
 ensureColumn('guest_requests', 'telegram_delivery_status', "TEXT NOT NULL DEFAULT 'waiting'");
 ensureColumn('guest_requests', 'telegram_attempts', 'INTEGER NOT NULL DEFAULT 0');
 ensureColumn('guest_requests', 'telegram_sent_at', 'TEXT');
 ensureColumn('guest_requests', 'telegram_error', 'TEXT');
+const analyticsAggregationColumnAdded = ensureColumn('site_events', 'analytics_aggregated_at', 'TEXT');
+sqlite.exec(`
+  CREATE INDEX IF NOT EXISTS idx_site_events_pending_aggregate
+  ON site_events(created_at ASC, id ASC)
+  WHERE analytics_aggregated_at IS NULL;
+`);
 
 const statements = {
   getMeta: sqlite.prepare('SELECT value FROM meta WHERE key = ?'),
@@ -364,16 +454,69 @@ const statements = {
   `),
   trimEvents: sqlite.prepare(`
     DELETE FROM site_events
-    WHERE id NOT IN (
-      SELECT id FROM site_events ORDER BY created_at DESC LIMIT 5000
+    WHERE analytics_aggregated_at IS NOT NULL
+      AND id NOT IN (
+      SELECT id FROM site_events ORDER BY created_at DESC, id DESC LIMIT ${analyticsRawEventLimit}
     )
   `),
-  purgeExpiredEvents: sqlite.prepare('DELETE FROM site_events WHERE created_at < ?'),
-  eventTotals: sqlite.prepare(`
-    SELECT event_name, COUNT(*) AS count
+  purgeExpiredEvents: sqlite.prepare(`
+    DELETE FROM site_events
+    WHERE analytics_aggregated_at IS NOT NULL AND created_at < ?
+  `),
+  listEventsForAggregateMigration: sqlite.prepare(`
+    SELECT id, source, event_name, path, label, metadata_json, created_at
     FROM site_events
-    GROUP BY event_name
-    ORDER BY count DESC, event_name ASC
+    WHERE analytics_aggregated_at IS NULL
+    ORDER BY created_at ASC, id ASC
+  `),
+  markEventAggregated: sqlite.prepare(`
+    UPDATE site_events
+    SET analytics_aggregated_at = @aggregatedAt
+    WHERE id = @id AND analytics_aggregated_at IS NULL
+  `),
+  sanitizeAndMarkEventAggregated: sqlite.prepare(`
+    UPDATE site_events
+    SET
+      source = @source,
+      event_name = @eventName,
+      path = @path,
+      label = @label,
+      metadata_json = @metadataJson,
+      created_at = @createdAt,
+      analytics_aggregated_at = @aggregatedAt
+    WHERE id = @id AND analytics_aggregated_at IS NULL
+  `),
+  deleteRawEvent: sqlite.prepare('DELETE FROM site_events WHERE id = ?'),
+  countPendingEventAggregates: sqlite.prepare(`
+    SELECT COUNT(*) AS count
+    FROM site_events
+    WHERE analytics_aggregated_at IS NULL
+  `),
+  getDailyAggregate: sqlite.prepare(`
+    SELECT 1
+    FROM site_event_daily_aggregates
+    WHERE event_date = @eventDate AND dimension = @dimension AND value = @value
+  `),
+  countDailyDimensionValues: sqlite.prepare(`
+    SELECT COUNT(*) AS count
+    FROM site_event_daily_aggregates
+    WHERE event_date = @eventDate AND dimension = @dimension
+  `),
+  upsertDailyAggregate: sqlite.prepare(`
+    INSERT INTO site_event_daily_aggregates (event_date, dimension, value, count)
+    VALUES (@eventDate, @dimension, @value, @count)
+    ON CONFLICT(event_date, dimension, value) DO UPDATE SET
+      count = count + excluded.count
+  `),
+  purgeExpiredEventAggregates: sqlite.prepare(`
+    DELETE FROM site_event_daily_aggregates WHERE event_date < ?
+  `),
+  eventTotals: sqlite.prepare(`
+    SELECT value AS event_name, SUM(count) AS count
+    FROM site_event_daily_aggregates
+    WHERE dimension = 'event'
+    GROUP BY value
+    ORDER BY count DESC, value ASC
   `),
   recentEvents: sqlite.prepare(`
     SELECT source, event_name, path, label, created_at
@@ -382,22 +525,72 @@ const statements = {
     LIMIT 40
   `),
   topEventPaths: sqlite.prepare(`
-    SELECT path, COUNT(*) AS count
-    FROM site_events
-    WHERE path != ''
-    GROUP BY path
-    ORDER BY count DESC, path ASC
+    SELECT value AS path, SUM(count) AS count
+    FROM site_event_daily_aggregates
+    WHERE dimension = 'path'
+    GROUP BY value
+    ORDER BY count DESC, value ASC
     LIMIT 12
   `),
   topEventInterests: sqlite.prepare(`
-    SELECT label, COUNT(*) AS count
-    FROM site_events
-    WHERE label != ''
-      AND event_name NOT IN ('page_view', 'scroll_depth', 'analytics_consent_granted')
-    GROUP BY label
-    ORDER BY count DESC, label ASC
+    SELECT value AS label, SUM(count) AS count
+    FROM site_event_daily_aggregates
+    WHERE dimension = 'interest'
+    GROUP BY value
+    ORDER BY count DESC, value ASC
     LIMIT 12
   `),
+  topEventSources: sqlite.prepare(`
+    SELECT value AS source, SUM(count) AS count
+    FROM site_event_daily_aggregates
+    WHERE dimension = 'source'
+    GROUP BY value
+    ORDER BY count DESC, value ASC
+    LIMIT 12
+  `),
+  topEventLandings: sqlite.prepare(`
+    SELECT value AS landing, SUM(count) AS count
+    FROM site_event_daily_aggregates
+    WHERE dimension = 'landing'
+    GROUP BY value
+    ORDER BY count DESC, value ASC
+    LIMIT 12
+  `),
+  topConversionSources: sqlite.prepare(`
+    SELECT value AS source, SUM(count) AS count
+    FROM site_event_daily_aggregates
+    WHERE dimension = 'conversion_source'
+    GROUP BY value
+    ORDER BY count DESC, value ASC
+    LIMIT 12
+  `),
+  topConversionLandings: sqlite.prepare(`
+    SELECT value AS landing, SUM(count) AS count
+    FROM site_event_daily_aggregates
+    WHERE dimension = 'conversion_landing'
+    GROUP BY value
+    ORDER BY count DESC, value ASC
+    LIMIT 12
+  `),
+  dailyEventSummary: sqlite.prepare(`
+    SELECT
+      event_date,
+      SUM(count) AS events,
+      SUM(CASE WHEN value = 'page_view' THEN count ELSE 0 END) AS page_views,
+      SUM(
+        CASE
+          WHEN value IN ('request_form_submit_success', 'tour_request_submit_success') THEN count
+          ELSE 0
+        END
+      ) AS submit_successes
+    FROM site_event_daily_aggregates
+    WHERE dimension = 'event'
+    GROUP BY event_date
+    ORDER BY event_date DESC
+    LIMIT 31
+  `),
+  countRawEvents: sqlite.prepare('SELECT COUNT(*) AS count FROM site_events'),
+  countAggregateRows: sqlite.prepare('SELECT COUNT(*) AS count FROM site_event_daily_aggregates'),
   createUser: sqlite.prepare(`
     INSERT INTO app_users (id, name, email, password_hash, role, created_at, updated_at)
     VALUES (@id, @name, @email, @passwordHash, @role, @createdAt, @updatedAt)
@@ -453,13 +646,17 @@ const statements = {
   `),
 };
 
-function analyticsRetentionCutoff() {
+function analyticsRawRetentionCutoff() {
   const cutoff = new Date();
-  cutoff.setUTCMonth(cutoff.getUTCMonth() - 13);
+  cutoff.setUTCDate(cutoff.getUTCDate() - analyticsRawRetentionDays);
   return cutoff.toISOString();
 }
 
-statements.purgeExpiredEvents.run(analyticsRetentionCutoff());
+function analyticsAggregateRetentionCutoff() {
+  const cutoff = new Date();
+  cutoff.setUTCMonth(cutoff.getUTCMonth() - analyticsAggregateRetentionMonths);
+  return cutoff.toISOString().slice(0, 10);
+}
 
 function getMeta(key) {
   return statements.getMeta.get(key)?.value || '';
@@ -877,23 +1074,328 @@ async function convertHeifToJpeg(input) {
   }
 }
 
-function insertEvent({ id, source, eventName, event_name, path: eventPath, label, metadata, createdAt }) {
+function compactAnalyticsText(value, maxLength) {
+  return asString(value, maxLength)
+    .normalize('NFKC')
+    .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, maxLength);
+}
+
+function containsLikelyContactDetails(value) {
+  const normalized = String(value || '').normalize('NFKC').toLowerCase();
+  const digitCount = (normalized.match(/\p{N}/gu) || []).length;
+  return (
+    /[^\s@:/]+@[^\s@:/]+\.[a-z]{2,}/i.test(normalized) ||
+    /@[a-z0-9_]{3,}/i.test(normalized) ||
+    /(?:^|[^a-zа-я])(?:mailto|tel|sms|phone|telegram|whatsapp|contact|e-?mail|телефон|телеграм|ватсап|почта|контакт)\s*[:=@/+.-]/iu.test(normalized) ||
+    /(?:t\.me|wa\.me)\//i.test(normalized) ||
+    digitCount >= 7
+  );
+}
+
+function sanitizeAnalyticsLabel(value) {
+  const normalized = compactAnalyticsText(value, 120);
+  if (
+    !normalized ||
+    containsLikelyContactDetails(normalized) ||
+    /(?:https?:\/\/|www\.)/i.test(normalized) ||
+    !/^[\p{L}\p{N}\s&()'’.,:;!?$%+/_–—-]+$/u.test(normalized)
+  ) {
+    return '';
+  }
+  return normalized;
+}
+
+function sanitizeAnalyticsPath(value) {
+  const normalized = compactAnalyticsText(value, 200).split(/[?#]/, 1)[0];
+  // Every public route currently uses ASCII slugs. Keeping this deliberately
+  // narrow prevents crafted paths (including percent-encoded contact details)
+  // from becoming long-lived analytics dimensions.
+  if (!/^\/[a-z0-9/_-]*$/i.test(normalized) || containsLikelyContactDetails(normalized)) {
+    return '';
+  }
+  const compactPath = normalized.replace(/\/{2,}/g, '/');
+  return compactPath.length > 1 ? compactPath.replace(/\/+$/, '') : compactPath;
+}
+
+function sanitizeAnalyticsHost(value) {
+  const normalized = compactAnalyticsText(value, 100).toLowerCase().replace(/\.$/, '');
+  return !containsLikelyContactDetails(normalized) &&
+    /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)*[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(normalized)
+    ? normalized
+    : '';
+}
+
+function sanitizeAnalyticsCampaignValue(value, maxLength = 100) {
+  const normalized = compactAnalyticsText(value, maxLength).toLowerCase();
+  if (
+    !normalized ||
+    containsLikelyContactDetails(normalized) ||
+    !/^[a-z0-9][a-z0-9._-]*$/.test(normalized)
+  ) {
+    return '';
+  }
+  return normalized;
+}
+
+function normalizeAnalyticsTimestamp(value) {
+  const currentTime = Date.now();
+  const parsedTime = typeof value === 'string' ? Date.parse(value) : Number.NaN;
+  if (!Number.isFinite(parsedTime) || parsedTime > currentTime + 5 * 60 * 1000) {
+    return new Date(currentTime).toISOString();
+  }
+  return new Date(parsedTime).toISOString();
+}
+
+function sanitizeAnalyticsMetadata(eventName, metadata) {
+  if (!isObject(metadata)) {
+    return {};
+  }
+
+  const sanitized = {};
+  const sessionId = compactAnalyticsText(metadata.sessionId, 36).toLowerCase();
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(sessionId)) {
+    sanitized.sessionId = sessionId;
+  }
+
+  if (eventName === 'page_view') {
+    if (['en', 'ru'].includes(metadata.locale)) {
+      sanitized.locale = metadata.locale;
+    }
+    if (['mobile', 'tablet', 'desktop'].includes(metadata.device)) {
+      sanitized.device = metadata.device;
+    }
+  }
+
+  if (eventName === 'scroll_depth') {
+    const depth = Number.parseInt(String(metadata.depth || ''), 10);
+    if ([25, 50, 75, 90].includes(depth)) {
+      sanitized.depth = depth;
+    }
+  }
+
+  if (eventName.endsWith('_click')) {
+    const destinationPath = sanitizeAnalyticsPath(metadata.destinationPath);
+    const destinationHost = sanitizeAnalyticsHost(metadata.destinationHost);
+    if (destinationPath) sanitized.destinationPath = destinationPath;
+    if (destinationHost) sanitized.destinationHost = destinationHost;
+  }
+
+  if (
+    ['page_view', 'request_form_submit_success', 'tour_request_submit_success'].includes(eventName)
+  ) {
+    const landing = sanitizeAnalyticsPath(metadata.landing);
+    const referrerHost = sanitizeAnalyticsHost(metadata.referrerHost);
+    const utmSource = sanitizeAnalyticsCampaignValue(metadata.utmSource, 80);
+    const utmMedium = sanitizeAnalyticsCampaignValue(metadata.utmMedium, 80);
+    const utmCampaign = sanitizeAnalyticsCampaignValue(metadata.utmCampaign, 120);
+    if (landing) sanitized.landing = landing;
+    if (referrerHost) sanitized.referrerHost = referrerHost;
+    if (utmSource) sanitized.utmSource = utmSource;
+    if (utmMedium) sanitized.utmMedium = utmMedium;
+    if (utmCampaign) sanitized.utmCampaign = utmCampaign;
+  }
+
+  return sanitized;
+}
+
+function normalizeAnalyticsEvent({
+  id,
+  eventName,
+  event_name,
+  path: eventPath,
+  label,
+  metadata,
+  createdAt,
+}) {
   const normalizedEventName = asString(eventName || event_name, 120);
   if (!normalizedEventName) {
     throw new Error('eventName is required.');
   }
+  if (!analyticsEventNames.has(normalizedEventName)) {
+    throw new Error('Unsupported analytics event.');
+  }
 
-  statements.insertEvent.run({
-    id: id || crypto.randomUUID(),
-    source: asString(source || 'web', 60) || 'web',
+  const normalizedPath = sanitizeAnalyticsPath(eventPath);
+  const normalizedMetadata = sanitizeAnalyticsMetadata(normalizedEventName, metadata);
+  return {
+    id: asString(id, 120) || crypto.randomUUID(),
+    source: 'web',
     eventName: normalizedEventName,
-    path: asString(eventPath || '', 240),
-    label: asString(label || '', 240),
-    metadataJson: stringifyJson(isObject(metadata) ? metadata : {}),
-    createdAt: createdAt || nowIso(),
+    path: normalizedPath,
+    label: normalizedEventName === 'page_view' ? '' : sanitizeAnalyticsLabel(label),
+    metadataJson: stringifyJson(normalizedMetadata),
+    createdAt: normalizeAnalyticsTimestamp(createdAt),
+  };
+}
+
+function incrementDailyAggregate(eventDate, dimension, value, count = 1) {
+  if (!value || !Number.isSafeInteger(count) || count < 1) {
+    return;
+  }
+
+  let aggregateValue = value;
+  if (dimension !== 'event') {
+    const aggregateKey = { eventDate, dimension, value: aggregateValue };
+    const alreadyExists = statements.getDailyAggregate.get(aggregateKey);
+    if (!alreadyExists) {
+      const dimensionCount = Number(
+        statements.countDailyDimensionValues.get({ eventDate, dimension }).count
+      );
+      const otherKey = { eventDate, dimension, value: '(other)' };
+      const otherExists = statements.getDailyAggregate.get(otherKey);
+      if (dimensionCount >= analyticsDailyDimensionLimit && !otherExists) {
+        return;
+      }
+      if (dimensionCount >= analyticsDailyDimensionLimit - 1 || otherExists) {
+        aggregateValue = '(other)';
+      }
+    }
+  }
+
+  statements.upsertDailyAggregate.run({
+    eventDate,
+    dimension,
+    value: aggregateValue,
+    count,
   });
+}
+
+function aggregateAnalyticsEvent(event, count = 1) {
+  const eventTime = new Date(event.createdAt);
+  eventTime.setUTCHours(eventTime.getUTCHours() + 6);
+  const eventDate = eventTime.toISOString().slice(0, 10);
+  const metadata = parseJson(event.metadataJson, {});
+  incrementDailyAggregate(eventDate, 'event', event.eventName, count);
+  if (event.eventName === 'page_view' && event.path) {
+    incrementDailyAggregate(eventDate, 'path', event.path, count);
+  }
+  if (analyticsInterestEventNames.has(event.eventName) && event.label) {
+    incrementDailyAggregate(eventDate, 'interest', event.label, count);
+  }
+
+  const attributionSource = metadata.utmSource || metadata.referrerHost || '(direct)';
+  if (event.eventName === 'page_view' && metadata.landing) {
+    incrementDailyAggregate(eventDate, 'source', attributionSource, count);
+    incrementDailyAggregate(eventDate, 'landing', metadata.landing, count);
+  }
+  if (
+    ['request_form_submit_success', 'tour_request_submit_success'].includes(event.eventName) &&
+    metadata.landing
+  ) {
+    incrementDailyAggregate(eventDate, 'conversion_source', attributionSource, count);
+    incrementDailyAggregate(eventDate, 'conversion_landing', metadata.landing, count);
+  }
+}
+
+function cleanupAnalyticsStorage() {
+  statements.purgeExpiredEvents.run(analyticsRawRetentionCutoff());
   statements.trimEvents.run();
-  statements.purgeExpiredEvents.run(analyticsRetentionCutoff());
+  statements.purgeExpiredEventAggregates.run(analyticsAggregateRetentionCutoff());
+}
+
+const persistAnalyticsEvent = sqlite.transaction((event) => {
+  const result = statements.insertEvent.run(event);
+  if (result.changes > 0) {
+    aggregateAnalyticsEvent(event);
+    statements.markEventAggregated.run({ id: event.id, aggregatedAt: nowIso() });
+  }
+  cleanupAnalyticsStorage();
+  return result.changes > 0;
+});
+
+function insertEvent(event) {
+  return persistAnalyticsEvent(normalizeAnalyticsEvent(event));
+}
+
+const aggregatePendingSiteEvents = sqlite.transaction(() => {
+  const rows = statements.listEventsForAggregateMigration.all();
+  const aggregateCutoff = analyticsAggregateRetentionCutoff();
+  const aggregatedAt = nowIso();
+  for (const row of rows) {
+    try {
+      const event = normalizeAnalyticsEvent({
+        id: row.id,
+        event_name: row.event_name,
+        path: row.path,
+        label: row.label,
+        metadata: parseJson(row.metadata_json, {}),
+        createdAt: row.created_at,
+      });
+      if (event.createdAt.slice(0, 10) >= aggregateCutoff) {
+        aggregateAnalyticsEvent(event);
+      }
+      statements.sanitizeAndMarkEventAggregated.run({ ...event, aggregatedAt });
+    } catch {
+      // Historical unknown or malformed events are not useful even in Recent.
+      statements.deleteRawEvent.run(row.id);
+    }
+  }
+  if (!getMeta(analyticsAggregateMigrationKey)) {
+    setMeta(analyticsAggregateMigrationKey, aggregatedAt);
+  }
+  return rows.length;
+});
+
+const adoptLegacyV1SiteEvents = sqlite.transaction(() => {
+  const rows = statements.listEventsForAggregateMigration.all();
+  const aggregatedAt = nowIso();
+  for (const row of rows) {
+    try {
+      const event = normalizeAnalyticsEvent({
+        id: row.id,
+        event_name: row.event_name,
+        path: row.path,
+        label: row.label,
+        metadata: parseJson(row.metadata_json, {}),
+        createdAt: row.created_at,
+      });
+      statements.sanitizeAndMarkEventAggregated.run({ ...event, aggregatedAt });
+    } catch {
+      statements.deleteRawEvent.run(row.id);
+    }
+  }
+});
+
+function migrateSiteEventsToDailyAggregates() {
+  // Compatibility for the unreleased v1 boolean-marker design: if a database
+  // already contains v1 aggregates but only just gained the per-row marker,
+  // treat its remaining raw rows as already counted instead of doubling them.
+  if (
+    analyticsAggregationColumnAdded &&
+    getMeta(analyticsLegacyAggregateMigrationKey) &&
+    Number(statements.countAggregateRows.get().count) > 0
+  ) {
+    adoptLegacyV1SiteEvents();
+  }
+
+  return aggregatePendingSiteEvents();
+}
+
+function compactAnalyticsStorageOnce() {
+  if (getMeta(analyticsStorageCompactionKey)) {
+    return false;
+  }
+
+  try {
+    // VACUUM cannot run inside a transaction. It runs once, synchronously,
+    // before the HTTP listener starts, after the legacy rows were compacted.
+    sqlite.exec('VACUUM');
+    const checkpoint = sqlite.pragma('wal_checkpoint(TRUNCATE)')[0];
+    if (checkpoint?.busy) {
+      throw new Error('SQLite WAL checkpoint is busy.');
+    }
+    setMeta(analyticsStorageCompactionKey, nowIso());
+    return true;
+  } catch (error) {
+    // A concurrent old process can temporarily hold a SQLite lock. Keeping the
+    // marker unset makes a later process restart retry safely without blocking
+    // this deployment from starting.
+    console.error('Unable to compact analytics storage; it will retry on next startup:', error);
+    return false;
+  }
 }
 
 function buildEventSummary() {
@@ -901,6 +1403,16 @@ function buildEventSummary() {
     acc[row.event_name] = Number(row.count);
     return acc;
   }, {});
+
+  const daily = statements.dailyEventSummary
+    .all()
+    .map((row) => ({
+      date: row.event_date || '',
+      events: Number(row.events),
+      pageViews: Number(row.page_views),
+      submitSuccesses: Number(row.submit_successes),
+    }))
+    .reverse();
 
   return {
     totals,
@@ -912,6 +1424,22 @@ function buildEventSummary() {
       label: event.label || '',
       count: Number(event.count),
     })),
+    sources: statements.topEventSources.all().map((event) => ({
+      source: event.source || '(direct)',
+      count: Number(event.count),
+    })),
+    landings: statements.topEventLandings.all().map((event) => ({
+      landing: event.landing || '',
+      count: Number(event.count),
+    })),
+    conversionSources: statements.topConversionSources.all().map((event) => ({
+      source: event.source || '(direct)',
+      count: Number(event.count),
+    })),
+    conversionLandings: statements.topConversionLandings.all().map((event) => ({
+      landing: event.landing || '',
+      count: Number(event.count),
+    })),
     recent: statements.recentEvents.all().map((event) => ({
       source: event.source || 'web',
       event_name: event.event_name || 'unknown',
@@ -919,6 +1447,14 @@ function buildEventSummary() {
       label: event.label || '',
       created_at: event.created_at || '',
     })),
+    daily,
+    storage: {
+      rawEvents: Number(statements.countRawEvents.get().count),
+      aggregateRows: Number(statements.countAggregateRows.get().count),
+      rawRetentionDays: analyticsRawRetentionDays,
+      rawLimit: analyticsRawEventLimit,
+      aggregateRetentionMonths: analyticsAggregateRetentionMonths,
+    },
   };
 }
 
@@ -1006,6 +1542,17 @@ function migrateLegacyJsonIfNeeded() {
 }
 
 migrateLegacyJsonIfNeeded();
+migrateSiteEventsToDailyAggregates();
+cleanupAnalyticsStorage();
+compactAnalyticsStorageOnce();
+setInterval(() => {
+  try {
+    aggregatePendingSiteEvents();
+    cleanupAnalyticsStorage();
+  } catch (error) {
+    console.error('Unable to clean up compact analytics storage:', error);
+  }
+}, analyticsCleanupIntervalMs).unref();
 seedToursIfNeeded();
 seedContentIfNeeded();
 

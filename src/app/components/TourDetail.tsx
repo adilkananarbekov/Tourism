@@ -20,6 +20,7 @@ import { submitBookingRequest } from '../lib/dataStore';
 import { appendLocalBooking, loadLocalProfile, saveLocalProfile } from '../lib/localStorage';
 import { useAuth } from '../context/AuthContext';
 import { guestSubmissionBackendEnabled } from '../lib/backend';
+import { apiEnabled } from '../lib/api';
 import { DeferredMapSection } from './DeferredMapSection';
 import { ResponsiveImage } from './ResponsiveImage';
 import { trackEvent } from '../lib/eventTracker';
@@ -781,15 +782,13 @@ function BookingFlow({ tour, onCancel, locale }: { tour: Tour; onCancel: () => v
       await submitBookingRequest(bookingPayload);
       trackEvent('tour_request_submit_success', {
         label: tour.title,
-        participants: participantsCount,
-        hasTelegram: Boolean(details.telegramUsername?.trim()),
-        hasPhone: Boolean(details.phone?.trim()),
-        contactPreference: details.contactPreference,
       });
-      appendLocalBooking({ ...bookingPayload, status: 'pending' });
-      const existingProfile = loadLocalProfile();
-      if (!existingProfile && details.email && details.name) {
-        saveLocalProfile({ name: details.name, email: details.email, role: 'buyer' });
+      if (!apiEnabled) {
+        appendLocalBooking({ ...bookingPayload, status: 'pending' });
+        const existingProfile = loadLocalProfile();
+        if (!existingProfile && details.email && details.name) {
+          saveLocalProfile({ name: details.name, email: details.email, role: 'buyer' });
+        }
       }
       setStep('done');
     } catch (err) {

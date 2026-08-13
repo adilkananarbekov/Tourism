@@ -492,6 +492,7 @@ export async function deleteBlogPost(postId: string) {
 export async function submitCustomTourRequest(data: CustomTourRequest) {
   if (apiEnabled) {
     await submitApiCustomTourRequest(data);
+    return;
   }
   const entry: Stored<CustomTourRequest> = {
     ...data,
@@ -550,6 +551,7 @@ export async function updateCustomTourRequestStatus(requestId: string, status: s
 export async function submitBookingRequest(data: BookingRequest) {
   if (apiEnabled) {
     await submitApiBookingRequest(data);
+    return;
   }
   const entry: Stored<BookingRequest> = {
     ...data,
@@ -698,6 +700,10 @@ export async function upsertUserProfile(data: {
   role?: string;
   uid?: string | null;
 }) {
+  if (apiEnabled) {
+    return;
+  }
+
   const users = readCollection<Stored<UserRecord>>('users');
   const userId = resolveUserDocId(data.email, data.uid);
   const existing = users.find((user) => user.id === userId || user.email === data.email);

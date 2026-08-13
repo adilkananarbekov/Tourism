@@ -186,11 +186,7 @@ export function FeedbackPage() {
       });
 
       trackEvent('request_form_submit_success', {
-        label: selectedTour || 'Direct request',
-        hasTelegram: Boolean(values.telegramUsername.trim()),
-        hasPhone: Boolean(values.phone.trim()),
-        contactPreference: values.contactPreference,
-        hasTravelTime: Boolean(values.travelTime.trim()),
+        label: 'Direct request form',
       });
       reset();
       setSubmitted(true);

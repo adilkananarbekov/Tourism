@@ -36,8 +36,8 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
     privacy: {
       eyebrow: 'Privacy & cookies',
       title: 'Privacy Policy and Cookie Policy',
-      description: 'How Go Kyrgyzstan Travel handles trip requests, anonymous analytics, cookies, and privacy choices.',
-      updated: 'Last updated: 9 August 2026',
+      description: 'How Go Kyrgyzstan Travel handles trip requests, accounts, first-party analytics, cookies, and privacy choices.',
+      updated: 'Last updated: 13 August 2026',
       back: 'Back to tours',
       contact: 'Contact us about privacy',
       manageCookies: 'Manage cookie choices',
@@ -51,13 +51,22 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
         {
           title: 'Information we collect',
           paragraphs: [
-            'When you send a tour request, we collect the details you choose to provide: name, country of residence, preferred contact channel, contact details, travel dates, group size, route interests, and message. We use this information to answer your request and plan a possible trip.',
-            'If you opt in to analytics, we collect anonymous activity data: pages viewed, clicks on tour cards and contact actions, scroll depth, technical screen size, selected site theme, and a random first-party session identifier. The analytics stream does not include form answers, email addresses, phone numbers, Telegram usernames, advertising identifiers, or precise location.',
+            'When you send a tour request, we collect the details you choose to provide: name, country of residence, preferred contact channel, contact details, travel dates, group size, route interests, and message. The server also receives your network address for security and rate limiting and stores the source IP with the request.',
+            'If you create an account, we process your name, email address, selected buyer or seller role, account identifier, and a securely hashed version of your password. We do not store the readable password on the server.',
+            'A review contains the name, rating, and comments you submit and may be published after moderation. A seller proposal can contain contact details, tour descriptions, itineraries, prices, and uploaded images; approved material may become public tour content.',
+            'If you opt in to analytics, we collect limited activity data: pages viewed, clicks on tour cards and contact actions, scroll depth, request-flow outcomes, device category (mobile, tablet, or desktop), the first landing pathname, external referrer hostname, UTM source, medium, and campaign, and a random first-party session identifier. We do not collect the full referring URL or its query. Analytics does not receive the values typed into request fields, email addresses, phone numbers, Telegram usernames, advertising identifiers, or precise location.',
           ],
         },
         {
           title: 'Why we use information',
-          paragraphs: ['We use request details to communicate with you, prepare an itinerary or quotation, manage a booking if you choose to proceed, protect the site from misuse, and meet applicable legal obligations. We use consented anonymous analytics to understand which routes and pages are useful and to improve the site.'],
+          paragraphs: ['We use request details to communicate with you, prepare an itinerary or quotation, manage a booking if you choose to proceed, protect the site from misuse, and meet applicable legal obligations. Account, review, and seller-submission data supports the relevant dashboard and moderation features. Consented analytics helps us understand which routes and pages are useful and improve the site.'],
+        },
+        {
+          title: 'Browser storage',
+          paragraphs: [
+            'In addition to cookies, local storage may remember the selected theme and, for signed-in users, an authentication token, session state, basic profile details, and dashboard convenience data. These items remain on that browser until they are replaced, you sign out where applicable, or you clear site data; authentication tokens also have a server-controlled expiry. After analytics consent, session storage temporarily keeps limited visit attribution until the tab is closed or consent is withdrawn.',
+            'Production requests are stored on the site server and do not need a full browser copy. A local or offline demonstration fallback may keep local dashboard copies when the server mode is unavailable. Clearing browser site data removes those local copies but does not delete information already received by the server.',
+          ],
         },
         {
           title: 'Analytics choices',
@@ -76,13 +85,14 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
         {
           title: 'Retention and security',
           paragraphs: [
-            'Anonymous analytics events are retained for up to 13 months. Tour requests are kept for as long as reasonably needed to answer, plan, manage, or document the request, unless a longer period is required by law. We use access controls and reasonable technical safeguards, but no internet service can guarantee absolute security.',
+            'Recent session-level analytics events are retained for up to 7 days. Compact daily totals without the session identifier may be retained for up to 13 months. This reduces storage while preserving trend information.',
+            'Tour requests, accounts, reviews, seller proposals, and uploaded files are kept for as long as reasonably needed to provide the feature, answer or document a request, moderate content, prevent misuse, or meet legal obligations. We use access controls and reasonable technical safeguards, but no internet service can guarantee absolute security.',
           ],
         },
         {
           title: 'Your choices and rights',
           paragraphs: [
-            'You can withdraw analytics consent at any time through cookie settings; this stops future analytics and removes the analytics session cookie. Depending on applicable law, you may request access, correction, deletion, restriction, or objection to processing of your personal information. You may also ask for information about how your request data is handled.',
+            'You can withdraw analytics consent at any time through cookie settings; this stops future analytics and removes the analytics session cookie and temporary attribution storage. You can clear local storage through your browser controls. Depending on applicable law, you may request access, correction, deletion, restriction, or objection to processing of your personal information, including an account, request, review, or seller proposal.',
           ],
         },
         {
@@ -91,12 +101,15 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
         },
       ],
       cookieTable: {
-        title: 'Cookies and similar storage',
+        title: 'Cookies and browser storage',
         columns: ['Name', 'Type', 'Purpose', 'Duration'],
         rows: [
           ['gkt_cookie_consent', 'Essential, first-party', 'Remembers your analytics choice.', 'Up to 13 months'],
-          ['gkt_analytics_session', 'Analytics, first-party', 'Groups anonymous events from one visit after consent.', '30 minutes, renewed while active'],
-          ['sidebar_state', 'Functional, first-party', 'Remembers the sidebar state for signed-in dashboard users.', 'Up to 7 days'],
+          ['gkt_analytics_session', 'Analytics, first-party', 'Groups consented events from one visit.', '30 minutes, renewed while active'],
+          ['gkt_analytics_attribution_v1', 'Analytics, session storage', 'Temporarily remembers landing pathname, external referrer host, and limited UTM attribution after consent.', 'Until the tab closes or analytics consent is withdrawn'],
+          ['go-kyrgyzstan-travel-theme', 'Functional, local storage', 'Remembers the selected display theme.', 'Until changed or browser data is cleared'],
+          ['Account session and token', 'Essential account local storage', 'Keeps a signed-in account session on this browser.', 'Until sign-out, expiry, or browser data is cleared'],
+          ['Profile and dashboard data', 'Functional local storage', 'Prefills account details and supports dashboard convenience or local fallback features.', 'Until updated or browser data is cleared'],
         ],
       },
     },
@@ -143,8 +156,8 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
     privacy: {
       eyebrow: 'Конфиденциальность и cookies',
       title: 'Политика конфиденциальности и cookies',
-      description: 'Как Go Kyrgyzstan Travel обрабатывает заявки, анонимную аналитику, cookies и настройки приватности.',
-      updated: 'Обновлено: 9 августа 2026 года',
+      description: 'Как Go Kyrgyzstan Travel обрабатывает заявки, аккаунты, first-party аналитику, cookies и настройки приватности.',
+      updated: 'Обновлено: 13 августа 2026 года',
       back: 'К турам',
       contact: 'Написать по вопросу конфиденциальности',
       manageCookies: 'Управлять cookies',
@@ -156,13 +169,22 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
         {
           title: 'Какие данные мы собираем',
           paragraphs: [
-            'Когда вы отправляете заявку, мы получаем только указанные вами данные: имя, страну проживания, предпочтительный способ связи, контакты, даты поездки, размер группы, интересующие маршруты и сообщение. Эти данные нужны, чтобы ответить и предложить поездку.',
-            'После согласия на аналитику собираются анонимные данные: просмотренные страницы, клики по карточкам туров и контактам, глубина чтения, технический размер экрана, выбранная тема и случайный first-party идентификатор сессии. В аналитику не попадают ответы формы, email, номер телефона, Telegram username, рекламные идентификаторы и точная геолокация.',
+            'Когда вы отправляете заявку, мы получаем указанные вами данные: имя, страну проживания, предпочтительный способ связи, контакты, даты поездки, размер группы, интересующие маршруты и сообщение. Сервер также получает сетевой адрес для защиты и ограничения злоупотреблений и сохраняет исходный IP вместе с заявкой.',
+            'При создании аккаунта обрабатываются имя, email, выбранная роль покупателя или продавца, идентификатор аккаунта и защищённый хеш пароля. Пароль в читаемом виде на сервере не хранится.',
+            'Отзыв содержит указанное имя, оценку и комментарий и может быть опубликован после модерации. Предложение продавца может содержать контакты, описание тура, маршрут, цену и загруженные изображения; одобренные материалы могут стать публичным контентом тура.',
+            'После согласия собираются ограниченные аналитические данные: просмотренные страницы, клики по карточкам и контактам, глубина чтения, результаты этапов отправки заявки, категория устройства (mobile, tablet или desktop), первый посадочный pathname, hostname внешнего источника, UTM source, medium и campaign, а также случайный first-party идентификатор сессии. Полный URL источника и его query не собираются. Значения полей заявки, email, телефон, Telegram username, рекламные идентификаторы и точная геолокация в аналитику не передаются.',
           ],
         },
         {
           title: 'Зачем мы используем данные',
-          paragraphs: ['Детали заявки используются для общения, подготовки маршрута или расчёта, организации бронирования при вашем дальнейшем решении, защиты сайта от злоупотреблений и выполнения требований закона. Анонимная аналитика по согласию помогает понять интерес к страницам и турам.'],
+          paragraphs: ['Детали заявки используются для общения, подготовки маршрута или расчёта, организации бронирования при вашем дальнейшем решении, защиты сайта от злоупотреблений и выполнения требований закона. Данные аккаунтов, отзывов и предложений продавцов обеспечивают работу кабинета и модерации. Аналитика по согласию помогает понять интерес к страницам и турам.'],
+        },
+        {
+          title: 'Хранение данных в браузере',
+          paragraphs: [
+            'Кроме cookies, local storage может запоминать выбранную тему, а для авторизованных пользователей — токен, состояние сессии, основные данные профиля и вспомогательные данные кабинета. Они остаются в этом браузере, пока не будут заменены, пока вы не выйдете из аккаунта там, где это применимо, или не очистите данные сайта; срок токена также ограничивается сервером. После согласия на аналитику session storage временно хранит ограниченную атрибуцию визита до закрытия вкладки или отзыва согласия.',
+            'В рабочей версии заявки хранятся на сервере, и полная копия заявки в браузере не требуется. Локальный или offline-режим для демонстрации может хранить копии кабинета, когда серверный режим недоступен. Очистка данных браузера удаляет локальные копии, но не удаляет сведения, уже полученные сервером.',
+          ],
         },
         {
           title: 'Выбор аналитики',
@@ -180,11 +202,14 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
         },
         {
           title: 'Срок хранения и безопасность',
-          paragraphs: ['Анонимные аналитические события хранятся до 13 месяцев. Заявки на тур хранятся столько, сколько разумно необходимо для ответа, планирования, ведения заявки или документации, если закон не требует большего срока. Мы используем контроль доступа и разумные технические меры защиты, но абсолютную безопасность в интернете гарантировать нельзя.'],
+          paragraphs: [
+            'Недавние аналитические события на уровне сессии хранятся до 7 дней. Компактные дневные итоги без идентификатора сессии могут храниться до 13 месяцев. Это уменьшает объём хранилища, сохраняя данные о тенденциях.',
+            'Заявки, аккаунты, отзывы, предложения продавцов и загруженные файлы хранятся столько, сколько разумно необходимо для работы функции, ответа или документирования заявки, модерации, защиты от злоупотреблений либо выполнения требований закона. Мы используем контроль доступа и разумные технические меры защиты, но абсолютную безопасность в интернете гарантировать нельзя.',
+          ],
         },
         {
           title: 'Ваши права и выбор',
-          paragraphs: ['Вы можете в любой момент отозвать согласие на аналитику в настройках cookies: новые аналитические события остановятся, а cookie сессии будет удалён. В зависимости от применимого законодательства вы можете запросить доступ, исправление, удаление, ограничение или возражение против обработки персональных данных.'],
+          paragraphs: ['Вы можете в любой момент отозвать согласие на аналитику в настройках cookies: новые аналитические события остановятся, cookie сессии и временная атрибуция будут удалены. Local storage можно очистить через настройки браузера. В зависимости от применимого законодательства вы можете запросить доступ, исправление, удаление, ограничение или возражение против обработки персональных данных, включая аккаунт, заявку, отзыв или предложение продавца.'],
         },
         {
           title: 'Изменения политики',
@@ -192,12 +217,15 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
         },
       ],
       cookieTable: {
-        title: 'Cookies и похожие технологии хранения',
+        title: 'Cookies и хранилище браузера',
         columns: ['Название', 'Тип', 'Назначение', 'Срок'],
         rows: [
           ['gkt_cookie_consent', 'Обязательный, first-party', 'Запоминает выбор аналитики.', 'До 13 месяцев'],
-          ['gkt_analytics_session', 'Аналитический, first-party', 'Связывает анонимные события одной сессии после согласия.', '30 минут, продлевается при активности'],
-          ['sidebar_state', 'Функциональный, first-party', 'Запоминает состояние панели у авторизованных пользователей.', 'До 7 дней'],
+          ['gkt_analytics_session', 'Аналитический, first-party', 'Связывает разрешённые события одной сессии.', '30 минут, продлевается при активности'],
+          ['gkt_analytics_attribution_v1', 'Аналитический, session storage', 'После согласия временно запоминает посадочный pathname, hostname внешнего источника и ограниченную UTM-атрибуцию.', 'До закрытия вкладки или отзыва согласия на аналитику'],
+          ['go-kyrgyzstan-travel-theme', 'Функциональный, local storage', 'Запоминает выбранную тему оформления.', 'До изменения или очистки данных браузера'],
+          ['Сессия и токен аккаунта', 'Обязательный local storage аккаунта', 'Сохраняет вход в аккаунт на этом браузере.', 'До выхода, истечения срока или очистки данных браузера'],
+          ['Профиль и данные кабинета', 'Функциональный local storage', 'Подставляет данные профиля и поддерживает удобство кабинета или локальный резервный режим.', 'До обновления или очистки данных браузера'],
         ],
       },
     },

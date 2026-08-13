@@ -288,6 +288,23 @@ type EventSummary = {
   totals: Record<string, number>;
   paths: Array<{ path: string; count: number }>;
   interests: Array<{ label: string; count: number }>;
+  sources?: Array<{ source: string; count: number }>;
+  landings?: Array<{ landing: string; count: number }>;
+  conversionSources?: Array<{ source: string; count: number }>;
+  conversionLandings?: Array<{ landing: string; count: number }>;
+  daily?: Array<{
+    date: string;
+    events: number;
+    pageViews: number;
+    submitSuccesses: number;
+  }>;
+  storage?: {
+    rawEvents: number;
+    aggregateRows?: number;
+    rawRetentionDays: number;
+    aggregateRetentionMonths: number;
+    rawLimit?: number;
+  };
   recent: Array<{
     source: string;
     event_name: string;
@@ -296,6 +313,18 @@ type EventSummary = {
     created_at: string;
   }>;
 };
+
+const eventLabels: Record<string, string> = {
+  page_view: 'Page views',
+  scroll_depth: 'Reading-depth events',
+  analytics_consent_granted: 'Analytics opt-ins (events)',
+  request_form_submit_success: 'Trip requests completed',
+  tour_request_submit_success: 'Tour requests completed',
+};
+
+function formatEventLabel(name: string) {
+  return eventLabels[name] || name.replace(/_/g, ' ');
+}
 
 export function AdminDashboardPage() {
   const [searchParams] = useSearchParams();
@@ -1910,14 +1939,14 @@ export function AdminDashboardPage() {
           <div>
             <h2 className="text-2xl text-foreground mb-2">Event Tracker</h2>
             <p className="text-muted-foreground text-sm">
-              Anonymous, consented page views, reading depth, CTA clicks, and request submits. No form answers or contact details are stored here.
+              Consented first-party activity only. Counts are events, not unique visitors; analytics stores no contact details or values entered into request fields.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {Object.entries(eventSummary.totals).slice(0, 9).map(([key, value]) => (
               <div key={key} className="bg-muted rounded-lg p-4">
-                <p className="text-sm text-muted-foreground">{key}</p>
+                <p className="text-sm capitalize text-muted-foreground">{formatEventLabel(key)}</p>
                 <p className="text-3xl text-foreground">{value}</p>
               </div>
             ))}
@@ -1926,10 +1955,59 @@ export function AdminDashboardPage() {
             )}
           </div>
 
+          <section className="rounded-xl border border-border bg-card p-5">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h3 className="text-lg text-foreground">Compact daily history</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Daily totals remain useful without keeping every old session-level event.
+                </p>
+              </div>
+              {eventSummary.storage && (
+                <p className="text-xs leading-5 text-muted-foreground sm:max-w-xs sm:text-right">
+                  {eventSummary.storage.rawEvents.toLocaleString()} recent raw events · retained for up to{' '}
+                  {eventSummary.storage.rawRetentionDays} days · daily aggregates up to{' '}
+                  {eventSummary.storage.aggregateRetentionMonths} months
+                  {eventSummary.storage.rawLimit
+                    ? ` · raw-event cap ${eventSummary.storage.rawLimit.toLocaleString()}`
+                    : ''}
+                </p>
+              )}
+            </div>
+            {eventSummary.daily && eventSummary.daily.length > 0 ? (
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full min-w-[34rem] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-muted-foreground">
+                      <th className="py-2 pr-4 font-medium">Date</th>
+                      <th className="px-4 py-2 text-right font-medium">All events</th>
+                      <th className="px-4 py-2 text-right font-medium">Page views</th>
+                      <th className="py-2 pl-4 text-right font-medium">Completed requests</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {eventSummary.daily.slice(0, 31).map((day) => (
+                      <tr key={day.date} className="border-b border-border/70 last:border-0">
+                        <td className="py-3 pr-4 text-foreground">{day.date}</td>
+                        <td className="px-4 py-3 text-right text-muted-foreground">{day.events.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-right text-muted-foreground">{day.pageViews.toLocaleString()}</td>
+                        <td className="py-3 pl-4 text-right text-muted-foreground">{day.submitSuccesses.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="mt-4 text-sm text-muted-foreground">
+                Daily aggregates will appear after the compact analytics update starts collecting data.
+              </p>
+            )}
+          </section>
+
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
             <section className="rounded-xl border border-border bg-card p-5">
               <h3 className="text-lg text-foreground">Top pages</h3>
-              <p className="mt-1 text-sm text-muted-foreground">Pages people chose to view after accepting analytics.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Page-view events after analytics consent; clicks and scroll events are excluded.</p>
               <div className="mt-4 space-y-3">
                 {eventSummary.paths.map((item) => (
                   <div key={item.path} className="flex items-center justify-between gap-4 text-sm">
@@ -1952,6 +2030,82 @@ export function AdminDashboardPage() {
                   </div>
                 ))}
                 {eventSummary.interests.length === 0 && <p className="text-sm text-muted-foreground">No consented interest data yet.</p>}
+              </div>
+            </section>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <section className="rounded-xl border border-border bg-card p-5">
+              <h3 className="text-lg text-foreground">Visit sources</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Sources attached to consented, attributed page-view events—not unique users.
+              </p>
+              <div className="mt-4 space-y-3">
+                {(eventSummary.sources || []).map((item) => (
+                  <div key={item.source} className="flex items-center justify-between gap-4 text-sm">
+                    <span className="min-w-0 truncate text-muted-foreground">{item.source}</span>
+                    <span className="shrink-0 font-medium text-foreground">{item.count.toLocaleString()}</span>
+                  </div>
+                ))}
+                {(eventSummary.sources || []).length === 0 && (
+                  <p className="text-sm text-muted-foreground">No attributed visit events yet.</p>
+                )}
+              </div>
+            </section>
+
+            <section className="rounded-xl border border-border bg-card p-5">
+              <h3 className="text-lg text-foreground">Completed request sources</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Sources attached to consented successful-request events—not all requests or unique customers.
+              </p>
+              <div className="mt-4 space-y-3">
+                {(eventSummary.conversionSources || []).map((item) => (
+                  <div key={item.source} className="flex items-center justify-between gap-4 text-sm">
+                    <span className="min-w-0 truncate text-muted-foreground">{item.source}</span>
+                    <span className="shrink-0 font-medium text-foreground">{item.count.toLocaleString()}</span>
+                  </div>
+                ))}
+                {(eventSummary.conversionSources || []).length === 0 && (
+                  <p className="text-sm text-muted-foreground">No attributed completed-request events yet.</p>
+                )}
+              </div>
+            </section>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <section className="rounded-xl border border-border bg-card p-5">
+              <h3 className="text-lg text-foreground">Top landing pages</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                First pages attached to consented, attributed page-view events—not unique users.
+              </p>
+              <div className="mt-4 space-y-3">
+                {(eventSummary.landings || []).map((item) => (
+                  <div key={item.landing} className="flex items-center justify-between gap-4 text-sm">
+                    <span className="min-w-0 truncate text-muted-foreground">{item.landing}</span>
+                    <span className="shrink-0 font-medium text-foreground">{item.count.toLocaleString()}</span>
+                  </div>
+                ))}
+                {(eventSummary.landings || []).length === 0 && (
+                  <p className="text-sm text-muted-foreground">No attributed landing-page events yet.</p>
+                )}
+              </div>
+            </section>
+
+            <section className="rounded-xl border border-border bg-card p-5">
+              <h3 className="text-lg text-foreground">Completed request landing pages</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                First pages attached to consented successful-request events—not all requests or unique customers.
+              </p>
+              <div className="mt-4 space-y-3">
+                {(eventSummary.conversionLandings || []).map((item) => (
+                  <div key={item.landing} className="flex items-center justify-between gap-4 text-sm">
+                    <span className="min-w-0 truncate text-muted-foreground">{item.landing}</span>
+                    <span className="shrink-0 font-medium text-foreground">{item.count.toLocaleString()}</span>
+                  </div>
+                ))}
+                {(eventSummary.conversionLandings || []).length === 0 && (
+                  <p className="text-sm text-muted-foreground">No attributed completed-request landing events yet.</p>
+                )}
               </div>
             </section>
           </div>

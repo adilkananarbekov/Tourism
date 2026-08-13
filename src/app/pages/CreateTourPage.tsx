@@ -13,6 +13,7 @@ import { submitSellerTour } from '../lib/dataStore';
 import { appendLocalSubmission, loadLocalProfile, saveLocalProfile } from '../lib/localStorage';
 import { useAuth } from '../context/AuthContext';
 import { uploadImage } from '../lib/storage';
+import { apiEnabled } from '../lib/api';
 
 const sellerTourSchema = z.object({
   title: z.string().min(1, 'Tour title is required.'),
@@ -129,22 +130,24 @@ export function CreateTourPage() {
         itinerary: (values.itinerary || '').split('\n').filter(Boolean),
         ownerId: user.uid,
       });
-      appendLocalSubmission({
-        ...values,
-        season: values.season || 'All seasons',
-        tourType: values.tourType || 'Custom',
-        description: values.description || '',
-        image: imageUrl,
-        highlights: (values.highlights || '').split('\n').filter(Boolean),
-        itinerary: (values.itinerary || '').split('\n').filter(Boolean),
-      });
-      const existingProfile = loadLocalProfile();
-      if (!existingProfile && values.contactEmail && values.contactName) {
-        saveLocalProfile({
-          name: values.contactName,
-          email: values.contactEmail,
-          role: 'seller',
+      if (!apiEnabled) {
+        appendLocalSubmission({
+          ...values,
+          season: values.season || 'All seasons',
+          tourType: values.tourType || 'Custom',
+          description: values.description || '',
+          image: imageUrl,
+          highlights: (values.highlights || '').split('\n').filter(Boolean),
+          itinerary: (values.itinerary || '').split('\n').filter(Boolean),
         });
+        const existingProfile = loadLocalProfile();
+        if (!existingProfile && values.contactEmail && values.contactName) {
+          saveLocalProfile({
+            name: values.contactName,
+            email: values.contactEmail,
+            role: 'seller',
+          });
+        }
       }
       setSubmitted(true);
     } catch (err) {

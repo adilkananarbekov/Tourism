@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Cookie, Settings2, ShieldCheck, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
@@ -20,6 +20,8 @@ export function CookieConsentBanner() {
   const [consent, setConsent] = useState(() => getCookieConsent());
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(() => getCookieConsent()?.analytics ?? false);
+  const dialogRef = useRef<HTMLElement | null>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const doNotTrack = doNotTrackEnabled();
 
   useEffect(() => {
@@ -33,12 +35,70 @@ export function CookieConsentBanner() {
     return () => window.removeEventListener(OPEN_COOKIE_SETTINGS_EVENT, openSettings);
   }, []);
 
+  useEffect(() => {
+    if (!settingsOpen) {
+      return undefined;
+    }
+
+    previousFocusRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const frame = window.requestAnimationFrame(() => dialogRef.current?.focus());
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setSettingsOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab' || !dialogRef.current) {
+        return;
+      }
+
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((element) => !element.hasAttribute('hidden'));
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialogRef.current.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || active === dialogRef.current)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (active && !dialogRef.current.contains(active)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previousFocusRef.current?.focus();
+    };
+  }, [settingsOpen]);
+
   const save = (analytics: boolean) => {
+    const newlyGranted = analytics && !consent?.analytics;
     const updated = setCookieConsent(analytics);
     setConsent(updated);
     setAnalyticsEnabled(analytics);
     setSettingsOpen(false);
-    if (analytics && !doNotTrack) {
+    if (newlyGranted && !doNotTrack) {
       trackEvent('analytics_consent_granted', { label: 'Analytics consent' });
     }
   };
@@ -46,7 +106,7 @@ export function CookieConsentBanner() {
   const text = isRussian
     ? {
         heading: 'Настройки cookies',
-        body: 'Мы используем обязательный cookie, чтобы сохранить ваш выбор. При отдельном согласии включается анонимная аналитика: просмотренные страницы, клики по турам и глубина чтения. Мы не используем рекламные пиксели, fingerprinting или запись экрана.',
+        body: 'Мы используем обязательный cookie, чтобы сохранить ваш выбор. При отдельном согласии включается first-party аналитика с минимальным набором данных: просмотренные страницы, клики по турам и глубина чтения. Мы не используем рекламные пиксели, fingerprinting или запись экрана.',
         dnt: 'В браузере включён Do Not Track — аналитика останется выключенной.',
         policy: 'Политика конфиденциальности и cookies',
         reject: 'Только обязательные',
@@ -54,14 +114,14 @@ export function CookieConsentBanner() {
         manage: 'Настроить',
         settingsTitle: 'Управление аналитикой',
         settingsBody: 'Обязательный cookie нужен только для сохранения выбора. Аналитические данные отправляются только после согласия и помогают понять интерес к страницам и турам.',
-        analytics: 'Анонимная аналитика сайта',
-        analyticsHelp: 'Страницы, клики по кнопкам и карточкам, глубина чтения и технический размер экрана. Без рекламы и без идентификации личности.',
+        analytics: 'Аналитика сайта с минимальным набором данных',
+        analyticsHelp: 'Страницы, клики по кнопкам и карточкам, глубина чтения, категория устройства и ограниченный источник визита. Без рекламы, контактов, полного URL источника и значений полей заявки.',
         save: 'Сохранить выбор',
         close: 'Закрыть',
       }
     : {
         heading: 'Your cookie choices',
-        body: 'We use one essential cookie to remember this choice. With separate consent, anonymous analytics records viewed pages, tour clicks, and reading depth. We do not use ad pixels, fingerprinting, or session recording.',
+        body: 'We use one essential cookie to remember this choice. With separate consent, data-minimised first-party analytics records viewed pages, tour clicks, and reading depth. We do not use ad pixels, fingerprinting, or session recording.',
         dnt: 'Your browser has Do Not Track enabled, so analytics will remain off.',
         policy: 'Privacy & Cookie Policy',
         reject: 'Essential only',
@@ -69,8 +129,8 @@ export function CookieConsentBanner() {
         manage: 'Manage choices',
         settingsTitle: 'Manage analytics',
         settingsBody: 'The essential cookie only remembers your choice. Analytics is sent only after consent and helps us understand interest in pages and tours.',
-        analytics: 'Anonymous site analytics',
-        analyticsHelp: 'Viewed pages, button and tour-card clicks, reading depth, and technical screen size. No advertising or personal identification.',
+        analytics: 'Data-minimised site analytics',
+        analyticsHelp: 'Viewed pages, button and tour-card clicks, reading depth, device category, and limited visit attribution. No advertising, contact details, full referrer URL, or request-field values.',
         save: 'Save choices',
         close: 'Close',
       };
@@ -115,9 +175,12 @@ export function CookieConsentBanner() {
       {settingsOpen && (
         <div className="fixed inset-0 z-[130] flex items-end justify-center bg-black/55 p-3 sm:items-center sm:p-6">
           <section
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="cookie-settings-title"
+            aria-describedby="cookie-settings-description"
+            tabIndex={-1}
             className="w-full max-w-xl rounded-2xl border border-border bg-card p-6 shadow-2xl"
           >
             <div className="flex items-start justify-between gap-4">
@@ -128,13 +191,11 @@ export function CookieConsentBanner() {
                 </div>
                 <h2 id="cookie-settings-title" className="mt-2 text-2xl text-foreground">{text.settingsTitle}</h2>
               </div>
-              {consent && (
-                <Button type="button" variant="ghost" size="icon" onClick={() => setSettingsOpen(false)} aria-label={text.close}>
-                  <X className="h-5 w-5" aria-hidden="true" />
-                </Button>
-              )}
+              <Button type="button" variant="ghost" size="icon" onClick={() => setSettingsOpen(false)} aria-label={text.close}>
+                <X className="h-5 w-5" aria-hidden="true" />
+              </Button>
             </div>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">{text.settingsBody}</p>
+            <p id="cookie-settings-description" className="mt-3 text-sm leading-6 text-muted-foreground">{text.settingsBody}</p>
             {doNotTrack && <p className="mt-3 text-sm font-medium text-secondary">{text.dnt}</p>}
 
             <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-muted/50 p-4">
