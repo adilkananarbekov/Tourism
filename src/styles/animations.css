@@ -969,11 +969,11 @@
 @keyframes not-found-compass-pivot {
   0%,
   100% {
-    transform: translate(-50%, -50%) scale(0.86);
+    transform: scale(0.86);
     opacity: 0.78;
   }
   50% {
-    transform: translate(-50%, -50%) scale(1.18);
+    transform: scale(1.18);
     opacity: 1;
   }
 }
@@ -983,27 +983,37 @@
 }
 
 .not-found-compass__halo {
-  background: rgba(214, 160, 111, 0.2);
-  box-shadow: 0 0 0 1px rgba(214, 160, 111, 0.38), 0 0 42px rgba(214, 160, 111, 0.22);
+  fill: rgba(214, 160, 111, 0.12);
+  stroke: rgba(214, 160, 111, 0.52);
+  stroke-width: 1.25;
+  filter: drop-shadow(0 0 16px rgba(214, 160, 111, 0.28));
+  transform-box: view-box;
+  transform-origin: center;
   will-change: transform, opacity;
   animation: not-found-compass-halo 6.5s ease-in-out infinite;
 }
 
 .not-found-compass__dial {
+  transform-box: view-box;
+  transform-origin: center;
   will-change: transform;
   animation: not-found-compass-dial 14s ease-in-out infinite;
 }
 
 .not-found-compass__needle {
-  transform-origin: 50% 50%;
-  filter: drop-shadow(0 0 8px rgba(235, 168, 110, 0.62));
+  transform-box: view-box;
+  transform-origin: center;
   will-change: transform;
   animation: not-found-compass-needle 9s cubic-bezier(0.45, 0.05, 0.22, 1) infinite;
 }
 
 .not-found-compass__pivot {
-  background: #f1c18c;
-  box-shadow: 0 0 0 4px rgba(214, 160, 111, 0.18), 0 0 16px rgba(241, 193, 140, 0.78);
+  fill: #f1c18c;
+  stroke: #7b3928;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 7px rgba(241, 193, 140, 0.88));
+  transform-box: view-box;
+  transform-origin: center;
   will-change: transform, opacity;
   animation: not-found-compass-pivot 3.6s ease-in-out infinite;
 }

@@ -14,6 +14,112 @@ import { SEO } from '../components/SEO';
 import { withBasePath } from '../lib/assets';
 import { localizedPath, useSiteLocale } from '../lib/locale';
 
+const compassTicks = Array.from({ length: 48 }, (_, index) => ({
+  rotation: index * 7.5,
+  kind: index % 6 === 0 ? 'major' : index % 3 === 0 ? 'medium' : 'minor',
+}));
+
+function NotFoundCompass() {
+  return (
+    <div className="not-found-compass relative aspect-square w-44 sm:w-56 lg:w-72">
+      <svg
+        viewBox="0 0 320 320"
+        className="h-full w-full overflow-visible"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <radialGradient id="not-found-compass-face" cx="50%" cy="44%" r="63%">
+            <stop offset="0" stopColor="#243529" />
+            <stop offset="0.58" stopColor="#142419" />
+            <stop offset="1" stopColor="#09130d" />
+          </radialGradient>
+          <linearGradient id="not-found-compass-brass" x1="58" y1="42" x2="270" y2="282" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#f1cf9b" />
+            <stop offset="0.25" stopColor="#c98955" />
+            <stop offset="0.55" stopColor="#7a4329" />
+            <stop offset="0.78" stopColor="#d8a36e" />
+            <stop offset="1" stopColor="#754127" />
+          </linearGradient>
+          <linearGradient id="not-found-compass-north" x1="160" y1="58" x2="160" y2="164" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#f7d5a4" />
+            <stop offset="0.5" stopColor="#e2955b" />
+            <stop offset="1" stopColor="#7b3928" />
+          </linearGradient>
+          <linearGradient id="not-found-compass-south" x1="160" y1="158" x2="160" y2="264" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#d18d5a" />
+            <stop offset="1" stopColor="#4d2d22" />
+          </linearGradient>
+          <filter id="not-found-compass-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <circle className="not-found-compass__halo" cx="160" cy="160" r="151" />
+
+        <g className="not-found-compass__dial">
+          <circle cx="160" cy="160" r="145" fill="#07110c" stroke="url(#not-found-compass-brass)" strokeWidth="2" />
+          <circle cx="160" cy="160" r="136" fill="url(#not-found-compass-face)" stroke="rgba(241, 207, 155, 0.52)" />
+          <circle cx="160" cy="160" r="121" stroke="rgba(241, 207, 155, 0.28)" strokeWidth="1.5" />
+
+          <g className="not-found-compass__ticks" stroke="#efd1a4" strokeLinecap="round">
+            {compassTicks.map(({ rotation, kind }) => {
+              const y2 = kind === 'major' ? 57 : kind === 'medium' ? 50 : 45;
+              const opacity = kind === 'major' ? 0.88 : kind === 'medium' ? 0.58 : 0.32;
+              return (
+                <line
+                  key={rotation}
+                  x1="160"
+                  y1="35"
+                  x2="160"
+                  y2={y2}
+                  strokeWidth={kind === 'major' ? 2.25 : kind === 'medium' ? 1.5 : 1}
+                  opacity={opacity}
+                  transform={`rotate(${rotation} 160 160)`}
+                />
+              );
+            })}
+          </g>
+
+          <circle cx="160" cy="160" r="99" stroke="rgba(175, 208, 170, 0.22)" strokeDasharray="2 8" strokeWidth="1.5" />
+          <path
+            d="M95 215c23-25 42-3 64-16 23-14 35-39 68-21 15 8 26 7 37-4"
+            stroke="rgba(175, 208, 170, 0.23)"
+            strokeDasharray="4 7"
+            strokeLinecap="round"
+          />
+          <path
+            d="M95 228c29-12 43 10 68-2 22-11 35-32 62-21 15 6 25 3 35-7"
+            stroke="rgba(214, 160, 111, 0.18)"
+            strokeLinecap="round"
+          />
+
+          <g fill="#f6e0bb" fontFamily="ui-sans-serif, system-ui, sans-serif" fontWeight="600" textAnchor="middle">
+            <text x="160" y="56" fontSize="16" letterSpacing="2">N</text>
+            <text x="273" y="166" fontSize="16">E</text>
+            <text x="160" y="280" fontSize="16">S</text>
+            <text x="47" y="166" fontSize="16">W</text>
+          </g>
+        </g>
+
+        <g className="not-found-compass__needle" filter="url(#not-found-compass-glow)">
+          <path d="M160 154 181 87 160 57 139 87Z" fill="url(#not-found-compass-north)" stroke="#f7d5a4" strokeOpacity="0.72" />
+          <path d="M160 166 176 232 160 263 144 232Z" fill="url(#not-found-compass-south)" stroke="#d8a36e" strokeOpacity="0.5" />
+          <path d="M160 75v78" stroke="#fff0cf" strokeLinecap="round" strokeOpacity="0.62" />
+          <path d="M160 168v75" stroke="#f0bd8a" strokeLinecap="round" strokeOpacity="0.3" />
+        </g>
+        <circle className="not-found-compass__pivot" cx="160" cy="160" r="10" />
+        <circle cx="160" cy="160" r="3.5" fill="#fff1d3" />
+      </svg>
+    </div>
+  );
+}
+
 export function NotFoundPage() {
   const navigate = useNavigate();
   const locale = useSiteLocale();
@@ -78,22 +184,7 @@ export function NotFoundPage() {
         <div className="overflow-hidden rounded-[2rem] border border-white/15 bg-[#101d16]/90 shadow-2xl backdrop-blur-md">
           <div className="grid items-center gap-8 px-6 py-8 sm:px-10 sm:py-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-12 lg:px-14 lg:py-12">
             <div className="flex items-center justify-center" aria-hidden="true">
-              <div className="not-found-compass relative aspect-square w-44 sm:w-56 lg:w-72">
-                <span className="not-found-compass__halo absolute inset-0 rounded-full" />
-                <img
-                  src={withBasePath('/images/404-compass-dial-640.png')}
-                  alt=""
-                  className="not-found-compass__dial relative z-10 h-full w-full rounded-full object-cover"
-                  decoding="async"
-                />
-                <img
-                  src={withBasePath('/images/404-compass-needle.png')}
-                  alt=""
-                  className="not-found-compass__needle absolute left-[14%] top-[14%] z-20 h-[72%] w-[72%] object-contain"
-                  decoding="async"
-                />
-                <span className="not-found-compass__pivot absolute left-1/2 top-1/2 z-30 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full" />
-              </div>
+              <NotFoundCompass />
             </div>
 
             <div>
