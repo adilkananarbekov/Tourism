@@ -15,7 +15,7 @@
 - Typography: the implementation uses the site's existing font and weight system rather than copying a foreign font, while preserving the reference hierarchy, compact heading line-height, small 404 eyebrow, and readable support copy.
 - Spacing/layout: the final card is intentionally slightly wider than the primary reference to include the quick-link navigation from the second reference. Desktop alignment, section rhythm, radii, and responsive stacking remain balanced; the 390 px viewport has no horizontal overflow.
 - Colors/tokens: the dark olive card, muted green action, warm copper accents, white hierarchy, and dimmed photographic background match the references while staying consistent with the live site's palette.
-- Image quality: the existing high-resolution Kyrgyzstan canyon image is used as the backdrop. The compass is an exact raster extraction from the supplied reference rather than a code-drawn approximation.
+- Image quality: the existing high-resolution Kyrgyzstan canyon image is used as the backdrop. The compass is now a layered raster instrument: an image-generated dial and a transparent image-generated needle, rather than a code-drawn approximation.
 - Copy/content: English and Russian variants are concise and route users toward a useful next action. Search, home, tours, gallery, and contact destinations are explicit.
 - Focused-region comparison was not required because the desktop side-by-side evidence keeps the compass, title, search controls, and quick links readable at full-view scale. The separate mobile capture verifies the responsive state.
 - Acceptable P3 differences: the live site's floating contact buttons remain visible on desktop, and the decorative dotted route is omitted to avoid adding non-functional visual weight.
@@ -37,3 +37,10 @@
 ## Final result
 
 final result: passed
+
+## Animation update — 2026-08-14
+
+- Final desktop animation evidence: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\404-animated-final-2.png`.
+- The needle moves independently through a restrained 9-second route-search motion; the dial drifts by less than one degree, while the halo and pivot breathe at separate intervals. The effect uses CSS transforms and opacity only.
+- The rendered needle and dial both loaded successfully, the transform matrix changed across the captured states, and no runtime exceptions occurred.
+- `prefers-reduced-motion: reduce` disables all four compass animations. The Russian mobile page at 390 x 844 has no horizontal overflow.

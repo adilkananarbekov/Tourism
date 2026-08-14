@@ -78,11 +78,22 @@ export function NotFoundPage() {
         <div className="overflow-hidden rounded-[2rem] border border-white/15 bg-[#101d16]/90 shadow-2xl backdrop-blur-md">
           <div className="grid items-center gap-8 px-6 py-8 sm:px-10 sm:py-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-12 lg:px-14 lg:py-12">
             <div className="flex items-center justify-center" aria-hidden="true">
-              <img
-                src={withBasePath('/images/404-compass.png')}
-                alt=""
-                className="aspect-square w-44 rounded-full object-cover shadow-[0_0_60px_rgba(173,205,165,0.1)] sm:w-56 lg:w-72"
-              />
+              <div className="not-found-compass relative aspect-square w-44 sm:w-56 lg:w-72">
+                <span className="not-found-compass__halo absolute inset-0 rounded-full" />
+                <img
+                  src={withBasePath('/images/404-compass-dial-640.png')}
+                  alt=""
+                  className="not-found-compass__dial relative z-10 h-full w-full rounded-full object-cover"
+                  decoding="async"
+                />
+                <img
+                  src={withBasePath('/images/404-compass-needle.png')}
+                  alt=""
+                  className="not-found-compass__needle absolute left-[14%] top-[14%] z-20 h-[72%] w-[72%] object-contain"
+                  decoding="async"
+                />
+                <span className="not-found-compass__pivot absolute left-1/2 top-1/2 z-30 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full" />
+              </div>
             </div>
 
             <div>
