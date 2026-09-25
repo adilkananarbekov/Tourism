@@ -71,6 +71,14 @@ function normalizeTour(row: ApiTourRow): Tour {
     id: Number(row.id),
     title: row.title || '',
     isHot: Boolean(row.isHot ?? row.is_hot),
+    availableMonths: Array.isArray(row.availableMonths) ? row.availableMonths.map(Number) : undefined,
+    availabilityMode: row.availabilityMode === 'scheduled' ? 'scheduled' : 'on-request',
+    promotionTag: row.promotionTag === 'hot' || row.promotionTag === 'hit' || row.promotionTag === 'new'
+      ? row.promotionTag
+      : null,
+    promotionStartsAt: row.promotionStartsAt,
+    promotionEndsAt: row.promotionEndsAt,
+    featuredRank: Number.isFinite(Number(row.featuredRank)) ? Number(row.featuredRank) : undefined,
     duration: row.duration || '',
     tourType: row.tourType || row.tour_type || '',
     season: row.season || '',
@@ -81,6 +89,8 @@ function normalizeTour(row: ApiTourRow): Tour {
     highlights: row.highlights || [],
     itinerary: row.itinerary || [],
     packingList: row.packingList || row.packing_list || [],
+    seoContent: row.seoContent,
+    relatedTourIds: row.relatedTourIds,
     practicalInfo: row.practicalInfo || row.practical_info || {
       accommodation: '',
       meals: '',
@@ -157,6 +167,62 @@ export function clearApiUserSession() {
   if (typeof localStorage !== 'undefined') {
     localStorage.removeItem(userTokenKey);
   }
+}
+
+export type TourDeparture = {
+  id: string;
+  tourId: number;
+  startDate: string;
+  endDate: string;
+  capacity: number;
+  remainingSeats: number;
+  status: 'open' | 'closed';
+};
+
+export type TourDepartureAvailability = {
+  mode: 'on-request' | 'scheduled';
+  timezone: string;
+  today: string;
+  departures: TourDeparture[];
+};
+
+export type AdminTourDeparture = TourDeparture & {
+  confirmedParticipants: number;
+  pendingRequests: number;
+  tourTitle?: string;
+};
+
+export type DepartureInput = Pick<TourDeparture, 'tourId' | 'startDate' | 'endDate' | 'capacity' | 'status'>;
+
+export function fetchApiTourDepartures(tourId: number): Promise<TourDepartureAvailability> {
+  return requestJson(`/api/tours/${tourId}/departures`);
+}
+
+export async function fetchApiAdminDepartures(filters: { from?: string; to?: string; tourId?: number } = {}) {
+  const params = new URLSearchParams();
+  if (filters.from) params.set('from', filters.from);
+  if (filters.to) params.set('to', filters.to);
+  if (filters.tourId) params.set('tourId', String(filters.tourId));
+  const result = await requestAdminJson<{ departures: AdminTourDeparture[] }>(`/api/admin/departures?${params}`);
+  return result.departures;
+}
+
+export async function createApiDeparture(departure: DepartureInput) {
+  return requestAdminJson<{ departure: AdminTourDeparture }>('/api/admin/departures', {
+    method: 'POST', body: JSON.stringify(departure),
+  });
+}
+
+export async function updateApiDeparture(id: string, updates: Partial<DepartureInput>) {
+  return requestAdminJson<{ departure: AdminTourDeparture }>(`/api/admin/departures/${encodeURIComponent(id)}`, {
+    method: 'PATCH', body: JSON.stringify(updates),
+  });
+}
+
+export async function updateApiBookingDates(id: string, updates: { startDate?: string; endDate?: string; departureId?: string }) {
+  return requestAdminJson(`/api/admin/guest-requests/${encodeURIComponent(id)}`, {
+    method: 'PATCH', body: JSON.stringify(updates),
+  });
 }
 
 export function hasApiUserSession() {
@@ -305,6 +371,7 @@ async function submitGuestRequest(type: 'booking' | 'custom_tour_request', paylo
 export async function submitApiBookingRequest(data: BookingRequest) {
   await submitGuestRequest('booking', {
     tourId: data.tourId,
+    departureId: data.departureId || undefined,
     tourTitle: data.tourTitle,
     name: data.name,
     countryOfResidence: data.countryOfResidence || '',

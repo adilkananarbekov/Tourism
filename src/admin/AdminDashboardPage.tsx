@@ -19,6 +19,7 @@ import type { Tour } from '../app/components/tour-data';
 import { toast } from 'sonner';
 import { uploadImage } from '../app/lib/storage';
 import { withBasePath } from '../app/lib/assets';
+import { AdminBookingCalendar } from './AdminBookingCalendar';
 import {
   BlogPost,
   BookingRequest,
@@ -36,6 +37,7 @@ import {
   deleteTour,
   fetchAdminBlogPosts,
   fetchAdminSights,
+  fetchBookings,
   fetchContentSettings,
   fetchSellerSubmissions,
   fetchTours,
@@ -66,6 +68,10 @@ type TourFormState = {
   id: string;
   title: string;
   isHot: boolean;
+  availableMonths: string;
+  availabilityMode: 'on-request' | 'scheduled';
+  promotionTag: '' | 'hot' | 'hit' | 'new';
+  featuredRank: string;
   duration: string;
   tourType: string;
   season: string;
@@ -87,6 +93,10 @@ const EMPTY_TOUR_FORM: TourFormState = {
   id: '',
   title: '',
   isHot: false,
+  availableMonths: '',
+  availabilityMode: 'on-request',
+  promotionTag: '',
+  featuredRank: '',
   duration: '',
   tourType: '',
   season: '',
@@ -311,6 +321,7 @@ type EventSummary = {
     path: string;
     label: string;
     created_at: string;
+    diagnostic?: { fields?: string; code?: string };
   }>;
 };
 
@@ -320,6 +331,14 @@ const eventLabels: Record<string, string> = {
   analytics_consent_granted: 'Analytics opt-ins (events)',
   request_form_submit_success: 'Trip requests completed',
   tour_request_submit_success: 'Tour requests completed',
+  request_form_valid_attempt: 'Contact form: valid attempts',
+  request_form_validation_error: 'Contact form: fields to correct',
+  request_form_submit_error: 'Contact form: sending errors',
+  tour_request_valid_attempt: 'Tour form: valid attempts',
+  tour_request_validation_error: 'Tour form: fields to correct',
+  tour_request_submit_error: 'Tour form: sending errors',
+  departure_selected: 'Scheduled departures selected',
+  departure_unavailable: 'Unavailable departure selections',
 };
 
 function formatEventLabel(name: string) {
@@ -493,6 +512,10 @@ export function AdminDashboardPage() {
       id: String(tour.id),
       title: tour.title,
       isHot: Boolean(tour.isHot),
+      availableMonths: (tour.availableMonths || []).join(','),
+      availabilityMode: tour.availabilityMode || 'on-request',
+      promotionTag: tour.promotionTag || '',
+      featuredRank: tour.featuredRank ? String(tour.featuredRank) : '',
       duration: tour.duration,
       tourType: tour.tourType,
       season: tour.season,
@@ -518,6 +541,13 @@ export function AdminDashboardPage() {
       id: Number(tourForm.id),
       title: tourForm.title,
       isHot: tourForm.isHot,
+      availableMonths: tourForm.availableMonths
+        .split(',')
+        .map((month) => Number(month.trim()))
+        .filter((month) => Number.isInteger(month) && month >= 1 && month <= 12),
+      availabilityMode: tourForm.availabilityMode,
+      promotionTag: tourForm.promotionTag || null,
+      featuredRank: tourForm.featuredRank ? Number(tourForm.featuredRank) : undefined,
       duration: tourForm.duration,
       tourType: tourForm.tourType,
       season: tourForm.season,
@@ -735,11 +765,14 @@ export function AdminDashboardPage() {
   };
 
   const handleBookingStatusChange = async (id: string, status: string) => {
-    await updateBookingStatus(id, status);
-    setBookings((prev) =>
-      prev.map((booking) => (booking.id === id ? { ...booking, status } : booking))
-    );
-    toast.success('Booking status updated.');
+    setSavingTarget(id);
+    try {
+      await updateBookingStatus(id, status);
+      setBookings((prev) => prev.map((booking) => (booking.id === id ? { ...booking, status } : booking)));
+      toast.success('Booking status updated.');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Unable to update booking status.');
+    } finally { setSavingTarget(null); }
   };
 
   const handleSellerStatusChange = async (id: string, status: string) => {
@@ -1033,6 +1066,81 @@ export function AdminDashboardPage() {
                     onChange={(event) => setTourForm({ ...tourForm, tourType: event.target.value })}
                   />
                 </div>
+                <fieldset className="rounded-lg border border-border bg-muted/20 p-3 sm:col-span-2">
+                  <legend className="px-1 text-sm font-medium text-foreground">Available months</legend>
+                  <p className="mb-3 text-xs text-muted-foreground">Select only months when this route is normally practical. Access is still confirmed personally.</p>
+                  <div className="grid grid-cols-6 gap-2 sm:grid-cols-12">
+                    {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((label, index) => {
+                      const month = index + 1;
+                      const selected = tourForm.availableMonths.split(',').map(Number).includes(month);
+                      return (
+                        <button
+                          key={month}
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() => {
+                            const current = tourForm.availableMonths.split(',').map(Number).filter(Boolean);
+                            const next = selected ? current.filter((value) => value !== month) : [...current, month].sort((a, b) => a - b);
+                            setTourForm({ ...tourForm, availableMonths: next.join(',') });
+                          }}
+                          className={`min-h-9 rounded-md border text-xs font-medium transition-colors ${selected ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-background text-muted-foreground hover:border-primary/50'}`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+                <div>
+                  <Label htmlFor="tourAvailabilityMode">Availability</Label>
+                  <select
+                    id="tourAvailabilityMode"
+                    value={tourForm.availabilityMode}
+                    onChange={(event) => setTourForm({ ...tourForm, availabilityMode: event.target.value as TourFormState['availabilityMode'] })}
+                    className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+                  >
+                    <option value="on-request">Confirmed on request</option>
+                    <option value="scheduled">Scheduled departures</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="tourPromotionTag">Promotion tag</Label>
+                  <select
+                    id="tourPromotionTag"
+                    value={tourForm.promotionTag}
+                    onChange={(event) => setTourForm({ ...tourForm, promotionTag: event.target.value as TourFormState['promotionTag'] })}
+                    className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+                  >
+                    <option value="">No tag</option>
+                    <option value="hot">Hot — available this season</option>
+                    <option value="hit">Popular — backed by demand</option>
+                    <option value="new">New — recently published</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="tourFeaturedRank">Featured rank</Label>
+                  <Input
+                    id="tourFeaturedRank"
+                    type="number"
+                    min="1"
+                    placeholder="1 = first"
+                    value={tourForm.featuredRank}
+                    onChange={(event) => setTourForm({ ...tourForm, featuredRank: event.target.value })}
+                  />
+                </div>
+                <label
+                  htmlFor="tourIsHot"
+                  className="flex min-h-11 items-center gap-3 rounded-md border border-border bg-muted/30 px-3 text-sm text-foreground sm:col-span-2"
+                >
+                  <input
+                    id="tourIsHot"
+                    type="checkbox"
+                    checked={tourForm.isHot}
+                    onChange={(event) => setTourForm({ ...tourForm, isHot: event.target.checked })}
+                    className="h-4 w-4 accent-primary"
+                  />
+                  Feature only when the tour is genuinely available for the promoted season
+                </label>
               </div>
               <div>
                 <Label htmlFor="tourImage">Image URL</Label>
@@ -1721,6 +1829,14 @@ export function AdminDashboardPage() {
         </div>
       )}
 
+      {activeTab === 'calendar' && (
+        <AdminBookingCalendar tours={tours} bookings={bookings} customRequests={customRequests} onChanged={async () => {
+          const [updatedTours, updatedBookings] = await Promise.all([fetchTours(), fetchBookings()]);
+          setTours(updatedTours);
+          setBookings(updatedBookings);
+        }} />
+      )}
+
       {activeTab === 'bookings' && (
         <div className="space-y-6">
           <div>
@@ -1728,6 +1844,7 @@ export function AdminDashboardPage() {
             <p className="text-sm text-muted-foreground">
               All requested tours, traveler contacts, dates, totals, and follow-up status.
             </p>
+            <a href="/admin/dashboard?tab=calendar" className="mt-3 inline-block text-sm text-primary underline">Календарь броней и управление датами →</a>
           </div>
           <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
             <div className="relative">
@@ -1768,10 +1885,12 @@ export function AdminDashboardPage() {
                   <select
                     className="h-9 rounded-md border border-border bg-card px-2 text-sm"
                     value={booking.status || 'pending'}
+                    aria-label={`Booking status for ${booking.name}`}
+                    disabled={savingTarget === booking.id}
                     onChange={(event) => handleBookingStatusChange(booking.id, event.target.value)}
                   >
                     {leadStatusOptions.map((status) => (
-                      <option key={status} value={status}>{status}</option>
+                      <option key={status} value={status}>{status === 'approved' ? 'approved — confirmed, reserves seats' : status}</option>
                     ))}
                   </select>
                 </div>
@@ -1942,6 +2061,21 @@ export function AdminDashboardPage() {
               Consented first-party activity only. Counts are events, not unique visitors; analytics stores no contact details or values entered into request fields.
             </p>
           </div>
+
+          <section className="rounded-xl border border-border bg-card p-5">
+            <h3 className="text-lg text-foreground">Request health</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">New diagnostic events start with the 9 September trust update. These are event counts, not unique visitors or a conversion rate; repeated attempts and older successes can overlap. Contact details and field values are never collected.</p>
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full min-w-[34rem] text-left text-sm">
+                <thead className="border-b border-border text-muted-foreground"><tr><th className="p-3">Form</th><th className="p-3">Valid attempts</th><th className="p-3">Fields to correct</th><th className="p-3">Sending errors</th><th className="p-3">Successful requests*</th></tr></thead>
+                <tbody>{[
+                  ['Tour page', 'tour_request_valid_attempt', 'tour_request_validation_error', 'tour_request_submit_error', 'tour_request_submit_success'],
+                  ['Contact page', 'request_form_valid_attempt', 'request_form_validation_error', 'request_form_submit_error', 'request_form_submit_success'],
+                ].map(([label, ...events]) => <tr key={label} className="border-b border-border/60"><th className="p-3 font-medium">{label}</th>{events.map((name) => <td className="p-3" key={name}>{(eventSummary.totals[name] || 0).toLocaleString()}</td>)}</tr>)}</tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">* Includes the existing historical success events. Departure selections: {eventSummary.totals.departure_selected || 0} · Invalidated / unavailable selections: {eventSummary.totals.departure_unavailable || 0}</p>
+          </section>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {Object.entries(eventSummary.totals).slice(0, 9).map(([key, value]) => (
@@ -2126,6 +2260,8 @@ export function AdminDashboardPage() {
                   </p>
                 </div>
                 <p className="text-sm text-muted-foreground">{event.label || event.path}</p>
+                {event.diagnostic?.fields && <p className="mt-1 text-xs text-muted-foreground">Fields to correct: {event.diagnostic.fields}</p>}
+                {event.diagnostic?.code && <p className="mt-1 text-xs text-muted-foreground">Reason: {event.diagnostic.code.replace(/_/g, ' ')}</p>}
               </div>
             ))}
           </div>
@@ -2195,19 +2331,6 @@ export function AdminDashboardPage() {
                     }
                   />
                 </div>
-                <label
-                  htmlFor="tourIsHot"
-                  className="flex min-h-11 items-center gap-3 rounded-md border border-border bg-muted/30 px-3 text-sm text-foreground"
-                >
-                  <input
-                    id="tourIsHot"
-                    type="checkbox"
-                    checked={tourForm.isHot}
-                    onChange={(event) => setTourForm({ ...tourForm, isHot: event.target.checked })}
-                    className="h-4 w-4 accent-primary"
-                  />
-                  Show in Hot tours on home
-                </label>
               </div>
             ))}
             {feedbackEntries.length === 0 && <EmptyState text="No traveler reviews yet." />}

@@ -23,6 +23,7 @@ const navItems = [
   { label: 'Guides', tab: 'blogs', to: '/admin/dashboard?tab=blogs', icon: BookOpenText },
   { label: 'Custom leads', tab: 'requests', to: '/admin/dashboard?tab=requests', icon: FileText },
   { label: 'Bookings', tab: 'bookings', to: '/admin/dashboard?tab=bookings', icon: CalendarCheck2 },
+  { label: 'Календарь и даты', tab: 'calendar', to: '/admin/dashboard?tab=calendar', icon: CalendarCheck2 },
   { label: 'Analytics', tab: 'events', to: '/admin/dashboard?tab=events', icon: BarChart3 },
   { label: 'Reviews', tab: 'feedback', to: '/admin/dashboard?tab=feedback', icon: MessageSquareText },
   { label: 'Users', tab: 'users', to: '/admin/dashboard?tab=users', icon: Users },

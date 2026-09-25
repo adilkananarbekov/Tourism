@@ -1,7 +1,7 @@
 import { Check, Instagram, MessageCircle, Phone, Send } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
+import { useForm, type FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/button';
@@ -17,7 +17,6 @@ import { breadcrumbJsonLd } from '../lib/seo';
 import { localeAlternates, localizedPath, useSiteLocale } from '../lib/locale';
 import { getCountryOptions } from '../lib/countries';
 import {
-  FOUNDER_NAME,
   INSTAGRAM_URL,
   TELEGRAM_URL,
   TELEGRAM_USERNAME,
@@ -25,26 +24,23 @@ import {
   WHATSAPP_URL,
 } from '../lib/contact';
 
-const formString = z.string();
-const requiredFormString = (message: string) => formString.pipe(z.string().trim().min(1, message));
-const optionalEmail = formString.pipe(
-  z.string().refine((value) => !value || z.string().email().safeParse(value).success, {
-    message: 'Use a valid email or leave it empty.',
-  })
-);
-
-const contactRequestSchema = z
+const contactRequestSchema = (isRussian: boolean) => z
   .object({
-    name: requiredFormString('Name is required.'),
-    countryOfResidence: requiredFormString('Choose your country of residence.'),
-    contactPreference: requiredFormString('Choose how we should contact you.'),
-    telegramUsername: formString,
-    phone: formString,
-    email: optionalEmail,
-    selectedTour: formString,
-    groupSize: z.number().min(1, 'Add at least 1 guest.'),
-    travelTime: formString,
-    message: requiredFormString('Add a short message so we know what you need.'),
+    name: z.string().trim().min(1, isRussian ? 'Укажите ваше имя.' : 'Enter your name.')
+      .max(160, isRussian ? 'Используйте не более 160 символов.' : 'Use no more than 160 characters.'),
+    countryOfResidence: z.string().trim().min(1, isRussian ? 'Укажите страну проживания.' : 'Enter your country of residence.'),
+    contactPreference: z.string().refine((value) => ['whatsapp', 'telegram', 'email'].includes(value),
+      isRussian ? 'Выберите способ связи.' : 'Choose a contact method.'),
+    telegramUsername: z.string(),
+    phone: z.string(),
+    email: z.string(),
+    selectedTour: z.string().max(160, isRussian ? 'Используйте не более 160 символов.' : 'Use no more than 160 characters.'),
+    groupSize: z.number({ error: isRussian ? 'Укажите число гостей от 1 до 100.' : 'Enter the number of guests, from 1 to 100.' })
+      .int(isRussian ? 'Укажите целое число гостей.' : 'Use a whole number of guests.')
+      .min(1, isRussian ? 'Укажите хотя бы 1 гостя.' : 'Add at least 1 guest.')
+      .max(100, isRussian ? 'Для группы больше 100 человек напишите нам напрямую.' : 'For more than 100 guests, please contact us directly.'),
+    travelTime: z.string().max(240, isRussian ? 'Используйте не более 240 символов.' : 'Use no more than 240 characters.'),
+    message: z.string().max(2000, isRussian ? 'Используйте не более 2000 символов.' : 'Use no more than 2,000 characters.'),
   })
   .superRefine((values, ctx) => {
     if (values.contactPreference === 'whatsapp') {
@@ -53,33 +49,36 @@ const contactRequestSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['phone'],
-          message: 'Add the phone number with its country code.',
+          message: isRussian ? 'Укажите номер WhatsApp с кодом страны.' : 'Add your WhatsApp number with its country code.',
         });
       } else if (!/^\+\d{7,15}$/.test(phone)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['phone'],
-          message: 'Use international format, for example +1 803 555 0123.',
+          message: isRussian ? 'Используйте международный формат, например +996 700 123 456.' : 'Use international format, for example +1 803 555 0123.',
         });
       }
     }
-    if (values.contactPreference === 'telegram' && !values.telegramUsername?.trim()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['telegramUsername'],
-        message: 'Add your Telegram username.',
-      });
+    if (values.contactPreference === 'telegram') {
+      const username = values.telegramUsername.trim();
+      if (!/^@?[A-Za-z0-9_]{1,32}$/.test(username)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['telegramUsername'],
+          message: isRussian ? 'Укажите имя пользователя, например @username, без пробелов.' : 'Enter your username, for example @username, without spaces.',
+        });
+      }
     }
-    if (values.contactPreference === 'email' && !values.email?.trim()) {
+    if (values.contactPreference === 'email' && !z.string().email().safeParse(values.email.trim()).success) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['email'],
-        message: 'Add your email address.',
+        message: isRussian ? 'Укажите корректный email, например you@example.com.' : 'Enter a valid email address, for example you@example.com.',
       });
     }
   });
 
-type ContactRequestValues = z.infer<typeof contactRequestSchema>;
+type ContactRequestValues = z.infer<ReturnType<typeof contactRequestSchema>>;
 
 function normalizeTelegramUsername(value: string) {
   const trimmed = value.trim();
@@ -96,42 +95,57 @@ export function FeedbackPage() {
   const isRussian = locale === 'ru';
   const text = isRussian
     ? {
-        eyebrow: 'Прямая заявка', title: `Выберите тур, оставьте контакты — ${FOUNDER_NAME} напишет вам лично.`,
-        intro: 'Это авторский сайт туров по Кыргызстану. Форма не подтверждает оплату: она отправляет заявку команде, а затем мы уточняем детали в Telegram, WhatsApp или по email.',
-        websiteRequest: 'Заявка с сайта', websiteRequestText: 'Данные о туре и контакты поступают владельцу сайта через защищённый сервер.',
-        followUp: 'Личная связь', followUpText: `${FOUNDER_NAME} или менеджер связывается с гостем до окончательного подтверждения.`,
+        eyebrow: 'Планируем вместе', title: 'Ваша поездка по Кыргызстану',
+        intro: 'Расскажите о датах, компании и местах, которые хотите увидеть. Инсан или наша местная команда помогут подобрать маршрут и рассчитать стоимость.',
+        websiteRequest: '1. Ваши пожелания', websiteRequestText: 'Выберите один удобный канал связи. Если маршрут или даты пока не определены, это нормально.',
+        followUp: '2. Программа и расчёт', followUpText: 'Обсудим поездку в переписке: маршрут, итоговую цену, включённые услуги и дополнительные расходы.',
+        confirmation: '3. Подтверждение', confirmationText: 'До подтверждения согласуем письменно программу, оплату и условия отмены. Отправка этой формы не списывает деньги и не бронирует места.',
         contacts: 'Прямые контакты основателя', browse: 'Сначала посмотреть туры', send: 'Отправить заявку',
-        formIntro: 'Укажите страну проживания и выберите удобный способ связи. Предпочтительнее WhatsApp или Telegram; по email также можно вести переписку.', sent: 'Заявка отправлена. Мы свяжемся с вами по выбранному каналу.',
-        name: 'Имя *', country: 'Страна проживания *', countryHint: 'Начните вводить название и выберите страну из списка.', contactPreference: 'Как с вами связаться? *', contactHint: 'Предпочтительнее WhatsApp или Telegram. Если выберете email, ответим письмом.',
-        whatsapp: 'WhatsApp', telegramOption: 'Telegram', emailOption: 'Email', telegram: 'Имя пользователя Telegram', phone: 'Номер WhatsApp', email: 'Email',
-        tour: 'Тур или маршрут', guests: 'Количество гостей', travelTime: 'Даты поездки', message: 'Сообщение *',
+        formIntro: 'Нужен только один контакт для переписки. Поля со звёздочкой обязательны; маршрут и даты можно уточнить позже.',
+        name: 'Имя *', country: 'Страна проживания *', countryHint: 'Начните вводить название страны. Можно выбрать из списка или вписать свою.', contactPreference: 'Как с вами связаться? *', contactHint: 'Предпочтительнее WhatsApp или Telegram. Email тоже подходит. Мы общаемся в переписке, без международных звонков.',
+        whatsapp: 'WhatsApp', telegramOption: 'Telegram', emailOption: 'Email', telegram: 'Имя пользователя Telegram *', phone: 'Номер WhatsApp *', email: 'Email *',
+        tour: 'Тур или маршрут — необязательно', guests: 'Количество гостей', travelTime: 'Даты поездки — необязательно', message: 'Вопросы и пожелания — необязательно',
         tourPlaceholder: 'Сон-Куль, Ала-Арча, Иссык-Куль…', travelPlaceholder: 'Точные даты, гибкий месяц или пока не определились',
-        messagePlaceholder: 'Что хотите увидеть, уровень комфорта, бюджет или вопросы…', sending: 'Отправляем…', submit: 'Отправить в Go Kyrgyzstan Travel',
+        messagePlaceholder: 'Что хотите увидеть, уровень комфорта, бюджет или вопросы…', sending: 'Отправляем…', submit: 'Запросить маршрут и стоимость',
+        legal: 'Как проходит бронирование и согласование условий', privacy: 'Как мы используем ваши данные',
+        noPayment: 'Это запрос, не оплата и не подтверждённая бронь.',
+        requestError: 'Не удалось подтвердить отправку. Проверьте соединение и попробуйте ещё раз или напишите нам в WhatsApp / Telegram.',
       }
     : {
-        eyebrow: 'Direct request', title: `Choose a tour, leave your contact, and ${FOUNDER_NAME} will write to you directly.`,
-        intro: 'This is my author site for Kyrgyzstan tours. The form does not confirm payment automatically. It sends your request to the team, then we contact you in Telegram, WhatsApp, or by email to confirm details.',
-        websiteRequest: 'Website request', websiteRequestText: 'Tour and contact details go to the site owner through the configured backend.',
-        followUp: 'Personal follow-up', followUpText: `${FOUNDER_NAME} or a manager contacts the guest personally before any final confirmation.`,
+        eyebrow: 'Let’s plan together', title: 'Your trip to Kyrgyzstan',
+        intro: 'Tell us when you would like to travel, who is coming, and what you want to see. Insan or our local team will help shape your route and prepare a quote.',
+        websiteRequest: '1. Your travel ideas', websiteRequestText: 'Choose one way for us to reach you. It is fine if you have not decided on a route or dates yet.',
+        followUp: '2. Itinerary and quote', followUpText: 'We discuss your route in writing, including the total price, included services, and any additional costs.',
+        confirmation: '3. Confirmation', confirmationText: 'We agree the itinerary, payment, and cancellation terms in writing before confirmation. This form does not take payment or reserve places.',
         contacts: 'Direct founder contacts', browse: 'Browse tours first', send: 'Send Request',
-        formIntro: 'Tell us your country of residence and choose how we should contact you. WhatsApp or Telegram is preferred; email also works well for written communication.', sent: 'Request sent. We will contact you through the method you chose.',
-        name: 'Name *', country: 'Country of residence *', countryHint: 'Start typing, then choose a country from the list.', contactPreference: 'How should we contact you? *', contactHint: 'WhatsApp or Telegram is preferred. If you choose email, we will reply by email.',
-        whatsapp: 'WhatsApp', telegramOption: 'Telegram', emailOption: 'Email', telegram: 'Telegram username', phone: 'WhatsApp number', email: 'Email',
-        tour: 'Tour or route', guests: 'Guests', travelTime: 'Travel time', message: 'Message *',
+        formIntro: 'We only need one contact for a written reply. Fields marked * are required; your route and dates can be decided later.',
+        name: 'Name *', country: 'Country of residence *', countryHint: 'Start typing your country. Choose from the list or enter your own.', contactPreference: 'How should we contact you? *', contactHint: 'WhatsApp or Telegram is preferred; email works too. We reply in writing, without international calls.',
+        whatsapp: 'WhatsApp', telegramOption: 'Telegram', emailOption: 'Email', telegram: 'Telegram username *', phone: 'WhatsApp number *', email: 'Email *',
+        tour: 'Tour or route — optional', guests: 'Guests', travelTime: 'Travel time — optional', message: 'Questions and preferences — optional',
         tourPlaceholder: 'Song-Kul, Ala-Archa, Issyk-Kul...', travelPlaceholder: 'Exact dates, flexible month, or not sure yet',
-        messagePlaceholder: 'Tell me what you want to see, comfort level, budget, or questions...', sending: 'Sending...', submit: 'Send to Go Kyrgyzstan Travel',
+        messagePlaceholder: 'What you would like to see, comfort level, budget, or questions…', sending: 'Sending…', submit: 'Request an itinerary and quote',
+        legal: 'How booking and agreeing the terms work', privacy: 'How we use your details',
+        noPayment: 'An enquiry only — no payment or confirmed reservation.',
+        requestError: 'We could not confirm that your request was sent. Check your connection and try again, or message us on WhatsApp / Telegram.',
       };
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
+  const [submittedVia, setSubmittedVia] = useState('');
+  const resultRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!submittedVia && !errorMessage) return;
+    resultRef.current?.focus({ preventScroll: true });
+    resultRef.current?.scrollIntoView({ block: 'center', behavior: 'auto' });
+  }, [submittedVia, errorMessage]);
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
   const requestedTour = new URLSearchParams(search).get('tour') || '';
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ContactRequestValues>({
-    resolver: zodResolver(contactRequestSchema),
+    resolver: zodResolver(contactRequestSchema(isRussian)),
     defaultValues: {
       name: '',
       countryOfResidence: '',
@@ -145,13 +159,26 @@ export function FeedbackPage() {
       message: '',
     },
   });
+  const contactPreference = watch('contactPreference');
+
+  const onInvalid = (invalidFields: FieldErrors<ContactRequestValues>) => {
+    setSubmittedVia('');
+    setErrorMessage(null);
+    const fields = Object.keys(invalidFields).filter((field) => [
+      'name', 'countryOfResidence', 'contactPreference', 'telegramUsername', 'phone',
+      'email', 'selectedTour', 'groupSize', 'travelTime', 'message',
+    ].includes(field)).sort().join(',');
+    trackEvent('request_form_validation_error', { fields });
+  };
 
   const onSubmit = async (values: ContactRequestValues) => {
     setErrorMessage(null);
-    setSubmitted(false);
+    setSubmittedVia('');
+    trackEvent('request_form_valid_attempt');
 
     if (!guestSubmissionBackendEnabled) {
-      setErrorMessage('Backend is not configured.');
+      setErrorMessage(text.requestError);
+      trackEvent('request_form_submit_error', { code: 'service_unavailable' });
       return;
     }
 
@@ -173,9 +200,9 @@ export function FeedbackPage() {
         name: values.name.trim(),
         countryOfResidence: values.countryOfResidence.trim(),
         contactPreference: values.contactPreference.trim(),
-        email: values.email.trim(),
-        telegramUsername: normalizeTelegramUsername(values.telegramUsername),
-        phone: values.phone.trim(),
+        email: values.contactPreference === 'email' ? values.email.trim() : '',
+        telegramUsername: values.contactPreference === 'telegram' ? normalizeTelegramUsername(values.telegramUsername) : '',
+        phone: values.contactPreference === 'whatsapp' ? values.phone.trim() : '',
         budget: '',
         specialRequests: [
           selectedTour ? `Selected tour: ${selectedTour}` : '',
@@ -189,14 +216,15 @@ export function FeedbackPage() {
         label: 'Direct request form',
       });
       reset();
-      setSubmitted(true);
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Unable to send request.');
+      setSubmittedVia(values.contactPreference === 'email' ? 'email' : values.contactPreference === 'telegram' ? 'Telegram' : 'WhatsApp');
+    } catch {
+      setErrorMessage(text.requestError);
+      trackEvent('request_form_submit_error', { code: 'request_failed' });
     }
   };
 
   return (
-    <section className="bg-background px-4 py-16 sm:px-6 lg:px-8">
+    <section className="request-editorial-page bg-background px-4 py-16 sm:px-6 lg:px-8">
       <SEO
         title={isRussian ? 'Заявка на тур по Кыргызстану' : 'Request a Kyrgyzstan Tour'}
         description={isRussian ? 'Оставьте заявку на частный или групповой тур по Кыргызстану: даты, размер группы и контакты для личной связи.' : 'Request a private Kyrgyzstan tour or small-group trip. Send dates, group size, and contact details for personal follow-up from Go Kyrgyzstan Travel.'}
@@ -208,8 +236,8 @@ export function FeedbackPage() {
           { name: isRussian ? 'Заявка на тур' : 'Request a Tour', path: localizedPath('/feedback', locale) },
         ])}
       />
-      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
-        <div className="space-y-6">
+      <div className="mx-auto grid max-w-6xl gap-6 sm:gap-10 lg:grid-cols-[1fr_1.05fr] lg:grid-rows-[auto_1fr] lg:items-start">
+        <div className="self-start lg:col-start-1 lg:row-start-1">
           <div>
             <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">
               {text.eyebrow}
@@ -222,20 +250,288 @@ export function FeedbackPage() {
             </p>
           </div>
 
+        </div>
+
+        <form
+          noValidate
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          className="self-start space-y-5 rounded-md border border-border bg-card p-5 shadow-sm sm:p-6 lg:col-start-2 lg:row-start-1 lg:row-span-2"
+        >
+          <div>
+            <h2 className="text-2xl text-foreground">{text.send}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {text.formIntro}
+            </p>
+          </div>
+
+          {submittedVia && (
+            <div
+              id="feedback-form-success"
+              ref={resultRef}
+              tabIndex={-1}
+              role="status"
+              aria-live="polite"
+              className="flex items-start gap-3 rounded-md border border-secondary/30 bg-secondary/10 p-4 text-sm text-foreground"
+            >
+              <Check className="mt-0.5 h-5 w-5 text-secondary" />
+              <p>
+                {isRussian
+                  ? `Заявка отправлена. Мы ответим вам ${submittedVia === 'email' ? 'по email' : `в ${submittedVia}`} и обсудим маршрут и стоимость. Бронь подтверждается отдельно после согласования условий.`
+                  : `Request sent. We will reply ${submittedVia === 'email' ? 'by email' : `on ${submittedVia}`} to discuss your itinerary and quote. Your booking is confirmed separately after the terms are agreed.`}
+              </p>
+            </div>
+          )}
+          {errorMessage && (
+            <div id="feedback-form-error" ref={resultRef} tabIndex={-1} role="alert" className="space-y-2 text-sm text-red-600">
+              <p>{errorMessage}</p>
+              <p className="flex gap-4">
+                <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="underline underline-offset-4">WhatsApp</a>
+                <a href={TELEGRAM_URL} target="_blank" rel="noreferrer" className="underline underline-offset-4">Telegram</a>
+              </p>
+            </div>
+          )}
+
+          <div>
+            <Label htmlFor="name">{text.name}</Label>
+            <Input
+              id="name"
+              autoComplete="name"
+              maxLength={160}
+              aria-required="true"
+              placeholder={isRussian ? 'Ваше имя' : 'Your name'}
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? 'feedback-name-error' : undefined}
+              {...register('name')}
+            />
+            {errors.name && (
+              <p id="feedback-name-error" className="text-xs text-red-600">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="countryOfResidence">{text.country}</Label>
+            <Input
+              id="countryOfResidence"
+              list="country-options"
+              autoComplete="country-name"
+              maxLength={240}
+              aria-required="true"
+              placeholder={isRussian ? 'Например, Кыргызстан' : 'For example, Kyrgyzstan'}
+              aria-invalid={Boolean(errors.countryOfResidence)}
+              aria-describedby={errors.countryOfResidence
+                ? 'feedback-country-hint feedback-country-error'
+                : 'feedback-country-hint'}
+              {...register('countryOfResidence')}
+            />
+            <datalist id="country-options">
+              {countryOptions.map((country) => <option key={country.code} value={country.value} />)}
+            </datalist>
+            <p id="feedback-country-hint" className="mt-1 text-xs text-muted-foreground">{text.countryHint}</p>
+            {errors.countryOfResidence && (
+              <p id="feedback-country-error" className="text-xs text-red-600">
+                {errors.countryOfResidence.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="contactPreference">{text.contactPreference}</Label>
+            <select
+              id="contactPreference"
+              aria-required="true"
+              className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+              aria-invalid={Boolean(errors.contactPreference)}
+              aria-describedby={errors.contactPreference
+                ? 'feedback-contact-hint feedback-contact-error'
+                : 'feedback-contact-hint'}
+              {...register('contactPreference')}
+            >
+              <option value="" disabled>{isRussian ? 'Выберите способ связи' : 'Choose a contact method'}</option>
+              <option value="whatsapp">{text.whatsapp}</option>
+              <option value="telegram">{text.telegramOption}</option>
+              <option value="email">{text.emailOption}</option>
+            </select>
+            <p id="feedback-contact-hint" className="mt-1 text-xs text-muted-foreground">{text.contactHint}</p>
+            {errors.contactPreference && (
+              <p id="feedback-contact-error" className="text-xs text-red-600">
+                {errors.contactPreference.message}
+              </p>
+            )}
+          </div>
+
+          {contactPreference === 'telegram' && (
+            <div>
+              <Label htmlFor="telegramUsername">{text.telegram}</Label>
+              <Input
+                id="telegramUsername"
+                placeholder="@username"
+                maxLength={33}
+                autoCapitalize="none"
+                spellCheck={false}
+                aria-required="true"
+                aria-invalid={Boolean(errors.telegramUsername)}
+                aria-describedby={errors.telegramUsername ? 'feedback-telegram-error' : undefined}
+                {...register('telegramUsername')}
+              />
+              {errors.telegramUsername && (
+                <p id="feedback-telegram-error" className="text-xs text-red-600">
+                  {errors.telegramUsername.message}
+                </p>
+              )}
+            </div>
+          )}
+          {contactPreference === 'whatsapp' && (
+            <div>
+              <Label htmlFor="phone">{text.phone}</Label>
+              <Input
+                id="phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                maxLength={80}
+                aria-required="true"
+                placeholder="+1 803 555 0123"
+                aria-invalid={Boolean(errors.phone)}
+                aria-describedby={errors.phone ? 'feedback-phone-error' : undefined}
+                {...register('phone')}
+              />
+              {errors.phone && (
+                <p id="feedback-phone-error" className="text-xs text-red-600">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+          )}
+
+          {contactPreference === 'email' && (<div>
+            <Label htmlFor="email">{text.email}</Label>
+            <Input
+              id="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              autoCapitalize="none"
+              spellCheck={false}
+              maxLength={240}
+              aria-required="true"
+              placeholder="you@example.com"
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? 'feedback-email-error' : undefined}
+              {...register('email')}
+            />
+            {errors.email && (
+              <p id="feedback-email-error" className="text-xs text-red-600">
+                {errors.email.message}
+              </p>
+            )}
+          </div>)}
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="selectedTour">{text.tour}</Label>
+              <Input
+                id="selectedTour"
+                maxLength={160}
+                placeholder={text.tourPlaceholder}
+                aria-invalid={Boolean(errors.selectedTour)}
+                aria-describedby={errors.selectedTour ? 'feedback-tour-error' : undefined}
+                {...register('selectedTour')}
+              />
+              {errors.selectedTour && <p id="feedback-tour-error" className="text-xs text-red-600">{errors.selectedTour.message}</p>}
+            </div>
+            <div>
+              <Label htmlFor="groupSize">{text.guests}</Label>
+              <Input
+                id="groupSize"
+                type="number"
+                min="1"
+                max="100"
+                step="1"
+                inputMode="numeric"
+                aria-invalid={Boolean(errors.groupSize)}
+                aria-describedby={errors.groupSize ? 'feedback-group-size-error' : undefined}
+                {...register('groupSize', { valueAsNumber: true })}
+              />
+              {errors.groupSize && (
+                <p id="feedback-group-size-error" className="text-xs text-red-600">
+                  {errors.groupSize.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="travelTime">{text.travelTime}</Label>
+            <Input
+              id="travelTime"
+              maxLength={240}
+              placeholder={text.travelPlaceholder}
+              aria-invalid={Boolean(errors.travelTime)}
+              aria-describedby={errors.travelTime ? 'feedback-travel-time-error' : undefined}
+              {...register('travelTime')}
+            />
+            {errors.travelTime && <p id="feedback-travel-time-error" className="text-xs text-red-600">{errors.travelTime.message}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="message">{text.message}</Label>
+            <Textarea
+              id="message"
+              rows={4}
+              maxLength={2000}
+              placeholder={text.messagePlaceholder}
+              aria-invalid={Boolean(errors.message)}
+              aria-describedby={errors.message ? 'feedback-message-error' : undefined}
+              {...register('message')}
+            />
+            {errors.message && (
+              <p id="feedback-message-error" className="text-xs text-red-600">
+                {errors.message.message}
+              </p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full btn-micro btn-action"
+            disabled={isSubmitting}
+            data-track-event="request_form_submit_click"
+            data-track-label="Direct request form"
+          >
+            {isSubmitting ? text.sending : text.submit}
+          </Button>
+          <div className="space-y-2 text-sm leading-6 text-muted-foreground">
+            <p>{text.noPayment}</p>
+            <p>
+              <Link className="underline underline-offset-4 hover:text-foreground" to={`${localizedPath('/terms-of-use', locale)}#booking`}>
+                {text.legal}
+              </Link>
+              {' · '}
+              <Link className="underline underline-offset-4 hover:text-foreground" to={localizedPath('/privacy-policy', locale)}>
+                {text.privacy}
+              </Link>
+            </p>
+          </div>
+        </form>
+
+        <div className="self-start space-y-6 lg:col-start-1 lg:row-start-2">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-md border border-border bg-card p-4">
               <Send className="mb-3 h-5 w-5 text-secondary" />
               <h2 className="mb-2 text-lg text-foreground">{text.websiteRequest}</h2>
-              <p className="text-sm leading-6 text-muted-foreground">
-                {text.websiteRequestText}
-              </p>
+              <p className="text-sm leading-6 text-muted-foreground">{text.websiteRequestText}</p>
             </div>
             <div className="rounded-md border border-border bg-card p-4">
               <MessageCircle className="mb-3 h-5 w-5 text-secondary" />
               <h2 className="mb-2 text-lg text-foreground">{text.followUp}</h2>
-              <p className="text-sm leading-6 text-muted-foreground">
-                {text.followUpText}
-              </p>
+              <p className="text-sm leading-6 text-muted-foreground">{text.followUpText}</p>
+            </div>
+            <div className="rounded-md border border-border bg-card p-4 sm:col-span-2">
+              <Check className="mb-3 h-5 w-5 text-secondary" />
+              <h2 className="mb-2 text-lg text-foreground">{text.confirmation}</h2>
+              <p className="text-sm leading-6 text-muted-foreground">{text.confirmationText}</p>
             </div>
           </div>
 
@@ -288,216 +584,6 @@ export function FeedbackPage() {
             </Link>
           </Button>
         </div>
-
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 rounded-md border border-border bg-card p-5 shadow-sm sm:p-6"
-        >
-          <div>
-            <h2 className="text-2xl text-foreground">{text.send}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {text.formIntro}
-            </p>
-          </div>
-
-          {submitted && (
-            <div
-              id="feedback-form-success"
-              role="status"
-              aria-live="polite"
-              className="flex items-start gap-3 rounded-md border border-secondary/30 bg-secondary/10 p-4 text-sm text-foreground"
-            >
-              <Check className="mt-0.5 h-5 w-5 text-secondary" />
-              <p>
-                {text.sent}
-              </p>
-            </div>
-          )}
-          {errorMessage && (
-            <p id="feedback-form-error" role="alert" className="text-sm text-red-600">
-              {errorMessage}
-            </p>
-          )}
-
-          <div>
-            <Label htmlFor="name">{text.name}</Label>
-            <Input
-              id="name"
-              placeholder="Adilkan"
-              aria-invalid={Boolean(errors.name)}
-              aria-describedby={errors.name ? 'feedback-name-error' : undefined}
-              {...register('name')}
-            />
-            {errors.name && (
-              <p id="feedback-name-error" className="text-xs text-red-600">
-                {errors.name.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="countryOfResidence">{text.country}</Label>
-            <Input
-              id="countryOfResidence"
-              list="country-options"
-              autoComplete="country-name"
-              placeholder={isRussian ? 'Например, Кыргызстан' : 'For example, Kyrgyzstan'}
-              aria-invalid={Boolean(errors.countryOfResidence)}
-              aria-describedby={errors.countryOfResidence
-                ? 'feedback-country-hint feedback-country-error'
-                : 'feedback-country-hint'}
-              {...register('countryOfResidence')}
-            />
-            <datalist id="country-options">
-              {countryOptions.map((country) => <option key={country.code} value={country.value} />)}
-            </datalist>
-            <p id="feedback-country-hint" className="mt-1 text-xs text-muted-foreground">{text.countryHint}</p>
-            {errors.countryOfResidence && (
-              <p id="feedback-country-error" className="text-xs text-red-600">
-                {errors.countryOfResidence.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="contactPreference">{text.contactPreference}</Label>
-            <select
-              id="contactPreference"
-              className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
-              aria-invalid={Boolean(errors.contactPreference)}
-              aria-describedby={errors.contactPreference
-                ? 'feedback-contact-hint feedback-contact-error'
-                : 'feedback-contact-hint'}
-              {...register('contactPreference')}
-            >
-              <option value="" disabled>{isRussian ? 'Выберите способ связи' : 'Choose a contact method'}</option>
-              <option value="whatsapp">{text.whatsapp}</option>
-              <option value="telegram">{text.telegramOption}</option>
-              <option value="email">{text.emailOption}</option>
-            </select>
-            <p id="feedback-contact-hint" className="mt-1 text-xs text-muted-foreground">{text.contactHint}</p>
-            {errors.contactPreference && (
-              <p id="feedback-contact-error" className="text-xs text-red-600">
-                {errors.contactPreference.message}
-              </p>
-            )}
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="telegramUsername">{text.telegram}</Label>
-              <Input
-                id="telegramUsername"
-                placeholder="@username"
-                aria-invalid={Boolean(errors.telegramUsername)}
-                aria-describedby={errors.telegramUsername ? 'feedback-telegram-error' : undefined}
-                {...register('telegramUsername')}
-              />
-              {errors.telegramUsername && (
-                <p id="feedback-telegram-error" className="text-xs text-red-600">
-                  {errors.telegramUsername.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="phone">{text.phone}</Label>
-              <Input
-                id="phone"
-                type="tel"
-                inputMode="tel"
-                placeholder="+1 803 555 0123"
-                aria-invalid={Boolean(errors.phone)}
-                aria-describedby={errors.phone ? 'feedback-phone-error' : undefined}
-                {...register('phone')}
-              />
-              {errors.phone && (
-                <p id="feedback-phone-error" className="text-xs text-red-600">
-                  {errors.phone.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="email">{text.email}</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              aria-invalid={Boolean(errors.email)}
-              aria-describedby={errors.email ? 'feedback-email-error' : undefined}
-              {...register('email')}
-            />
-            {errors.email && (
-              <p id="feedback-email-error" className="text-xs text-red-600">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="selectedTour">{text.tour}</Label>
-              <Input
-                id="selectedTour"
-                placeholder={text.tourPlaceholder}
-                {...register('selectedTour')}
-              />
-            </div>
-            <div>
-              <Label htmlFor="groupSize">{text.guests}</Label>
-              <Input
-                id="groupSize"
-                type="number"
-                min="1"
-                aria-invalid={Boolean(errors.groupSize)}
-                aria-describedby={errors.groupSize ? 'feedback-group-size-error' : undefined}
-                {...register('groupSize', { valueAsNumber: true })}
-              />
-              {errors.groupSize && (
-                <p id="feedback-group-size-error" className="text-xs text-red-600">
-                  {errors.groupSize.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="travelTime">{text.travelTime}</Label>
-            <Input
-              id="travelTime"
-              placeholder={text.travelPlaceholder}
-              {...register('travelTime')}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="message">{text.message}</Label>
-            <Textarea
-              id="message"
-              rows={4}
-              placeholder={text.messagePlaceholder}
-              aria-invalid={Boolean(errors.message)}
-              aria-describedby={errors.message ? 'feedback-message-error' : undefined}
-              {...register('message')}
-            />
-            {errors.message && (
-              <p id="feedback-message-error" className="text-xs text-red-600">
-                {errors.message.message}
-              </p>
-            )}
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full btn-micro btn-action"
-            disabled={isSubmitting}
-            data-track-event="request_form_submit_click"
-            data-track-label="Direct request form"
-          >
-            {isSubmitting ? text.sending : text.submit}
-          </Button>
-        </form>
       </div>
     </section>
   );

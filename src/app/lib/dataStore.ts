@@ -66,6 +66,7 @@ export interface CustomTourRequest {
 
 export interface BookingRequest {
   tourId: number;
+  departureId?: string;
   tourTitle: string;
   name: string;
   countryOfResidence: string;
@@ -105,6 +106,7 @@ export interface BlogPost {
   excerpt: string;
   content: string;
   coverImage?: string;
+  coverImageAlt?: string;
   category?: string;
   readTime?: string;
   status?: 'draft' | 'published' | 'archived';

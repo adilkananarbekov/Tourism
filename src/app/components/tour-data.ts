@@ -5,6 +5,15 @@ export interface Tour {
   title: string;
   /** Selected by an administrator for the Hot tours section on the home page. */
   isHot?: boolean;
+  /** Structured availability used by seasonal filters. January is 1, December is 12. */
+  availableMonths?: number[];
+  /** Whether dates are confirmed case-by-case or come from a departure list. */
+  availabilityMode?: 'on-request' | 'scheduled';
+  /** Merchandising is optional and must be supported by real availability or demand. */
+  promotionTag?: 'hot' | 'hit' | 'new' | null;
+  promotionStartsAt?: string;
+  promotionEndsAt?: string;
+  featuredRank?: number;
   duration: string;
   tourType: string;
   season: string;

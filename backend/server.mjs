@@ -12,6 +12,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
 import jwt from 'jsonwebtoken';
+import { BookingCalendarError, createBookingCalendar } from './booking-calendar.mjs';
 
 const currentFilePath = fileURLToPath(import.meta.url);
 const backendDir = path.dirname(currentFilePath);
@@ -90,6 +91,9 @@ const analyticsEventNames = new Set([
   'page_view',
   'request_form_submit_click',
   'request_form_submit_success',
+  'request_form_valid_attempt',
+  'request_form_validation_error',
+  'request_form_submit_error',
   'request_page_browse_tours_click',
   'request_page_instagram_click',
   'request_page_telegram_click',
@@ -107,6 +111,11 @@ const analyticsEventNames = new Set([
   'tour_detail_request_open',
   'tour_detail_request_submit',
   'tour_request_submit_success',
+  'tour_request_valid_attempt',
+  'tour_request_validation_error',
+  'tour_request_submit_error',
+  'departure_selected',
+  'departure_unavailable',
   'tours_request_click',
   'trip_idea_click',
 ]);
@@ -200,6 +209,7 @@ function normalizeGuestRequestPayload(type, payload) {
     notes: 2000,
     specialRequests: 3000,
     userId: 160,
+    departureId: 160,
   };
 
   for (const [field, maxLength] of Object.entries(stringFields)) {
@@ -213,6 +223,11 @@ function normalizeGuestRequestPayload(type, payload) {
   }
 
   const countField = type === 'booking' ? 'participants' : 'groupSize';
+  if (type === 'booking' && payload.participants !== undefined &&
+      ((typeof payload.participants !== 'number' && typeof payload.participants !== 'string') ||
+        !Number.isInteger(Number(payload.participants)) || Number(payload.participants) < 1 || Number(payload.participants) > 100)) {
+    throw new Error('Participants must be a whole number between 1 and 100.');
+  }
   normalized[countField] = Math.min(100, Math.max(1, Math.trunc(asNumber(payload[countField], 1))));
 
   if (type === 'booking') {
@@ -528,7 +543,7 @@ const statements = {
     ORDER BY count DESC, value ASC
   `),
   recentEvents: sqlite.prepare(`
-    SELECT source, event_name, path, label, created_at
+    SELECT source, event_name, path, label, metadata_json, created_at
     FROM site_events
     ORDER BY created_at DESC
     LIMIT 40
@@ -655,6 +670,8 @@ const statements = {
   `),
 };
 
+const bookingCalendar = createBookingCalendar(sqlite);
+
 function analyticsRawRetentionCutoff() {
   const cutoff = new Date();
   cutoff.setUTCDate(cutoff.getUTCDate() - analyticsRawRetentionDays);
@@ -733,7 +750,10 @@ function deleteContentItem(name, id) {
   return next.length !== items.length;
 }
 
-const contentSeedVersion = 3;
+// Bump this whenever seed-managed editorial content is added. Existing
+// installations keep their database, so without a version change new public
+// stories would never reach the API sitemap after a release.
+const contentSeedVersion = 5;
 
 function parseContentUpdatedAt(value) {
   if (typeof value !== 'string' || !value.trim()) {
@@ -780,6 +800,15 @@ function mergeNewerSeedContent(existingItems, seedItems) {
       createdAt: existing.createdAt || seed.createdAt,
     };
   });
+
+  const existingIds = new Set(existingItems.map((item) => String(item?.id)));
+  const newManagedItems = seedItems.filter(
+    (item) => isObject(item) && item.seedManaged === true && !existingIds.has(String(item.id)),
+  );
+  if (newManagedItems.length > 0) {
+    items.push(...newManagedItems);
+    changed = true;
+  }
 
   return { items, changed };
 }
@@ -883,10 +912,13 @@ function insertGuestRequest({ id, type, payload, sourceIp, status, createdAt, up
 }
 
 function mapGuestRequestRow(row) {
+  const payload = parseJson(row.payload_json, {});
+  const departure = bookingCalendar.departureForRequest(row.id);
+  if (departure) Object.assign(payload, { departureId: departure.id, tourId: departure.tourId });
   return {
     id: row.id,
     type: row.type,
-    payload: parseJson(row.payload_json, {}),
+    payload,
     source_ip: row.source_ip || '',
     status: row.status,
     telegram_delivery_status: row.telegram_delivery_status || 'waiting',
@@ -1187,6 +1219,15 @@ function sanitizeAnalyticsMetadata(eventName, metadata) {
     }
   }
 
+  if (['request_form_validation_error', 'tour_request_validation_error'].includes(eventName)) {
+    const allowedFields = new Set(['name', 'countryOfResidence', 'contactPreference', 'telegramUsername', 'phone', 'email', 'groupSize', 'participants', 'startDate', 'endDate', 'dateFlexibility', 'selectedTour', 'travelTime', 'message', 'notes']);
+    const fields = [...new Set(String(metadata.fields || '').split(',').filter((field) => allowedFields.has(field)))].sort();
+    if (fields.length) sanitized.fields = fields.join(',');
+  }
+  if (['request_form_submit_error', 'tour_request_submit_error', 'departure_unavailable'].includes(eventName)) {
+    if (['request_failed', 'service_unavailable', 'schedule_unavailable', 'departure_required', 'selection_invalidated'].includes(metadata.code)) sanitized.code = metadata.code;
+  }
+
   if (eventName.endsWith('_click')) {
     const destinationPath = sanitizeAnalyticsPath(metadata.destinationPath);
     const destinationHost = sanitizeAnalyticsHost(metadata.destinationHost);
@@ -1457,6 +1498,10 @@ function buildEventSummary() {
       path: event.path || '',
       label: event.label || '',
       created_at: event.created_at || '',
+      diagnostic: (() => {
+        const metadata = sanitizeAnalyticsMetadata(event.event_name, parseJson(event.metadata_json, {}));
+        return { ...(metadata.fields ? { fields: metadata.fields } : {}), ...(metadata.code ? { code: metadata.code } : {}) };
+      })(),
     })),
     daily,
     storage: {
@@ -2220,6 +2265,10 @@ app.get('/api/tours/:id', (req, res) => {
   res.json({ tour });
 });
 
+app.get('/api/tours/:id/departures', (req, res) => {
+  res.set('Cache-Control', 'no-store').json(bookingCalendar.publicDepartures(req.params.id));
+});
+
 app.get('/internal/legacy-tour-redirect', (req, res) => {
   const tourId = Math.trunc(asNumber(req.query.id, 0));
   const tour = mapTourRow(statements.getTour.get(tourId));
@@ -2403,7 +2452,7 @@ app.post('/api/guest-requests', guestRequestLimiter, (req, res) => {
 
   const id = crypto.randomUUID();
   const createdAt = nowIso();
-  insertGuestRequest({
+  normalizedPayload = bookingCalendar.createRequest({
     id,
     type,
     payload: normalizedPayload,
@@ -2718,20 +2767,25 @@ app.get('/api/admin/guest-requests', requireAdmin, (_req, res) => {
 });
 
 app.patch('/api/admin/guest-requests/:id', requireAdmin, (req, res) => {
-  const status = asString(req.body?.status || '', 80);
-  const allowedStatuses = new Set(['pending', 'contacted', 'approved', 'completed', 'cancelled', 'rejected']);
-  if (!allowedStatuses.has(status)) {
-    res.status(400).json({ error: 'Invalid request status.' });
-    return;
-  }
+  const request = bookingCalendar.updateRequest(req.params.id, req.body || {});
+  res.json({ request: mapGuestRequestRow(request) });
+});
 
-  const result = statements.updateGuestRequestStatus.run(status, nowIso(), req.params.id);
-  if (result.changes === 0) {
-    res.status(404).json({ error: 'Request not found.' });
-    return;
-  }
+app.get('/api/admin/departures', requireAdmin, (req, res) => {
+  res.set('Cache-Control', 'no-store').json(bookingCalendar.adminDepartures(req.query));
+});
 
-  res.json({ request: mapGuestRequestRow(statements.getGuestRequest.get(req.params.id)) });
+app.post('/api/admin/departures', requireAdmin, (req, res) => {
+  res.status(201).json({ departure: bookingCalendar.createDeparture(req.body || {}) });
+});
+
+app.patch('/api/admin/departures/:id', requireAdmin, (req, res) => {
+  res.json({ departure: bookingCalendar.updateDeparture(req.params.id, req.body || {}) });
+});
+
+app.delete('/api/admin/departures/:id', requireAdmin, (req, res) => {
+  bookingCalendar.deleteDeparture(req.params.id);
+  res.json({ status: 'deleted' });
 });
 
 app.get('/api/admin/events', requireAdmin, (_req, res) => {
@@ -2827,6 +2881,10 @@ app.use('/api', (_req, res) => {
 });
 
 app.use((error, _req, res, _next) => {
+  if (error instanceof BookingCalendarError) {
+    res.status(error.statusCode).json({ error: error.message });
+    return;
+  }
   if (error?.type === 'entity.too.large') {
     res.status(413).json({ error: 'Request payload is too large.' });
     return;
