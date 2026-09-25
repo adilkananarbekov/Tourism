@@ -44,8 +44,8 @@ export function ContactStrip() {
         <div className="space-y-3">
           <h2 className="text-2xl sm:text-3xl text-foreground">Send a Tour Request</h2>
           <p className="text-muted-foreground">
-            Guests choose an available tour, share travel details, and {FOUNDER_NAME} or the team
-            follows up personally.
+            Have a route in mind or still exploring? Share your travel dates and group size.{' '}
+            {FOUNDER_NAME} or the team will reply through your preferred contact method.
           </p>
           <div>
             <Button asChild className="btn-micro btn-action">
@@ -74,7 +74,7 @@ export function ContactStrip() {
             );
 
             return contact.to ? (
-              <Link key={contact.label} to={contact.to} className="hover:opacity-90">
+              <Link key={contact.label} to={contact.to} className="rounded-md hover:opacity-90 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary">
                 {content}
               </Link>
             ) : contact.href ? (
@@ -83,7 +83,7 @@ export function ContactStrip() {
                 href={contact.href}
                 target="_blank"
                 rel="noreferrer"
-                className="hover:opacity-90"
+                className="rounded-md hover:opacity-90 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary"
                 data-track-event="contact_strip_direct_link_click"
                 data-track-label={contact.label}
               >

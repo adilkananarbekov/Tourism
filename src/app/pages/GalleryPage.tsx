@@ -1,20 +1,88 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { galleryItems, galleryVideo } from '../data/gallery';
 import { SEO } from '../components/SEO';
 import { Button } from '../components/ui/button';
 import { withBasePath } from '../lib/assets';
 import { breadcrumbJsonLd } from '../lib/seo';
+import { ResponsiveImage } from '../components/ResponsiveImage';
 
 const INITIAL_GALLERY_COUNT = 12;
 const GALLERY_BATCH_SIZE = 12;
 
+type GalleryItem = (typeof galleryItems)[number];
+
+function getGalleryColumnCount() {
+  if (typeof window === 'undefined') {
+    return 2;
+  }
+
+  if (window.matchMedia('(min-width: 1280px)').matches) {
+    return 5;
+  }
+  if (window.matchMedia('(min-width: 1024px)').matches) {
+    return 4;
+  }
+  if (window.matchMedia('(min-width: 640px)').matches) {
+    return 3;
+  }
+  return 2;
+}
+
+function useGalleryColumnCount() {
+  const [columnCount, setColumnCount] = useState(getGalleryColumnCount);
+
+  useEffect(() => {
+    const updateColumnCount = () => setColumnCount(getGalleryColumnCount());
+    window.addEventListener('resize', updateColumnCount);
+    return () => window.removeEventListener('resize', updateColumnCount);
+  }, []);
+
+  return columnCount;
+}
+
 export function GalleryPage() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_GALLERY_COUNT);
+  const [videoActive, setVideoActive] = useState(false);
+  const preservedScrollY = useRef<number | null>(null);
+  const columnCount = useGalleryColumnCount();
   const visibleItems = galleryItems.slice(0, visibleCount);
   const hasMore = visibleCount < galleryItems.length;
+  const galleryColumns = useMemo(() => {
+    const columns = Array.from(
+      { length: columnCount },
+      () => [] as Array<{ item: GalleryItem; index: number }>,
+    );
+
+    visibleItems.forEach((item, index) => {
+      columns[index % columnCount].push({ item, index });
+    });
+
+    return columns;
+  }, [columnCount, visibleItems]);
+
+  const loadMorePhotos = () => {
+    preservedScrollY.current = window.scrollY;
+    setVisibleCount((count) => Math.min(count + GALLERY_BATCH_SIZE, galleryItems.length));
+  };
+
+  useEffect(() => {
+    if (preservedScrollY.current === null) return;
+    const targetScrollY = preservedScrollY.current;
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        window.scrollTo({ top: targetScrollY, behavior: 'auto' });
+        preservedScrollY.current = null;
+      });
+    });
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+    };
+  }, [visibleCount]);
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
+    <section className="gallery-editorial-page py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <SEO
         title="Kyrgyzstan Travel Photos & Videos"
         description="See real Kyrgyzstan travel photos and videos from mountain tours, horse riding routes, yurt camps, hikes, and cultural experiences."
@@ -26,26 +94,60 @@ export function GalleryPage() {
         ])}
       />
       <div className="max-w-7xl mx-auto space-y-12">
-        <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl text-foreground mb-4">Gallery</h1>
+        <div className="page-editorial-heading text-center">
+          <h1 className="text-3xl sm:text-4xl text-foreground mb-4">Kyrgyzstan Travel Photo Gallery</h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             A visual diary of trips, landscapes, and guest experiences across Kyrgyzstan.
           </p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-start">
-          <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
-            <video
-              className="w-full h-full"
-              src={withBasePath(galleryVideo.src)}
-              poster={withBasePath(galleryVideo.poster)}
-              controls
-              muted
-              playsInline
-              preload="metadata"
-            />
+          <div className="rounded-md overflow-hidden border border-border bg-card shadow-sm">
+            {videoActive ? (
+              <video
+                className="h-full w-full"
+                src={withBasePath(galleryVideo.src)}
+                poster={withBasePath('/images/gallery/video-poster-960.webp')}
+                controls
+                autoPlay
+                muted
+                playsInline
+                preload="metadata"
+              />
+            ) : (
+              <button
+                type="button"
+                className="btn-interactive group relative block w-full overflow-hidden rounded-md text-left focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                onClick={() => setVideoActive(true)}
+                aria-label={`Play ${galleryVideo.title}`}
+              >
+                <ResponsiveImage
+                  src={galleryVideo.poster}
+                  variants={[
+                    { src: '/images/gallery/video-poster-480.webp', width: 480 },
+                    { src: '/images/gallery/video-poster-960.webp', width: 960 },
+                  ]}
+                  mobileVariants={[
+                    { src: '/images/gallery/video-poster-480.webp', width: 480 },
+                  ]}
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  alt="Night sky timelapse over a mountain yurt camp in Kyrgyzstan"
+                  width={1920}
+                  height={1080}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                  className="aspect-video h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+                <span className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <span className="rounded-md bg-[var(--site-green-on-dark)] px-5 py-3 text-sm font-semibold text-[var(--site-surface-dark)] shadow-lg">
+                    Play video
+                  </span>
+                </span>
+              </button>
+            )}
           </div>
-          <div className="rounded-2xl border border-border bg-card p-6 space-y-3">
+          <div className="rounded-md border border-border bg-card p-6 space-y-3">
             <p className="text-sm text-muted-foreground">Featured video</p>
             <h2 className="text-2xl text-foreground">{galleryVideo.title}</h2>
             <p className="text-muted-foreground">
@@ -57,30 +159,47 @@ export function GalleryPage() {
           </div>
         </div>
 
-        <div className="masonry-grid">
-          {visibleItems.map((item) => (
-            <div key={item.src} className="masonry-item">
-              <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm">
-                <img
-                  src={withBasePath(item.src)}
-                  alt={item.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="masonry-image"
-                />
-              </div>
+        <p className="sr-only" aria-live="polite">
+          Showing {visibleItems.length} of {galleryItems.length} photos.
+        </p>
+        <div
+          className="gallery-masonry-grid"
+          style={{ '--gallery-columns': columnCount } as CSSProperties}
+        >
+          {galleryColumns.map((column, columnIndex) => (
+            <div className="gallery-masonry-column" key={columnIndex}>
+              {column.map(({ item, index }) => (
+                <figure key={item.src} className="gallery-masonry-item" data-gallery-index={index}>
+                  <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm">
+                    <ResponsiveImage
+                      src={item.src}
+                      variants={[
+                        { src: item.src.replace(/\.[^.]+$/, '-480.webp'), width: 480 },
+                        { src: item.src.replace(/\.[^.]+$/, '-960.webp'), width: 960 },
+                      ]}
+                      mobileVariants={[
+                        { src: item.src.replace(/\.[^.]+$/, '-480.webp'), width: 480 },
+                      ]}
+                      sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 23vw, (min-width: 640px) 30vw, 50vw"
+                      alt={item.alt}
+                      width={item.width}
+                      height={item.height}
+                      loading="lazy"
+                      decoding="async"
+                      className="masonry-image"
+                    />
+                  </div>
+                  <figcaption className="px-1 pt-2 text-sm leading-5 text-muted-foreground">{item.alt}</figcaption>
+                </figure>
+              ))}
             </div>
           ))}
         </div>
         {hasMore && (
           <div className="flex justify-center">
             <Button
-              className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() =>
-                setVisibleCount((count) =>
-                  Math.min(count + GALLERY_BATCH_SIZE, galleryItems.length)
-                )
-              }
+              className="btn-micro btn-action"
+              onClick={loadMorePhotos}
             >
               Load more photos
             </Button>

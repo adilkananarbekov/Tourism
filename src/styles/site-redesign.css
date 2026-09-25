@@ -1,0 +1,207 @@
+.site-shell {
+  min-width: 0;
+  background: var(--background);
+}
+
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.site-shell main h1:not(.seasonal-home-title) {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.site-shell main h2 {
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.site-shell main :where(input, select, textarea) {
+  border-color: var(--site-control-border);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.site-shell main :where(input, select, textarea):focus {
+  border-color: var(--site-green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--site-green) 18%, transparent);
+}
+
+.site-shell .interactive-card,
+.site-shell .card-hover {
+  border-radius: 0.375rem;
+  box-shadow: none;
+}
+
+.site-shell .interactive-card:hover,
+.site-shell .interactive-card:focus-within {
+  border-color: color-mix(in srgb, var(--site-green) 55%, var(--border));
+  box-shadow: 0 18px 40px rgba(17, 21, 18, 0.11);
+}
+
+.site-shell .btn-action {
+  border: 1px solid var(--secondary);
+  border-radius: 0.25rem;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--site-green) 20%, transparent);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.site-shell .btn-action:hover {
+  border-color: var(--site-green-hover);
+  background: var(--site-green-hover);
+  color: var(--secondary-foreground);
+}
+
+.site-shell .btn-action-outline {
+  border-color: color-mix(in srgb, var(--site-green) 58%, var(--border));
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--site-green) 8%, transparent);
+  color: var(--site-green);
+}
+
+.site-shell .btn-action-outline:hover {
+  border-color: var(--site-green);
+  background: color-mix(in srgb, var(--site-green) 14%, transparent);
+  color: var(--site-green-hover);
+}
+
+.dark .site-shell .btn-action-outline {
+  color: var(--site-green);
+}
+
+.page-editorial-hero {
+  position: relative;
+  overflow: hidden;
+  border-color: var(--site-border-on-dark) !important;
+  background: var(--site-surface-dark) !important;
+  color: var(--site-text-on-dark);
+}
+
+.page-editorial-hero::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--site-green-on-dark);
+  content: '';
+  opacity: 0.92;
+}
+
+.page-editorial-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.page-editorial-hero :where(h1, h2, .text-foreground) {
+  color: var(--site-text-on-dark) !important;
+}
+
+.page-editorial-hero :where(p, .text-muted-foreground) {
+  color: var(--site-muted-on-dark);
+}
+
+.page-editorial-hero .text-secondary {
+  color: var(--site-green-on-dark) !important;
+}
+
+.site-shell .page-editorial-hero :where(input, select, textarea),
+.site-shell .page-editorial-hero .bg-card {
+  border-color: var(--site-control-border-on-dark);
+  background: var(--site-surface-dark-raised);
+  color: var(--site-text-on-dark);
+}
+
+.page-editorial-hero :where(input, textarea)::placeholder {
+  color: var(--site-muted-on-dark);
+}
+
+.page-editorial-heading {
+  position: relative;
+  padding: 1.5rem 1rem 1.5rem 1.5rem;
+  border-left: 3px solid var(--site-green);
+  text-align: left;
+}
+
+.page-editorial-heading p {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.gallery-editorial-page,
+.request-editorial-page {
+  background-color: var(--background);
+}
+
+.gallery-editorial-page > div > :not(.page-editorial-heading),
+.request-editorial-page form,
+.request-editorial-page .bg-card {
+  border-color: var(--border);
+}
+
+.request-editorial-page > div > div:first-child > div:first-child {
+  padding: 1.25rem 0 1.25rem 1.5rem;
+  border-left: 3px solid var(--site-green);
+}
+
+.site-shell [role='tab'][data-state='active'],
+.site-shell [aria-pressed='true'] {
+  border-color: var(--secondary);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.site-shell [data-slot='tabs-list'],
+.site-shell [data-slot='tabs-trigger'] {
+  border-radius: 0.25rem;
+}
+
+.site-shell [data-slot='tabs-trigger'][data-state='active'] {
+  border-color: var(--secondary);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.site-shell .card-overlay {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.76), rgba(0, 0, 0, 0.1) 68%);
+  box-shadow: none;
+}
+
+.site-shell footer .site-brand__logo {
+  width: 12rem;
+}
+
+@media (max-width: 767px) {
+  .site-shell main h1:not(.seasonal-home-title) {
+    font-size: clamp(2.2rem, 10vw, 3.35rem);
+    line-height: 1.07;
+  }
+
+  .request-editorial-page h1 {
+    font-size: clamp(2.1rem, 8.5vw, 2.75rem) !important;
+  }
+
+  .page-editorial-heading,
+  .request-editorial-page > div > div:first-child > div:first-child {
+    padding-left: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell main :where(input, select, textarea),
+  .site-shell .interactive-card,
+  .site-shell .btn-action,
+  .site-shell .btn-action-outline {
+    transition: none;
+  }
+}

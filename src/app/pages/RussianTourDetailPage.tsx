@@ -1,0 +1,62 @@
+import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import { TourDetail } from '../components/TourDetail';
+import { SEO } from '../components/SEO';
+import { useToursData } from '../hooks/useTours';
+import { localizeTour } from '../lib/localizedTours';
+import { localeAlternates } from '../lib/locale';
+import { breadcrumbJsonLd, tourJsonLd } from '../lib/seo';
+import { tourIdFromSlug, tourPath } from '../lib/tourRoutes';
+import { tourMetaDescription } from '../lib/tourSeo';
+
+export function RussianTourDetailPage() {
+  const { tourSlug } = useParams();
+  const { tours, loading } = useToursData();
+  const selectedTour = useMemo(() => {
+    const id = tourIdFromSlug(tourSlug);
+    if (!id) {
+      return null;
+    }
+    const tour = tours.find((item) => item.id === id);
+    return tour ? localizeTour(tour, 'ru') : null;
+  }, [tourSlug, tours]);
+
+  const relatedTours = useMemo(() => {
+    if (!selectedTour?.relatedTourIds?.length) {
+      return [];
+    }
+    const localizedTours = tours.map((tour) => localizeTour(tour, 'ru'));
+    const byId = new Map(localizedTours.map((tour) => [tour.id, tour]));
+    return selectedTour.relatedTourIds
+      .map((id) => byId.get(id))
+      .filter((tour): tour is NonNullable<typeof tour> => Boolean(tour));
+  }, [selectedTour, tours]);
+
+  if (loading) {
+    return <div className="px-4 py-16 text-center text-muted-foreground">Загружаем тур...</div>;
+  }
+
+  const path = selectedTour ? tourPath(selectedTour) : '/tours';
+  return (
+    <>
+      <SEO
+        title={selectedTour ? `${selectedTour.title} — тур по Кыргызстану` : 'Тур по Кыргызстану'}
+        description={selectedTour ? tourMetaDescription(selectedTour, 'ru') : 'Детали тура по Кыргызстану.'}
+        image={selectedTour?.image}
+        path={selectedTour ? tourPath(selectedTour, 'ru') : '/ru/tours'}
+        language="ru"
+        alternates={localeAlternates(path)}
+        noindex={!selectedTour}
+        jsonLd={selectedTour ? [
+          tourJsonLd(selectedTour, 'ru'),
+          breadcrumbJsonLd([
+            { name: 'Главная', path: '/ru' },
+            { name: 'Туры', path: '/ru/tours' },
+            { name: selectedTour.title, path: tourPath(selectedTour, 'ru') },
+          ]),
+        ] : undefined}
+      />
+      <TourDetail tour={selectedTour} locale="ru" relatedTours={relatedTours} />
+    </>
+  );
+}

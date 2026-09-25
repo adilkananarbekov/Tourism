@@ -13,14 +13,14 @@ import { withBasePath } from '../lib/assets';
 
 const signInSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6, 'Password must be at least 6 characters.'),
+  password: z.string().min(1, 'Password is required.'),
 });
 
 const signUpSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
   role: z.enum(['buyer', 'seller']),
   email: z.string().email(),
-  password: z.string().min(6, 'Password must be at least 6 characters.'),
+  password: z.string().min(8, 'Password must be at least 8 characters.'),
 });
 
 type SignInValues = z.infer<typeof signInSchema>;
@@ -35,7 +35,10 @@ export function AuthPage() {
 
   const nextUrl = useMemo(() => {
     const params = new URLSearchParams(location.search);
-    return params.get('next') || '/dashboard';
+    const candidate = params.get('next') || '/dashboard';
+    return candidate.startsWith('/') && !candidate.startsWith('//') && !candidate.includes('\\')
+      ? candidate
+      : '/dashboard';
   }, [location.search]);
 
   const signInForm = useForm<SignInValues>({

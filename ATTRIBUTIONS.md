@@ -13,3 +13,7 @@ Stock image sources used in this project:
 - https://images.unsplash.com/photo-1695554477492-303aacd40561 (Naryn region)
 - https://images.unsplash.com/photo-1603475429038-44361bcde123 (Jalal-Abad region)
 - https://images.unsplash.com/photo-1654139800156-65f9afb0fa01 (Osh region)
+
+Typography:
+
+- Lora is distributed under the SIL Open Font License 1.1. The bundled license is in `public/fonts/Lora-OFL.txt`.

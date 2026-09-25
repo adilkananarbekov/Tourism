@@ -1,6 +1,6 @@
-import { Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { CalendarDays, Search, Snowflake, SunMedium } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ToursGrid } from '../components/ToursGrid';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -8,72 +8,159 @@ import { cn } from '../components/ui/utils';
 import { SEO } from '../components/SEO';
 import { useToursData } from '../hooks/useTours';
 import { breadcrumbJsonLd, tourListJsonLd } from '../lib/seo';
+import { localeAlternates } from '../lib/locale';
+import { tourPath } from '../lib/tourRoutes';
+import { rankToursForMonth, upcomingTravelMonth } from '../lib/seasonalTours';
 
-const filters = [
-  'All',
-  'Mountains',
-  'Lakes',
-  'Culture',
-  'Adventure',
-  'Family',
-  'Short trips',
-  'Road trip',
-  'Weekend',
+type FilterKey =
+  | 'all'
+  | 'horseback'
+  | 'road-trip'
+  | 'active-adventure'
+  | 'family'
+  | 'two-three-days'
+  | 'four-six-days'
+  | 'seven-plus-days';
+
+const filters: { key: FilterKey; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'horseback', label: 'Horse riding' },
+  { key: 'road-trip', label: 'Road trips' },
+  { key: 'active-adventure', label: 'Active tours' },
+  { key: 'family', label: 'Family' },
+  { key: 'two-three-days', label: '2–3 days' },
+  { key: 'four-six-days', label: '4–6 days' },
+  { key: 'seven-plus-days', label: '7+ days' },
+];
+const filterKeys = new Set<FilterKey>(filters.map((filter) => filter.key));
+const monthChoices = [
+  { value: 0, label: 'Any month', short: 'Any' },
+  { value: 9, label: 'September', short: 'Sep' },
+  { value: 10, label: 'October', short: 'Oct' },
+  { value: 11, label: 'November', short: 'Nov' },
+  { value: 12, label: 'Winter', short: 'Winter' },
 ];
 
-function tourMatchesFilter(tourText: string, duration: string, filter: string) {
-  if (filter === 'All') {
+const routeHighlights = [
+  {
+    title: 'Song-Kul horse riding',
+    description: 'Compare a compact overnight ride with a longer trek from Kyzart.',
+    links: [
+      { to: '/destinations/song-kul', label: 'Song-Kul route hub' },
+      { to: tourPath(4), label: '2-day horse ride' },
+      { to: tourPath(2), label: '3-day horse trek' },
+    ],
+  },
+  {
+    title: 'Issyk-Kul from Bishkek',
+    description: 'Choose a three-day lake introduction or a four-day gorges and hot-springs route.',
+    links: [
+      { to: '/destinations/issyk-kul', label: 'Issyk-Kul route hub' },
+      { to: tourPath(10), label: '4-day Issyk-Kul tour' },
+    ],
+  },
+  {
+    title: 'Kel-Suu and mountain lakes',
+    description: 'Plan for remote-road access with a private route linking Kel-Suu, Song-Kul, and Issyk-Kul.',
+    links: [
+      { to: '/destinations/kel-suu', label: 'Kel-Suu route hub' },
+      { to: tourPath(3), label: '7-day mountain lakes tour' },
+    ],
+  },
+  {
+    title: 'Choose the right season',
+    description: 'High-altitude routes, yurt camps, and winter travel have different access windows.',
+    links: [
+      { to: '/blogs/best-time-to-visit-kyrgyzstan', label: 'Read the season guide' },
+      { to: tourPath(6), label: 'Winter Song-Kul ride' },
+    ],
+  },
+];
+
+function getDurationDays(duration: string) {
+  const days = Number(duration.match(/\d+/)?.[0]);
+  return Number.isFinite(days) ? days : 0;
+}
+
+function tourMatchesFilter(
+  tourTitle: string,
+  tourType: string,
+  duration: string,
+  filter: FilterKey
+) {
+  if (filter === 'all') {
     return true;
   }
 
-  const lowerFilter = filter.toLowerCase();
-  if (lowerFilter === 'short trips') {
-    const days = Number(duration.replace(/[^0-9]/g, ''));
-    return Number.isFinite(days) && days > 0 && days <= 3;
+  const normalizedType = normalizeSearchText(tourType);
+  if (filter === 'horseback') {
+    return normalizedType.includes('horseback') || normalizedType.includes('horse riding');
+  }
+  if (filter === 'road-trip') {
+    return normalizedType.includes('road trip');
+  }
+  if (filter === 'active-adventure') {
+    return normalizedType.includes('active adventure');
+  }
+  if (filter === 'family') {
+    return normalizeSearchText(tourTitle).includes('family');
   }
 
-  if (lowerFilter === 'lakes') {
-    return tourText.includes('lake') || tourText.includes('kul') || tourText.includes('song-kul');
+  const days = getDurationDays(duration);
+  if (filter === 'two-three-days') {
+    return days >= 2 && days <= 3;
   }
-
-  if (lowerFilter === 'mountains') {
-    return tourText.includes('mountain') || tourText.includes('peak') || tourText.includes('gorge') || tourText.includes('archa');
+  if (filter === 'four-six-days') {
+    return days >= 4 && days <= 6;
   }
+  return days >= 7;
+}
 
-  if (lowerFilter === 'road trip') {
-    return tourText.includes('road') || tourText.includes('circuit') || tourText.includes('drive');
-  }
+function normalizeSearchText(value: string) {
+  return value
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/\p{M}+/gu, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
 
-  if (lowerFilter === 'weekend') {
-    const days = Number(duration.replace(/[^0-9]/g, ''));
-    return Number.isFinite(days) && days > 0 && days <= 3;
-  }
-
-  return tourText.includes(lowerFilter);
+function isFilterKey(value: string | null): value is FilterKey {
+  return Boolean(value && filterKeys.has(value as FilterKey));
 }
 
 export function ToursPage() {
   const { tours, loading, error } = useToursData();
-  const [search, setSearch] = useState('');
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get('q') || '';
+  const filterParam = searchParams.get('filter');
+  const activeFilter: FilterKey = isFilterKey(filterParam) ? filterParam : 'all';
+  const monthParam = Number(searchParams.get('month'));
+  const selectedMonth = monthChoices.some((choice) => choice.value === monthParam) ? monthParam : 0;
+  const rankingMonth = selectedMonth || upcomingTravelMonth();
 
   const filteredTours = useMemo(() => {
-    return tours.filter((tour) => {
-      const tourText = [
+    const matchingTours = tours.filter((tour) => {
+      const tourText = normalizeSearchText([
         tour.title,
         tour.description,
         tour.tourType,
         tour.season,
         ...tour.highlights,
       ]
-        .join(' ')
-        .toLowerCase();
-      const query = search.trim().toLowerCase();
-      const matchesSearch = !query || tourText.includes(query);
-      const matchesFilter = tourMatchesFilter(tourText, tour.duration, activeFilter);
+        .join(' '));
+      const queryTokens = normalizeSearchText(search).split(' ').filter(Boolean);
+      const matchesSearch = queryTokens.every((token) => tourText.includes(token));
+      const matchesFilter = tourMatchesFilter(
+        tour.title,
+        tour.tourType,
+        tour.duration,
+        activeFilter
+      );
       return matchesSearch && matchesFilter;
     });
-  }, [activeFilter, search, tours]);
+    return rankToursForMonth(matchingTours, rankingMonth);
+  }, [activeFilter, rankingMonth, search, selectedMonth, tours]);
   const seoJsonLd = useMemo(
     () => [
       breadcrumbJsonLd([
@@ -85,37 +172,77 @@ export function ToursPage() {
     [tours]
   );
 
+  const updateSearch = (query: string) => {
+    setSearchParams((currentParams) => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (query) {
+        nextParams.set('q', query);
+      } else {
+        nextParams.delete('q');
+      }
+      return nextParams;
+    }, { replace: true });
+  };
+
+  const updateFilter = (filter: FilterKey) => {
+    setSearchParams((currentParams) => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (filter === 'all') {
+        nextParams.delete('filter');
+      } else {
+        nextParams.set('filter', filter);
+      }
+      return nextParams;
+    });
+  };
+
+  const updateMonth = (month: number) => {
+    setSearchParams((currentParams) => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (month === 0) nextParams.delete('month');
+      else nextParams.set('month', String(month));
+      return nextParams;
+    });
+  };
+
   return (
-    <div className="bg-background pb-20 md:pb-0">
+    <div className="tours-catalog-page bg-background pb-20 md:pb-0">
       <SEO
         title="Kyrgyzstan Tour Packages"
-        description="Compare Kyrgyzstan tour packages for Song-Kul, Issyk-Kul, Ala-Archa, Silk Road heritage, horse riding, trekking, and private road trips."
+        description="Compare private Kyrgyzstan tour packages for Song-Kul, Issyk-Kul, Kel-Suu, horse riding, yurt stays, and flexible mountain road trips from Bishkek."
         path="/tours"
+        alternates={localeAlternates('/tours')}
         jsonLd={seoJsonLd}
       />
 
-      <section className="border-b border-border bg-muted px-4 py-12 sm:px-6 lg:px-8">
+      <section className="page-editorial-hero border-b border-border bg-muted px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-3xl">
             <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">
-              Ready routes
+              Private trips · Local planning
             </p>
             <h1 className="mb-4 text-3xl text-foreground sm:text-4xl lg:text-5xl">
               Kyrgyzstan Tour Packages
             </h1>
             <p className="text-base leading-7 text-muted-foreground sm:text-lg">
-              Choose a curated Kyrgyzstan route first. Dates, pace, and stops can still be
-              adjusted after we receive your request.
+              Compare routes by destination, travel style, and days. Ask for a quote for your
+              group; dates, inclusions, and the final price are agreed before you book.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+              <label htmlFor="tour-search" className="sr-only">Search tours</label>
+              <Search
+                className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
               <Input
+                id="tour-search"
+                type="search"
                 placeholder="Search by route, region, lake, mountain, culture..."
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={(event) => updateSearch(event.target.value)}
                 className="h-12 pl-10"
               />
             </div>
@@ -132,33 +259,104 @@ export function ToursPage() {
         </div>
       </section>
 
-      <section className="sticky top-14 z-30 border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto py-4">
+      <section className="border-b border-border bg-background px-4 py-4 sm:px-6 lg:px-8" aria-labelledby="travel-month-heading">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h2 id="travel-month-heading" className="inline-flex items-center gap-2 text-base font-medium text-foreground">
+                <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                Travel month
+              </h2>
+              <p className="mt-1 text-sm leading-5 text-muted-foreground">
+                Sort by season. Dates and mountain access are confirmed with your quote.
+              </p>
+            </div>
+            <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1 scrollbar-hide sm:flex-wrap sm:overflow-visible" role="group" aria-label="Travel month">
+              {monthChoices.map((choice) => (
+                <button
+                  key={choice.value}
+                  type="button"
+                  onClick={() => updateMonth(choice.value)}
+                  aria-pressed={selectedMonth === choice.value}
+                  className={cn(
+                    'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md border px-4 text-sm font-medium transition-[transform,background-color,border-color,color,box-shadow] duration-200 motion-reduce:transition-none hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 active:translate-y-0',
+                    selectedMonth === choice.value
+                      ? 'border-primary bg-primary text-primary-foreground shadow-md'
+                      : 'border-border bg-background text-foreground hover:border-primary/50 hover:bg-muted'
+                  )}
+                >
+                  {choice.value === 12 ? <Snowflake className="h-4 w-4" aria-hidden="true" /> : choice.value ? <SunMedium className="h-4 w-4" aria-hidden="true" /> : null}
+                  <span className="sm:hidden">{choice.short}</span>
+                  <span className="hidden sm:inline">{choice.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="sticky top-14 z-30 border-b border-border/50 bg-background/60 px-4 backdrop-blur-xl shadow-sm sm:px-6 lg:px-8"
+        aria-label="Tour filters"
+      >
+        <div className="mx-auto flex max-w-6xl gap-3 overflow-x-auto py-4 scrollbar-hide">
           {filters.map((filter) => (
             <button
-              key={filter}
+              key={filter.key}
               type="button"
-              onClick={() => setActiveFilter(filter)}
+              onClick={() => updateFilter(filter.key)}
+              aria-pressed={activeFilter === filter.key}
               className={cn(
-                'min-h-[38px] whitespace-nowrap rounded-full border px-4 text-sm transition-colors',
-                activeFilter === filter
-                  ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border bg-card text-muted-foreground hover:border-primary hover:text-foreground'
+                'min-h-11 whitespace-nowrap rounded-md border px-5 text-sm font-medium transition-colors motion-reduce:transition-none',
+                activeFilter === filter.key
+                  ? 'border-primary bg-primary text-primary-foreground shadow-md'
+                  : 'border-border/50 bg-background/50 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-muted'
               )}
             >
-              {filter}
+              {filter.label}
             </button>
           ))}
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
-        <p className="text-sm text-muted-foreground">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 pt-6 sm:px-6 lg:px-8">
+        <p className="text-sm text-muted-foreground" aria-live="polite" aria-atomic="true">
           Showing {filteredTours.length} of {tours.length} tours
         </p>
+        {(search || activeFilter !== 'all' || selectedMonth !== 0) && (
+          <button type="button" className="min-h-11 rounded-sm text-sm font-medium text-primary underline underline-offset-4" onClick={() => setSearchParams({})}>
+            Reset search and filters
+          </button>
+        )}
       </div>
 
-      <ToursGrid tours={filteredTours} loading={loading} error={error} stagger />
+      <ToursGrid tours={filteredTours} loading={loading} error={error} stagger compact hasActiveFilters={Boolean(search || activeFilter !== 'all')} selectedMonth={rankingMonth} />
+
+      <section className="border-t border-border bg-muted px-4 py-10 sm:px-6 lg:px-8" aria-labelledby="route-guidance-heading">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-3xl">
+            <h2 id="route-guidance-heading" className="text-2xl text-foreground sm:text-3xl">Need help choosing a route?</h2>
+            <p className="mt-3 text-base leading-7 text-muted-foreground">
+              Compare lake stays, time in the saddle, and remote mountain roads. These guides explain what to expect and when to go.
+            </p>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {routeHighlights.map((route) => (
+              <article key={route.title} className="rounded-md border border-border bg-card p-5 shadow-sm">
+                <h3 className="text-xl text-foreground">{route.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{route.description}</p>
+                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                  {route.links.map((link) => (
+                    <Link key={link.to} to={link.to} className="card-cta text-sm font-medium text-primary">
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

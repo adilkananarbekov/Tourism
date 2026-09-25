@@ -1,12 +1,23 @@
-import { Menu, X } from 'lucide-react';
+import { ArrowRight, Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { localizedPath, useSiteLocale } from '../lib/locale';
 import { cn } from './ui/utils';
+import { BrandMark } from './BrandMark';
+import { useTheme } from '../hooks/useTheme';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const locale = useSiteLocale();
+  const { mode } = useTheme();
+  const isRussian = locale === 'ru';
+  const { pathname } = useLocation();
+  const isHome = pathname === '/' || pathname === '/ru';
+  const usesOverlayLogo = isHome && !isScrolled && !mobileMenuOpen;
+  const logoVariant = usesOverlayLogo || mode === 'dark' ? 'white' : 'color';
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 12);
@@ -15,34 +26,36 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
   const navLinks = [
-    { label: 'Home', to: '/' },
-    { label: 'Tours', to: '/tours' },
-    { label: 'Gallery', to: '/gallery' },
-    { label: 'Contact', to: '/feedback' },
+    { label: isRussian ? 'Направления' : 'Destinations', to: localizedPath('/destinations/song-kul', locale) },
+    { label: isRussian ? 'Сезонные туры' : 'Seasonal trips', to: localizedPath('/tours', locale) },
+    ...(isRussian ? [] : [{ label: 'Travel planning', to: '/blogs' }]),
+    ...(isRussian ? [] : [{ label: 'Gallery', to: '/gallery' }]),
   ];
 
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 backdrop-blur transition-all',
-        isScrolled
+        'site-header z-50 transition-all',
+        isHome ? 'site-header--home fixed inset-x-0 top-0' : 'sticky top-0',
+        isScrolled || !isHome
           ? 'bg-card/95 border-b border-border shadow-sm'
-          : 'bg-card/60 border-b border-transparent'
+          : 'site-header--transparent border-b border-transparent'
       )}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={cn('flex items-center justify-between transition-all', isScrolled ? 'h-14' : 'h-16')}>
+        <div className={cn('flex items-center justify-between transition-all', isScrolled ? 'h-16' : 'h-[76px]')}>
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 via-emerald-700 to-orange-700 text-white shadow-md ring-1 ring-white/25">
-              <span className="text-sm font-semibold">KT</span>
-            </div>
-            <span className="text-xl font-medium text-foreground">Go Kyrgyzstan Travel</span>
+          <Link to={localizedPath('/', locale)} className="site-brand flex items-center" aria-label={isRussian ? 'kyrgyz.tours — главная' : 'kyrgyz.tours — home'}>
+            <BrandMark variant={logoVariant} />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden items-center gap-5 lg:flex xl:gap-7">
             {navLinks.map((link) => (
               <NavLink
                 key={link.to}
@@ -54,14 +67,19 @@ export function Header() {
                 {link.label}
               </NavLink>
             ))}
+            <LanguageSwitcher />
             <ThemeToggle />
+            <Link to={localizedPath('/feedback', locale)} className="site-header-cta">
+              {isRussian ? 'Спланировать тур' : 'Plan my trip'}
+              <ArrowRight aria-hidden="true" />
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-3 text-muted-foreground hover:text-foreground"
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            className="lg:hidden p-3 text-current hover:opacity-80"
+            aria-label={mobileMenuOpen ? (isRussian ? 'Закрыть меню' : 'Close menu') : (isRussian ? 'Открыть меню' : 'Open menu')}
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -69,7 +87,7 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border">
+          <div className="site-mobile-menu lg:hidden border-t border-border py-4">
             <div className="flex flex-col space-y-4">
               {navLinks.map((link) => (
                 <NavLink
@@ -89,7 +107,20 @@ export function Header() {
                 </NavLink>
               ))}
               <div className="px-4">
-                <ThemeToggle />
+                <div className="flex items-center gap-3">
+                  <LanguageSwitcher />
+                  <ThemeToggle />
+                </div>
+              </div>
+              <div className="px-4">
+                <Link
+                  to={localizedPath('/feedback', locale)}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="site-header-cta w-full justify-center"
+                >
+                  {isRussian ? 'Спланировать тур' : 'Plan my trip'}
+                  <ArrowRight aria-hidden="true" />
+                </Link>
               </div>
             </div>
           </div>

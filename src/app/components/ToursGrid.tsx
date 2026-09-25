@@ -1,27 +1,69 @@
 import type { CSSProperties } from 'react';
-import { Calendar, MapPin, Tag } from 'lucide-react';
+import { ArrowRight, Calendar, Flame, MapPin, Sparkles, Tag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Spinner } from './Spinner';
 import { Skeleton } from './ui/skeleton';
 import type { Tour } from './tour-data';
-import { withBasePath } from '../lib/assets';
+import { ResponsiveImage } from './ResponsiveImage';
+import type { SiteLocale } from '../lib/locale';
+import { tourPath } from '../lib/tourRoutes';
+import { getSeasonalTourLabels, upcomingTravelMonth } from '../lib/seasonalTours';
+
+function tourImageVariants(image: string) {
+  if (!/^\/images\/tour-[\w-]+\.(?:jpe?g|webp)$/i.test(image)) {
+    return [];
+  }
+
+  const base = image.replace(/\.[^.]+$/, '');
+  return [
+    { src: `${base}-480.webp`, width: 480 },
+    { src: `${base}-960.webp`, width: 960 },
+  ];
+}
 
 interface ToursGridProps {
   tours: Tour[];
   loading?: boolean;
   error?: string | null;
   stagger?: boolean;
+  locale?: SiteLocale;
+  selectedMonth?: number;
+  compact?: boolean;
+  hasActiveFilters?: boolean;
 }
 
-export function ToursGrid({ tours, loading = false, error, stagger = false }: ToursGridProps) {
+export function ToursGrid({ tours, loading = false, error, stagger = false, locale = 'en', selectedMonth = upcomingTravelMonth(), compact = false, hasActiveFilters = false }: ToursGridProps) {
+  const isRussian = locale === 'ru';
+  const labels = isRussian
+    ? {
+        loading: 'Загружаем туры...',
+        heading: 'Готовые туры по Кыргызстану',
+        intro: 'Выберите маршрут, оставьте контакты — команда Go Kyrgyzstan Travel свяжется с вами лично.',
+        empty: 'Сейчас нет доступных туров.',
+        noMatches: 'Нет маршрутов по этим условиям. Попробуйте другое место или сбросьте фильтры.',
+        view: 'Подробнее',
+        request: 'Оставить заявку',
+        viewAria: 'Открыть',
+      }
+    : {
+        loading: 'Loading tours...',
+        heading: 'Signature Tours',
+        intro: 'Choose a route, send your contact details, and Go Kyrgyzstan Travel will follow up personally.',
+        empty: 'No tours are available right now.',
+        noMatches: 'No routes match your search. Try another destination or reset the filters.',
+        view: 'View Details',
+        request: 'Request Tour',
+        viewAria: 'View',
+      };
+
   if (loading && tours.length === 0) {
     return (
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted">
+      <section className={`${compact ? 'pt-6 pb-12' : 'py-16'} px-4 sm:px-6 lg:px-8 bg-muted`} aria-busy="true">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="text-center space-y-3">
             <Spinner />
-            <p className="text-muted-foreground text-lg">Loading tours...</p>
+            <p className="text-muted-foreground text-lg">{labels.loading}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {Array.from({ length: 6 }).map((_, index) => (
@@ -42,14 +84,14 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
   }
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted">
+    <section className={`${compact ? 'pt-6 pb-12' : 'py-16'} px-4 sm:px-6 lg:px-8 bg-muted`}>
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className={compact ? 'sr-only' : 'text-center mb-12'}>
           <h2 className="text-3xl sm:text-4xl text-foreground mb-4">
-            Signature Tours
+            {labels.heading}
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose a route, send your contact details, and Go Kyrgyzstan Travel will follow up personally.
+            {labels.intro}
           </p>
         </div>
 
@@ -61,41 +103,74 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
 
         {tours.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border bg-card py-12 text-center text-muted-foreground">
-            No tours are available right now.
+            {hasActiveFilters ? labels.noMatches : labels.empty}
           </div>
         ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {tours.map((tour, index) => (
-            <div
+          {tours.map((tour, index) => {
+            const seasonal = getSeasonalTourLabels(tour, selectedMonth, locale);
+            const requestLabel = seasonal.status === 'next-season'
+              ? (isRussian ? 'Спросить о следующем сезоне' : 'Plan next season')
+              : labels.request;
+            return (
+            <article
               key={tour.id}
-              className={`bg-card rounded-lg overflow-hidden shadow-md card-hover${stagger ? ' stagger-item' : ''}`}
+              className={`interactive-card bg-card rounded-lg overflow-hidden shadow-md card-hover${stagger ? ' stagger-item' : ''}`}
               style={
                 (stagger
-                  ? ({ '--stagger-delay': `${index * 60}ms` } as CSSProperties)
+                  ? ({ '--stagger-delay': `${Math.min(index, 5) * 60}ms` } as CSSProperties)
                   : undefined)
               }
             >
               {/* Tour Image */}
-              <div className="relative h-56 overflow-hidden sm:h-64">
-                <img
-                  src={withBasePath(tour.image)}
+              <Link
+                to={tourPath(tour, locale)}
+                className="relative block h-56 overflow-hidden sm:h-64"
+                aria-label={`${labels.viewAria} ${tour.title}`}
+                data-track-event="tour_card_image_click"
+                data-track-label={tour.title}
+              >
+                <ResponsiveImage
+                  src={tour.image}
+                  variants={tourImageVariants(tour.image)}
+                  mobileVariants={tourImageVariants(tour.image).slice(0, 1)}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                   alt={tour.title}
-                  loading="lazy"
+                  width={960}
+                  height={640}
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
                   decoding="async"
                   className="w-full h-full object-cover card-media"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent card-overlay" />
-                <div className="absolute top-4 right-4">
+                {seasonal.promotionLabel && (
+                  <div className="absolute left-4 top-4">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-card/95 px-3 py-1.5 text-xs font-semibold text-foreground shadow-md backdrop-blur-sm">
+                      {seasonal.promotion === 'hot' ? <Flame className="h-3.5 w-3.5 text-secondary" aria-hidden="true" /> : <Sparkles className="h-3.5 w-3.5 text-secondary" aria-hidden="true" />}
+                      {seasonal.promotionLabel}
+                    </span>
+                  </div>
+                )}
+                <div className="absolute right-4 top-4">
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-secondary text-primary-foreground">
                     {tour.season}
                   </span>
                 </div>
-              </div>
+              </Link>
 
               {/* Tour Content */}
               <div className="p-6">
                 <h3 className="text-xl sm:text-2xl text-foreground mb-3">
-                  {tour.title}
+                  <Link
+                    to={tourPath(tour, locale)}
+                    className="card-title-link"
+                    data-track-event="tour_card_title_click"
+                    data-track-label={tour.title}
+                  >
+                    {tour.title}
+                    <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                  </Link>
                 </h3>
 
                 <div className="flex flex-wrap gap-4 mb-4 text-sm text-muted-foreground">
@@ -117,17 +192,22 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
                   {tour.description}
                 </p>
 
+                <div className={`mb-5 rounded-lg border px-3 py-2 text-sm ${seasonal.status === 'available' ? 'border-primary/20 bg-primary/5 text-primary' : seasonal.status === 'check-access' ? 'border-secondary/30 bg-accent/50 text-foreground' : 'border-border bg-muted text-muted-foreground'}`}>
+                  {seasonal.availabilityLabel}
+                </div>
+
                 <div className="flex flex-col gap-3">
                   <Button
                     asChild
                     className="w-full btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     <Link
-                      to={`/tours/${tour.id}`}
+                      to={tourPath(tour, locale)}
                       data-track-event="tour_card_view_click"
                       data-track-label={tour.title}
                     >
-                      View Details
+                      {labels.view}
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Link>
                   </Button>
                   <Button
@@ -136,17 +216,19 @@ export function ToursGrid({ tours, loading = false, error, stagger = false }: To
                     className="w-full btn-micro btn-action-outline"
                   >
                     <Link
-                      to={`/tours/${tour.id}?book=true`}
+                      to={`${tourPath(tour, locale)}#booking`}
                       data-track-event="tour_card_request_click"
                       data-track-label={tour.title}
                     >
-                      Request Tour
+                      {requestLabel}
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Link>
                   </Button>
                 </div>
               </div>
-            </div>
-          ))}
+            </article>
+            );
+          })}
         </div>
         )}
       </div>

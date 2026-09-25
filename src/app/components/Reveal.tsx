@@ -9,7 +9,8 @@ interface RevealProps {
 
 export function Reveal({ children, className, delayMs = 0 }: RevealProps) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [armed, setArmed] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -27,6 +28,16 @@ export function Reveal({ children, className, delayMs = 0 }: RevealProps) {
     if (!node) {
       return;
     }
+
+    const isAlreadyInView = node.getBoundingClientRect().top < window.innerHeight * 0.94;
+    if (isAlreadyInView) {
+      setVisible(true);
+      setArmed(true);
+      return;
+    }
+
+    setVisible(false);
+    setArmed(true);
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -48,7 +59,12 @@ export function Reveal({ children, className, delayMs = 0 }: RevealProps) {
   return (
     <div
       ref={ref}
-      className={cn('reveal', visible && 'reveal-visible', className)}
+      className={cn(
+        'reveal',
+        armed && 'reveal-armed',
+        armed && visible && 'reveal-visible',
+        className,
+      )}
       style={{ transitionDelay: `${delayMs}ms` }}
     >
       {children}
