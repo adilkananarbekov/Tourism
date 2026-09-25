@@ -1,7 +1,15 @@
 {
   "best-time-to-visit-kyrgyzstan": {
-    "seoTitle": "Best Time to Visit Kyrgyzstan by Month",
-    "seoDescription": "Find the best time to visit Kyrgyzstan by month for Song-Kul, Issyk-Kul, horse riding, yurt stays, mountain roads and quieter travel.",
+    "seoTitle": "Best Time to Visit Kyrgyzstan: Weather by Month",
+    "seoDescription": "Late June–September suits most highland trips. Compare Kyrgyzstan's seasons for trekking, Song-Kul yurt stays, autumn road trips and winter travel.",
+    "quickAnswer": {
+      "heading": "When should you go?",
+      "text": "For high-mountain lakes, horse riding and yurt stays, late June to September is the usual window. July and August offer the widest choice of high-altitude routes. September is quieter, while October and winter need a different itinerary with access confirmed locally.",
+      "links": [
+        { "label": "Compare autumn and winter routes", "path": "/tours" },
+        { "label": "Plan a Song-Kul horse ride", "path": "/destinations/song-kul" }
+      ]
+    },
     "faq": [
       {
         "question": "What is the best time to visit Kyrgyzstan?",
@@ -38,6 +46,160 @@
       {
         "question": "Is Kyrgyzstan worth visiting in winter?",
         "answer": "Yes, if the trip is designed for winter. Cities, culture, snowy scenery, ski areas and selected guided snow experiences can be rewarding, but a winter itinerary should not assume that summer highland roads, yurt camps or trekking routes are available."
+      }
+    ]
+  },
+  "karakol-kyrgyzstan-guide": {
+    "seoTitle": "Why Visit Karakol, Kyrgyzstan: A Place Guide",
+    "seoDescription": "Discover why Karakol is worth visiting for Dungan and Russian architecture, regional food, culture and access to eastern Issyk-Kul valleys.",
+    "faq": [
+      {
+        "question": "Is Karakol worth visiting if I am not trekking?",
+        "answer": "Yes. Karakol has distinctive religious architecture, regional food, markets and a walkable local character. The city is worth at least one unhurried day even without a mountain trek."
+      },
+      {
+        "question": "What makes Karakol different from Bishkek?",
+        "answer": "Karakol is smaller and closely connected with eastern Issyk-Kul. Its wooden cathedral, Dungan Mosque, food traditions and nearby mountain valleys create a different experience from the capital."
+      },
+      {
+        "question": "Can Karakol be visited in winter?",
+        "answer": "Karakol is a functioning year-round town. Winter mountain activities require a winter-specific plan, and the availability of a city attraction or road does not guarantee that a summer trail is suitable."
+      },
+      {
+        "question": "How long should I spend in Karakol?",
+        "answer": "One full day gives time for cultural landmarks, food and a relaxed walk. Add another day if you want a nearby valley, museum or seasonal mountain activity."
+      }
+    ]
+  },
+  "skazka-canyon-kyrgyzstan-guide": {
+    "seoTitle": "Skazka Canyon, Kyrgyzstan: Why Visit and When",
+    "seoDescription": "Explore Skazka Canyon on Issyk-Kul's south shore: red-rock formations, walking conditions, seasonal realities and responsible visiting advice.",
+    "faq": [
+      {
+        "question": "Why is Skazka Canyon worth visiting?",
+        "answer": "Skazka offers a close-up walk through colourful eroded ridges and towers, with Issyk-Kul and the Tien Shan nearby. It shows a very different side of the lake region."
+      },
+      {
+        "question": "Is Skazka Canyon a difficult hike?",
+        "answer": "A visit can be kept short, but the ground is uneven, loose and exposed. It is not a paved attraction, and rain, heat, wind or ice can change the difficulty."
+      },
+      {
+        "question": "Can I visit Skazka Canyon in autumn or winter?",
+        "answer": "Autumn can offer cooler walking and attractive light. Winter visits depend on the feeder road and surface conditions; services should not be assumed available. Check locally before travelling."
+      },
+      {
+        "question": "How should visitors protect Skazka Canyon?",
+        "answer": "Stay on existing tracks, avoid fragile pinnacles, never carve the formations and carry all waste out. The soft landscape is easily damaged."
+      }
+    ]
+  },
+  "jeti-oguz-red-rocks-guide": {
+    "seoTitle": "Jeti-Oguz, Kyrgyzstan: Why Visit the Red Rocks",
+    "seoDescription": "Understand Jeti-Oguz beyond the Seven Bulls photo: red cliffs, forested valley, seasonal access, viewpoints and responsible travel advice.",
+    "faq": [
+      {
+        "question": "What is Jeti-Oguz known for?",
+        "answer": "Jeti-Oguz is known for the red Seven Bulls ridge, the Broken Heart formation, a geothermal resort and a valley that continues toward forest, pasture and mountain routes."
+      },
+      {
+        "question": "Can Jeti-Oguz be visited without a long hike?",
+        "answer": "Yes. The best-known red-rock viewpoints can form a short scenic visit. Deeper valley walks and waterfalls are separate outings that require more time and a current access check."
+      },
+      {
+        "question": "Is Jeti-Oguz accessible in winter?",
+        "answer": "The main area may be visited in winter when local road conditions allow, but snow and ice change the experience. Higher or deeper routes need separate confirmation and appropriate preparation."
+      },
+      {
+        "question": "How does Jeti-Oguz fit with Karakol?",
+        "answer": "Jeti-Oguz is commonly approached from the Karakol area and works as either a focused viewpoint visit or a longer valley day. Avoid treating both as the same itinerary."
+      }
+    ]
+  },
+  "burana-tower-guide": {
+    "seoTitle": "Burana Tower and Balasagun: Why Visit",
+    "seoDescription": "Discover Burana Tower as part of medieval Balasagun: Silk Roads history, archaeology, Chui Valley context and responsible visitor advice.",
+    "faq": [
+      {
+        "question": "Is Burana Tower a UNESCO World Heritage Site?",
+        "answer": "The City of Balasagun, identified with the Burana site, is a component of UNESCO's transnational Silk Roads: the Routes Network of Chang'an-Tianshan Corridor."
+      },
+      {
+        "question": "Why is Burana Tower important?",
+        "answer": "The surviving brick minaret is the most visible part of Balasagun, a major medieval city in the Chui Valley. The archaeological site helps explain trade, urban life and cultural exchange along the Silk Roads."
+      },
+      {
+        "question": "Can everyone climb Burana Tower?",
+        "answer": "Interior access can change and the staircase is confined. Check current rules on site; the museum and archaeological landscape remain worthwhile even without climbing."
+      },
+      {
+        "question": "Can Burana be visited outside summer?",
+        "answer": "Yes, because it is a lower-elevation cultural site. Heat, winter wind, snow or ice still affect comfort, and current opening arrangements should be confirmed."
+      }
+    ]
+  },
+  "kel-suu-lake-place-guide": {
+    "seoTitle": "Why Visit Kel-Suu Lake, Kyrgyzstan",
+    "seoDescription": "Discover why Kel-Suu is worth visiting: canyon scenery, remote access, changing lake conditions, border-area planning and responsible travel advice.",
+    "faq": [
+      {
+        "question": "Why is Kel-Suu worth visiting?",
+        "answer": "Kel-Suu combines a dramatic narrow lake, high rock walls and an unusually remote Naryn landscape. The journey and sense of isolation are as important as the lake view."
+      },
+      {
+        "question": "Does Kel-Suu always look the same as in photographs?",
+        "answer": "No. Water level, light and weather can change its colour and visible shoreline. A responsible plan does not guarantee one exact postcard view."
+      },
+      {
+        "question": "Do visitors need a permit for Kel-Suu?",
+        "answer": "Kel-Suu is near a sensitive border area, so document and access requirements must be checked for each traveller and date. Do not rely on old online instructions."
+      },
+      {
+        "question": "Is Kel-Suu a simple day trip from Bishkek?",
+        "answer": "No. It is a remote mountain destination with long travel and changing approach conditions. It should be part of a multi-day Naryn itinerary with flexible logistics."
+      }
+    ]
+  },
+  "tash-rabat-caravanserai-place-guide": {
+    "seoTitle": "Why Visit Tash Rabat Caravanserai",
+    "seoDescription": "Explore Tash Rabat through its stone architecture, Silk Roads context, debated history, high-altitude setting and responsible visitor advice.",
+    "faq": [
+      {
+        "question": "What is Tash Rabat?",
+        "answer": "Tash Rabat is a historic stone caravanserai in the Kara-Koyun gorge of Naryn Region, associated with travel routes through the Inner Tien Shan toward Kashgar."
+      },
+      {
+        "question": "How old is Tash Rabat?",
+        "answer": "Sources differ on its precise chronology. Official Kyrgyz material emphasizes a fifteenth-century monument, while UNESCO documentation records an earlier Karakhanid construction and later use."
+      },
+      {
+        "question": "Can Tash Rabat be visited outside summer?",
+        "answer": "A visit may be possible when current road and weather conditions allow, but seasonal camps and services should not be assumed. The site is at high altitude and needs a season-specific plan."
+      },
+      {
+        "question": "Does visiting Tash Rabat include Chatyr-Kul?",
+        "answer": "No. Continuing toward Chatyr-Kul is a separate high-mountain and border-zone journey with its own access, document and guiding requirements."
+      }
+    ]
+  },
+  "remote-kyrgyzstan-travel-tips": {
+    "seoTitle": "Remote Kyrgyzstan Travel Tips and Checklist",
+    "seoDescription": "Prepare for remote Kyrgyzstan with practical advice on mountain roads, weather, cash, connectivity, border permits, responsible travel and backup routes.",
+    "faq": [
+      {
+        "question": "What should I confirm before a remote Kyrgyzstan trip?",
+        "answer": "Confirm the current road, accommodation operation, any permit or document requirement, activity availability and whether the planned vehicle suits the route."
+      },
+      {
+        "question": "Should I carry cash in remote Kyrgyzstan?",
+        "answer": "Yes. Carry enough cash in smaller notes because card payments, ATMs and mobile data may be unavailable in highland areas."
+      },
+      {
+        "question": "Can I rely on a city weather forecast for a mountain pass?",
+        "answer": "No. Conditions differ sharply with altitude. Ask about the exact road, valley or trail and prepare for wind, rain and sudden temperature changes."
+      },
+      {
+        "question": "Why should a remote itinerary include a backup?",
+        "answer": "Weather, roads and local services can change. A worthwhile lower-altitude alternative protects the trip without pressuring a driver or guide to continue unsafely."
       }
     ]
   }

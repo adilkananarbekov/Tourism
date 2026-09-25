@@ -25,7 +25,7 @@ const catalog = [
   ['Nomad Trails Horseback Journey', 'Конное путешествие по кочевым тропам', 5, 'horse', 'June to September', ['Kyzart', 'Remote Valleys', 'Song-Kol Lake'], 50],
   ['Kel-Suu & Song-Köl Explorer', 'Исследовательский маршрут: Кель-Суу и Сон-Куль', 5, 'road', 'May to October', ['Bishkek', 'Song-Kol Lake', 'Kel-Suu Lake', 'Issyk-Kol'], 60],
   ['Active Song-Köl and Altyn-Arashan', 'Активный маршрут: Сон-Куль и Алтын-Арашан', 5, 'active', 'May to October', ['Kyzart', 'Song-Kol Lake', 'Issyk-Kol', 'Altyn-Arashan'], 26],
-  ['Four Days to Song-Köl on Horseback', 'Четыре дня верхом к Сон-Кулю', 6, 'horse', 'May to October', ['Kyzart', 'Kilemche Valley', 'Song-Kol Lake', 'Issyk-Kol'], 53],
+  ['6-Day Song-Köl & Issyk-Köl Horseback Journey', 'Сон-Куль и Иссык-Куль верхом — 6 дней', 6, 'horse', 'May to October', ['Bishkek', 'Kyzart', 'Kilemche Valley', 'Song-Kol Lake', 'Issyk-Kol'], 53],
   ['Active Highlands: Song-Köl & Altyn-Arashan', 'Активное высокогорье: Сон-Куль и Алтын-Арашан', 6, 'active', 'May to October', ['Kyzart', 'Song-Kol Lake', 'Issyk-Kol', 'Altyn-Arashan'], 55],
   ['Remote Valleys Horseback Expedition', 'Конная экспедиция по удалённым долинам', 6, 'horse', 'May to September', ['Kyzart', 'Remote Valleys', 'Song-Kol Lake'], 56],
   ['Quiet Valleys of Kyrgyzstan Road Trip', 'Автопутешествие по тихим долинам Кыргызстана', 7, 'road', 'June to September', ['Bishkek', 'Kochkor', 'Song-Kol Lake', 'Issyk-Kol', 'Village Stays'], 70],
@@ -175,6 +175,43 @@ function practicalInfo(tour, language = 'en') {
 // These six pages are deliberately more specific than the rest of the catalogue.
 // They match book-now searches without inventing routes that are not offered.
 const priorityTourContent = {
+  // Source itinerary rechecked 2026-09-09:
+  // https://kyrgyzriders.com/tours/kyrgyzstan-horseback-riding-tour-6-days/
+  // Four days describes the Song-Köl section, not the whole six-day package.
+  // Keep the historical URL mapping; changing it requires an explicit redirect.
+  17: {
+    title: '6-Day Song-Köl & Issyk-Köl Horseback Journey',
+    titleRu: 'Сон-Куль и Иссык-Куль верхом — 6 дней',
+    description: 'Six days in total: a four-day Song-Köl riding section, followed by two riding days above the south shore of Issyk-Köl. Road transfers connect the two areas. This is a multi-day riding trip, not a four-day package.',
+    descriptionRu: 'Шесть дней всего: четырёхдневный конный участок у Сон-Куля и ещё два дня верхом над южным берегом Иссык-Куля. Между районами — автопереезды. Это многодневное конное путешествие, а не четырёхдневный тур.',
+    highlights: ['Four-day Song-Köl section plus two days near Issyk-Köl', 'Kilemche, western Song-Köl and Boz-Salkyn pastures', 'Bishkek start and finish with road connections', 'A planned mix of four yurt nights and one guesthouse night'],
+    highlightsRu: ['Четыре дня у Сон-Куля и два дня у Иссык-Куля', 'Килемче, западный берег Сон-Куля и пастбища Боз-Салкын', 'Старт и финиш в Бишкеке, между конными участками — автомобиль', 'По плану: четыре ночи в юртах и одна в гостевом доме'],
+    itinerary: [
+      { day: 1, title: 'Bishkek — Kyzart — Kilemche', description: 'Transfer to Kyzart, riding briefing and the first ride to Kilemche. Yurt night.' },
+      { day: 2, title: 'Kilemche — Song-Köl', description: 'Mountain riding toward Song-Köl and the lakeside pastures. Yurt night.' },
+      { day: 3, title: 'Western Song-Köl', description: 'Ride along the lake toward the western pastures, with time around camp. Yurt night.' },
+      { day: 4, title: 'Kyzart — Bokonbaev', description: 'Return to Kyzart on horseback, then drive to Bokonbaev near Issyk-Köl. Guesthouse night.' },
+      { day: 5, title: 'Boz-Salkyn pastures', description: 'Begin the second riding section above Issyk-Köl. Yurt night in the Boz-Salkyn area.' },
+      { day: 6, title: 'Bokonbaev — Bishkek', description: 'Ride down to Bokonbaev, then return to Bishkek by road. Allow for a full travel day.' },
+    ],
+    itineraryRu: [
+      { day: 1, title: 'Бишкек — Кызарт — Килемче', description: 'Трансфер в Кызарт, инструктаж и первый конный переход к Килемче. Ночь в юрте.' },
+      { day: 2, title: 'Килемче — Сон-Куль', description: 'Конный переход через горы к Сон-Кулю и прибрежным пастбищам. Ночь в юрте.' },
+      { day: 3, title: 'Западный берег Сон-Куля', description: 'Переход вдоль озера к западным пастбищам и время у лагеря. Ночь в юрте.' },
+      { day: 4, title: 'Кызарт — Боконбаево', description: 'Возвращение верхом в Кызарт, затем автомобильный переезд в Боконбаево у Иссык-Куля. Ночь в гостевом доме.' },
+      { day: 5, title: 'Пастбища Боз-Салкын', description: 'Начало второго конного участка над Иссык-Кулем. Ночь в юрте в районе Боз-Салкын.' },
+      { day: 6, title: 'Боконбаево — Бишкек', description: 'Спуск верхом в Боконбаево, затем возвращение в Бишкек на автомобиле. На дорогу нужен полный день.' },
+    ],
+    practicalInfo: {
+      accommodation: 'Plan: four yurt nights and one guesthouse night. Camp facilities are basic; the final quote identifies the stays and sharing arrangements.',
+      difficulty: 'Repeated mountain riding days with road transfers. Share your recent riding experience before choosing this route.',
+    },
+    practicalInfoRu: {
+      accommodation: 'По плану: четыре ночи в юртах и одна в гостевом доме. В лагерях простые условия; места ночёвок и совместное размещение уточняются в предложении.',
+      difficulty: 'Несколько конных дней в горах и автомобильные переезды. До выбора маршрута расскажите о недавнем опыте верховой езды.',
+    },
+    relatedTourIds: [9, 2, 4],
+  },
   2: {
     title: '3-Day Song-Köl Horseback Riding Tour from Kyzart',
     titleRu: 'Конный тур на Сон-Куль из Кызарта — 3 дня',
@@ -183,15 +220,25 @@ const priorityTourContent = {
     highlights: ['Horseback route from Kyzart through the Kilemche Valley', 'One or more nights near Song-Köl in a yurt camp, subject to the confirmed plan', 'A local horseman and a pace adjusted for the group', 'High-pasture views, mountain weather, and nomadic summer landscapes'],
     highlightsRu: ['Конный маршрут из Кызарта через долину Килемче', 'Ночёвка у Сон-Куля в юрточном лагере по подтверждённому плану', 'Местный коневод и темп, подобранный для группы', 'Высокогорные пастбища, переменчивая горная погода и кочевые летние стоянки'],
     itinerary: [
-      { day: 1, title: 'Meet in Kyzart and ride toward Kilemche', description: 'Meet the local team in Kyzart, review riding experience and weather, then begin the route toward the Kilemche Valley. The day is paced for the group and the condition of the trail.' },
-      { day: 2, title: 'Kilemche Valley to Song-Köl', description: 'Continue on horseback across alpine pasture toward Song-Köl. The exact track and riding time are confirmed locally because mountain weather and ground conditions can change.' },
-      { day: 3, title: 'Song-Köl morning and return', description: 'Enjoy a calm morning by the lake before riding back toward Kyzart or taking the return transfer agreed in the confirmed programme.' },
+      { day: 1, title: 'Kyzart to Kilemche', description: 'Riding briefing in Kyzart, then roughly 4–5 hours in the saddle toward Kilemche. Overnight in a yurt. Timing is a planning estimate, adjusted to the trail and riders.' },
+      { day: 2, title: 'Kilemche to Song-Köl', description: 'Cross the Jalgyz-Karagai approach toward the lake and continue to the lakeside camp. Allow roughly 5–6 hours riding and a second yurt night, subject to conditions.' },
+      { day: 3, title: 'Song-Köl to Kyzart', description: 'Return on horseback via the Tuz-Ashuu approach, normally around 4–5 hours. The riding route ends in Kyzart; onward transport is arranged separately.' },
     ],
     itineraryRu: [
-      { day: 1, title: 'Встреча в Кызарте и путь к Килемче', description: 'Встреча с местной командой в Кызарте, обсуждение опыта верховой езды и погоды, затем начало пути к долине Килемче. Темп подбирается под группу и состояние тропы.' },
-      { day: 2, title: 'Долина Килемче — Сон-Куль', description: 'Продолжение конного перехода по альпийским пастбищам к Сон-Кулю. Точный трек и время в седле подтверждаются на месте: погода и состояние грунта в горах меняются.' },
-      { day: 3, title: 'Утро на Сон-Куле и возвращение', description: 'Спокойное утро у озера, затем возвращение верхом к Кызарту или трансфер, указанный в подтверждённой программе.' },
+      { day: 1, title: 'Кызарт — Килемче', description: 'Инструктаж в Кызарте и около 4–5 часов верхом к Килемче. Ночёвка в юрте. Время ориентировочное: темп зависит от тропы и участников.' },
+      { day: 2, title: 'Килемче — Сон-Куль', description: 'Переход через район перевала Жалгыз-Карагай к озеру и далее к прибрежному лагерю. Ориентир — 5–6 часов в седле и вторая ночь в юрте, с поправкой на условия.' },
+      { day: 3, title: 'Сон-Куль — Кызарт', description: 'Возвращение верхом через район Туз-Ашуу, обычно около 4–5 часов. Конный маршрут заканчивается в Кызарте; дальнейший трансфер согласуется отдельно.' },
     ],
+    practicalInfo: {
+      accommodation: 'Two yurt nights: Kilemche and Song-Köl. Shared toilets; do not expect a shower at Kilemche. Private-yurt requests depend on camp availability.',
+      meals: 'The route plan covers lunch on day 1 through lunch on day 3. The quote confirms included meals and dietary requests.',
+      difficulty: 'Active riding: approximately 4–6 hours daily. Tell us your experience so the team can assess the fit.',
+    },
+    practicalInfoRu: {
+      accommodation: 'Две ночи в юртах: Килемче и Сон-Куль. Общие туалеты; в Килемче не стоит рассчитывать на душ. Отдельная юрта — по наличию.',
+      meals: 'План маршрута предусматривает питание с обеда первого дня до обеда третьего. В предложении уточняются включённые приёмы пищи и пожелания по питанию.',
+      difficulty: 'Активный конный маршрут: примерно 4–6 часов в седле ежедневно. Расскажите об опыте, чтобы команда оценила, подходит ли вам нагрузка.',
+    },
     seoContent: {
       heading: 'Song-Köl horseback riding from Kyzart: route notes',
       paragraphs: ['Kyzart is a practical trailhead for a Song-Köl horse trek. It gives the group time to meet the horseman and match a horse to each rider before moving into the Kilemche Valley.', 'Song-Köl sits at high altitude, so warm layers, sun protection, closed footwear, and realistic expectations about simple yurt-camp facilities matter. We confirm the camp, road access, and final riding plan before departure rather than promising conditions that depend on the mountains.'],
@@ -218,13 +265,23 @@ const priorityTourContent = {
     highlights: ['Short Song-Köl horse trek from Kyzart', 'Overnight in the highlands according to the confirmed route', 'A focused option for a private couple, friends, or small group', 'Local route decisions based on weather and riding ability'],
     highlightsRu: ['Короткий конный переход на Сон-Куль из Кызарта', 'Высокогорная ночёвка по подтверждённому маршруту', 'Удобный формат для пары, друзей или небольшой частной группы', 'Решения по маршруту с учётом погоды и уровня верховой езды'],
     itinerary: [
-      { day: 1, title: 'Kyzart to the Song-Köl highlands', description: 'After the riding briefing in Kyzart, begin the ascent on the route selected for current conditions. Reach the agreed yurt camp or highland overnight point.' },
-      { day: 2, title: 'Morning ride and return to Kyzart', description: 'Take time for the lake and mountain views, then ride back by the route confirmed with the local team. Return timing depends on trail and weather conditions.' },
+      { day: 1, title: 'Kyzart to Song-Köl via Tuz-Ashuu', description: 'After the riding briefing, follow the valley toward Tuz-Ashuu and descend to the lake. Plan for approximately 5–6 hours riding, a lunch break, and a yurt overnight.' },
+      { day: 2, title: 'Return ride to Kyzart', description: 'Ride back over the Tuz-Ashuu approach, normally around 4–5 hours. Finish in Kyzart after lunch. Weather and trail conditions determine the actual pace.' },
     ],
     itineraryRu: [
-      { day: 1, title: 'Кызарт — высокогорья Сон-Куля', description: 'После инструктажа по верховой езде в Кызарте начинается подъём по маршруту, выбранному по текущим условиям. Ночёвка в согласованном юрточном лагере или высокогорной точке.' },
-      { day: 2, title: 'Утренняя прогулка и возвращение в Кызарт', description: 'Время у озера и в горах, затем возвращение верхом по маршруту, подтверждённому с местной командой. Время возвращения зависит от тропы и погоды.' },
+      { day: 1, title: 'Кызарт — Сон-Куль через Туз-Ашуу', description: 'После инструктажа — путь по долине к Туз-Ашуу и спуск к озеру. Ориентир: 5–6 часов верхом, остановка на обед и ночёвка в юрте.' },
+      { day: 2, title: 'Возвращение верхом в Кызарт', description: 'Обратный переход через район Туз-Ашуу, обычно около 4–5 часов. Завершение в Кызарте после обеда. Фактический темп зависит от погоды и состояния тропы.' },
     ],
+    practicalInfo: {
+      accommodation: 'One yurt night at Song-Köl, with shared toilets and basic facilities. A private yurt is not automatic; ask when requesting the quote.',
+      meals: 'Planned meals run from lunch on day 1 to lunch on day 2. Included meals and dietary needs are confirmed in the quote.',
+      difficulty: 'Two active riding days: about 5–6 hours out and 4–5 hours back. A short duration does not mean an easy ride.',
+    },
+    practicalInfoRu: {
+      accommodation: 'Одна ночь в юрте на Сон-Куле, общий туалет и простые бытовые условия. Отдельная юрта не предоставляется автоматически — уточните её при запросе.',
+      meals: 'Планируемое питание — с обеда первого дня до обеда второго. Включённые приёмы пищи и особенности рациона подтверждаются в предложении.',
+      difficulty: 'Два активных дня: около 5–6 часов верхом к озеру и 4–5 часов обратно. Короткая продолжительность не означает лёгкую нагрузку.',
+    },
     seoContent: {
       heading: 'A two-day horse trip to Song-Köl: is it the right format?',
       paragraphs: ['This is the shortest horseback option in the catalogue for seeing Song-Köl from the Kyzart side. It works best for guests who accept an active schedule and simple highland accommodation.', 'For more time in the saddle and a slower adjustment to the altitude, the three- or four-day Kyzart routes are a better choice. We will recommend the safer option once we know your riding experience and dates.'],
@@ -416,7 +473,7 @@ function buildTour(item, id) {
     highlights: priority?.highlights || [...copy.highlights.slice(0, 3), `Route highlights: ${joinPlaces(item.stops)}`],
     itinerary: priority?.itinerary || itineraryFor(item),
     packingList: packingList(item.kind),
-    practicalInfo: practicalInfo(item),
+    practicalInfo: { ...practicalInfo(item), ...priority?.practicalInfo },
     seoContent: priority?.seoContent,
     relatedTourIds: priority?.relatedTourIds,
   };
@@ -434,14 +491,46 @@ function buildRussianCopy(item, id) {
     highlights: priority?.highlightsRu || [...copy.highlightsRu.slice(0, 3), `Ключевые точки маршрута: ${joinPlaces(item.stops, 'ru')}`],
     itinerary: priority?.itineraryRu || itineraryFor(item, 'ru'),
     packingList: packingList(item.kind, 'ru'),
-    practicalInfo: practicalInfo(item, 'ru'),
-    difficulty: copy.difficultyRu,
+    practicalInfo: { ...practicalInfo(item, 'ru'), ...priority?.practicalInfoRu },
+    difficulty: priority?.practicalInfoRu?.difficulty || copy.difficultyRu,
     seoContent: priority?.seoContentRu,
   };
 }
 
-const tours = catalog.map((item, index) => buildTour(item, index + 1));
-const russianTranslations = Object.fromEntries(catalog.map((item, index) => [String(index + 1), buildRussianCopy(item, index + 1)]));
+let tours = catalog.map((item, index) => buildTour(item, index + 1));
+let russianTranslations = Object.fromEntries(catalog.map((item, index) => [String(index + 1), buildRussianCopy(item, index + 1)]));
+
+// A targeted refresh preserves unrelated editorial/admin fields. Its optional
+// compare-and-swap patch is for an explicit deployment step, never automatic seeding.
+const idsArgument = process.argv.find((argument) => argument.startsWith('--ids='));
+if (idsArgument) {
+  const selectedIds = new Set(idsArgument.slice('--ids='.length).split(',').map(Number));
+  if ([...selectedIds].some((id) => !Number.isInteger(id) || id < 1 || id > catalog.length)) {
+    throw new Error('Every --ids value must be an existing numeric tour ID.');
+  }
+  const previousTours = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'seed_tours.json'), 'utf8'));
+  const previousRu = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'tour_translations_ru.json'), 'utf8'));
+  const patch = [];
+  tours = previousTours.map((previous) => {
+    if (!selectedIds.has(previous.id)) return previous;
+    const contentFields = new Set(['title', 'description', 'locations', 'highlights', 'itinerary', 'practicalInfo', 'seoContent', 'relatedTourIds']);
+    const generated = Object.fromEntries(Object.entries(tours.find((tour) => tour.id === previous.id))
+      .filter(([field]) => contentFields.has(field)));
+    const changes = Object.fromEntries(Object.entries(generated)
+      .filter(([field, value]) => JSON.stringify(previous[field]) !== JSON.stringify(value))
+      .map(([field, value]) => [field, { before: previous[field], after: value }]));
+    if (Object.keys(changes).length) patch.push({ id: previous.id, changes });
+    return { ...previous, ...generated };
+  });
+  russianTranslations = Object.fromEntries(Object.entries(previousRu).map(([id, previous]) => [
+    id, selectedIds.has(Number(id)) ? { ...previous, ...russianTranslations[id] } : previous,
+  ]));
+  const patchArgument = process.argv.find((argument) => argument.startsWith('--patch-output='));
+  if (patchArgument) {
+    const patchFile = path.resolve(rootDir, patchArgument.slice('--patch-output='.length));
+    fs.writeFileSync(patchFile, `${JSON.stringify({ version: 1, date: '2026-09-09', tours: patch }, null, 2)}\n`);
+  }
+}
 
 fs.writeFileSync(path.join(rootDir, 'data', 'seed_tours.json'), `${JSON.stringify(tours, null, 2)}\n`);
 fs.writeFileSync(path.join(rootDir, 'data', 'tour_translations_ru.json'), `${JSON.stringify(russianTranslations, null, 2)}\n`);
