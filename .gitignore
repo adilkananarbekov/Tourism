@@ -35,3 +35,23 @@ dist
 
 # Local source media and scratch assets
 assets/
+
+# QA output, release tarballs and raw analytics (local only)
+.codex-qa/
+*.tar.gz
+*.tgz
+audit/**/*.png
+audit/**/*.jpg
+audit/**/*.jpeg
+audit/search-console/**/*.csv
+audit/search-console/**/*.json
+audit/search-console/**/*.md
+audit/search-console/**/*.mjs
+
+# Environment files (keep only the template)
+.env.*
+!.env.example
+
+# Python bytecode
+__pycache__/
+*.pyc
