@@ -83,6 +83,10 @@ Set `JWT_SECRET` and an admin password hash in `.env`:
 npm run admin:hash -- "your-admin-password"   # prints ADMIN_PASSWORD_HASH
 ```
 
+`.env.example` points `VITE_API_BASE_URL` at the live site. For local work,
+set it to `http://localhost:4000`; otherwise the dev frontend sends tours,
+requests and admin logins to the production API.
+
 Start the API (port 4000 by default) and the Vite dev server:
 
 ```bash

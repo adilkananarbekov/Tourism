@@ -2,10 +2,10 @@
 
 ## Evidence
 
-- Source visual truth: `C:\Users\user\AppData\Local\Temp\codex-clipboard-f58f146c-3c19-4b82-aba9-570bfa8c3924.png` (primary composition) and `C:\Users\user\AppData\Local\Temp\codex-clipboard-41ee9531-64f1-49d3-84da-e869d7a77d67.png` (quick-link reference).
-- Browser-rendered implementation: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\404-desktop-passed.png`.
-- Mobile implementation: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\404-mobile-ru-passed.png`.
-- Side-by-side comparison: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\404-comparison-passed.png`.
+- Source visual truth: two local reference images (primary composition and quick-link reference), not in the repository.
+- Browser-rendered implementation: `.codex-qa/404-desktop-passed.png`.
+- Mobile implementation: `.codex-qa/404-mobile-ru-passed.png`.
+- Side-by-side comparison: `.codex-qa/404-comparison-passed.png`.
 - Source pixels: 1672 x 941. Desktop implementation pixels/CSS viewport: 1650 x 843 at deviceScaleFactor 1. The desktop capture was scaled proportionally to 1672 px wide and centered on a 1672 x 941 comparison frame. Mobile pixels/CSS viewport: 390 x 844 at deviceScaleFactor 1.
 - State: anonymous visitor with analytics declined, English desktop and Russian mobile, unknown public URL.
 
@@ -44,9 +44,9 @@ final result: passed
 
 ## Evidence
 
-- Baseline mobile hero: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\neutral-green-60-30-10\before-mobile-dark.png`.
-- Final mobile hero: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\neutral-green-60-30-10\after-mobile-dark.png`.
-- Same-state comparison: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\neutral-green-60-30-10\before-after-mobile.png`.
+- Baseline mobile hero: `.codex-qa/neutral-green-60-30-10/before-mobile-dark.png`.
+- Final mobile hero: `.codex-qa/neutral-green-60-30-10/after-mobile-dark.png`.
+- Same-state comparison: `.codex-qa/neutral-green-60-30-10/before-after-mobile.png`.
 - Route contact sheets: `mobile-dark-contact-sheet.jpg` and `mobile-light-contact-sheet.jpg` in the same QA directory.
 - Focused form captures: `feedback-mobile-light-final.png` and `ru-feedback-mobile-light-final.png`.
 - State: local development build, 454 x 544 captured viewport, English and Russian, light and dark themes. No server deployment was performed.
@@ -83,9 +83,9 @@ final result: passed locally; awaiting visual approval before deployment
 
 ## Evidence
 
-- Source visual truth: `C:\Users\user\.codex\generated_images\019fa789-7208-7523-ba70-5128803544e1\exec-b995cfba-933e-4883-9799-74e94c40d322.png`.
-- Final homepage capture: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-sitewide\implementation-dark-1440.png`.
-- Same-input comparison: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-sitewide\comparison-dark-1440.png`.
+- Source visual truth: a generated concept image (kept locally, not in the repository).
+- Final homepage capture: `.codex-qa/redesign-sitewide/implementation-dark-1440.png`.
+- Same-input comparison: `.codex-qa/redesign-sitewide/comparison-dark-1440.png`.
 - Route captures: `tours-winter-1440.png`, `tour-detail-1440.png`, `blogs-1440.png`, `best-time-1440.png`, `gallery-1440.png`, `feedback-1440.png`, `song-kul-1440.png`, `privacy-1440.png`, and `404-1440.png` in the same QA directory.
 - Mobile captures: English home, menu, tours, and feedback plus Russian home, feedback, and tour detail at 390 x 844.
 - Desktop state: dark theme at 1440 x 1024. Mobile state: dark theme at 390 x 844.
@@ -109,7 +109,7 @@ final result: passed locally; awaiting visual approval before deployment
 - Fresh console session: zero errors; only the two known React Router v7 opt-in notices remain.
 - TypeScript check, backend syntax check, production Vite build, SEO HTML generation, and SEO output validation passed.
 - SEO output: 109 canonical routes, 39 tours, 12 blog posts, and 3 destination hubs.
-- Frontend release `/var/www/go-kyrgyzstan-travel-releases/20260827-021841` passed live HTTPS smoke and visual checks; `/health` stayed healthy and the backend release was not changed.
+- Frontend release `20260827-021841` passed live HTTPS smoke and visual checks; `/health` stayed healthy and the backend release was not changed.
 
 ## Final result
 
@@ -128,10 +128,10 @@ final result: passed
 
 ## Evidence
 
-- Source visual truth: `C:\Users\user\.codex\generated_images\019fa789-7208-7523-ba70-5128803544e1\exec-b995cfba-933e-4883-9799-74e94c40d322.png`.
-- Desktop implementation: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-concepts\implementation-dark-1440.png`.
-- Mobile implementation: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-concepts\implementation-dark-mobile-390.png`.
-- Side-by-side comparison: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-concepts\comparison-dark-1440.png`.
+- Source visual truth: a generated concept image (kept locally, not in the repository).
+- Desktop implementation: `.codex-qa/redesign-concepts/implementation-dark-1440.png`.
+- Mobile implementation: `.codex-qa/redesign-concepts/implementation-dark-mobile-390.png`.
+- Side-by-side comparison: `.codex-qa/redesign-concepts/comparison-dark-1440.png`.
 - Reference state: coral dark concept, 1487 x 1058 pixels. Implementation state: English homepage, dark mode, 1440 x 1024 CSS viewport; mobile state: 390 x 844.
 
 ## Findings
