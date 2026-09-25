@@ -42,7 +42,7 @@ export function SEO({
   const canonicalUrl = url || absoluteUrl(path || (typeof window !== 'undefined' ? window.location.pathname : '/'));
   const hasServiceQuery =
     typeof window !== 'undefined' &&
-    ['book', 'filter', 'q', 'tour'].some((parameter) => new URLSearchParams(window.location.search).has(parameter));
+    ['book', 'filter', 'q', 'tour', 'month'].some((parameter) => new URLSearchParams(window.location.search).has(parameter));
   const robots = noindex
     ? 'noindex, nofollow'
     : hasServiceQuery
@@ -77,7 +77,7 @@ export function SEO({
       <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={metaImage} />
-      <meta name="theme-color" content="#264c3e" />
+      <meta name="theme-color" content="#101311" />
       {jsonLdItems.map((item, index) => (
         <script key={index} type="application/ld+json">
           {JSON.stringify(item)}

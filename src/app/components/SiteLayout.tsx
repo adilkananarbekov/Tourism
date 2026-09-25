@@ -14,7 +14,7 @@ export function SiteLayout() {
   const { pathname } = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="site-shell min-h-screen flex flex-col bg-background text-foreground">
       <Header />
       <EventTracker />
       <ScrollToTop />

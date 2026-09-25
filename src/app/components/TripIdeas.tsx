@@ -48,8 +48,8 @@ export function TripIdeas() {
             </h2>
           </div>
           <p className="text-base leading-7 text-muted-foreground sm:text-lg">
-            Foreign travelers often know they want Kyrgyzstan, but not the exact route. These
-            quick options help match the guest to a tour faster.
+            Your first visit, a horse trek, or a week between mountain lakes: choose the
+            experience that interests you, then explore the route and the best season to travel.
           </p>
         </div>
 

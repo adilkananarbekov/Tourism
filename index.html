@@ -8,19 +8,23 @@
       content="Private Kyrgyzstan tours, small-group trips, nomad culture experiences, horse riding, mountain trekking, and Silk Road routes with local planning."
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="theme-color" content="#0f766e" />
+    <meta name="theme-color" content="#101311" />
     <link rel="canonical" href="https://kyrgyz.tours/" />
-    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="icon" href="%BASE_URL%brand/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%brand/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="%BASE_URL%brand/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%BASE_URL%brand/kyrgyz-tours-apple-touch-icon.png" />
+    <link rel="manifest" href="%BASE_URL%site.webmanifest" />
     <link
       rel="preload"
-      href="%BASE_URL%fonts/inter-latin.woff2"
+      href="%BASE_URL%fonts/outfit-latin.woff2"
       as="font"
       type="font/woff2"
       crossorigin
     />
     <link
       rel="preload"
-      href="%BASE_URL%fonts/outfit-latin.woff2"
+      href="%BASE_URL%fonts/lora-latin-600-700.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -32,7 +36,7 @@
     />
     <meta property="og:url" content="https://kyrgyz.tours/" />
     <meta property="og:site_name" content="Go Kyrgyzstan Travel" />
-    <meta property="og:image" content="https://kyrgyz.tours/images/go-kyrgyzstan-hero.webp" />
+    <meta property="og:image" content="https://kyrgyz.tours/images/travel-gallery-2026/travel-076-960.webp" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>Go Kyrgyzstan Travel | Kyrgyzstan Tours & Private Trips</title>
@@ -76,9 +80,9 @@
         z-index: 10000;
         min-height: 100vh;
         min-height: 100svh;
-        background: #f4f6f0;
-        color: #15382d;
-        font-family: Inter, system-ui, sans-serif;
+        background: #fafaf8;
+        color: #171a17;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
         opacity: 1;
         visibility: visible;
         transition: opacity 180ms ease, visibility 180ms ease;
@@ -92,39 +96,36 @@
       }
 
       html.dark [data-initial-app-shell] {
-        background: #101a14;
-        color: #f8faf7;
+        background: #101311;
+        color: #f7f8f4;
       }
 
       .initial-app-shell__header {
         display: flex;
         min-height: 4rem;
         align-items: center;
-        border-bottom: 1px solid rgba(21, 56, 45, 0.12);
+        border-bottom: 1px solid #dde2dc;
         padding: 0 1.25rem;
       }
 
       html.dark .initial-app-shell__header {
-        border-color: rgba(255, 255, 255, 0.1);
+        border-color: #343b35;
       }
 
       .initial-app-shell__brand {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        font-size: 1rem;
-        font-weight: 650;
       }
 
-      .initial-app-shell__mark {
-        display: grid;
-        width: 2.25rem;
-        height: 2.25rem;
-        place-items: center;
-        border-radius: 999px;
-        background: #1f6b50;
-        color: #fff;
-        font-size: 0.75rem;
+      .initial-app-shell__logo {
+        display: block;
+        width: 11.25rem;
+        aspect-ratio: 3 / 1;
+        background: center / contain no-repeat url('%BASE_URL%brand/kyrgyz-tours-logo-header-color.png');
+      }
+
+      html.dark .initial-app-shell__logo {
+        background-image: url('%BASE_URL%brand/kyrgyz-tours-logo-horizontal-white.png');
       }
 
       .initial-app-shell__stage {
@@ -133,10 +134,12 @@
         min-height: calc(100svh - 4rem);
         place-items: center;
         padding: 2rem 1.25rem;
-        background:
-          radial-gradient(circle at 18% 20%, rgba(242, 177, 121, 0.18), transparent 30%),
-          linear-gradient(145deg, rgba(31, 107, 80, 0.13), transparent 58%);
+        background: #fafaf8;
         box-sizing: border-box;
+      }
+
+      html.dark .initial-app-shell__stage {
+        background: #101311;
       }
 
       .initial-app-shell__card {
@@ -148,17 +151,17 @@
       }
 
       .initial-app-shell__error {
-        border: 1px solid rgba(21, 56, 45, 0.14);
-        border-radius: 1.25rem;
+        border: 1px solid #dde2dc;
+        border-radius: 0.375rem;
         background: rgba(255, 255, 255, 0.82);
         padding: 1.5rem;
-        box-shadow: 0 1rem 3rem rgba(21, 56, 45, 0.12);
+        box-shadow: 0 1rem 3rem rgba(16, 19, 17, 0.12);
         backdrop-filter: blur(12px);
       }
 
       html.dark .initial-app-shell__error {
-        border-color: rgba(255, 255, 255, 0.12);
-        background: rgba(16, 26, 20, 0.88);
+        border-color: #343b35;
+        background: rgba(23, 27, 24, 0.96);
       }
 
       .initial-app-shell__error h2 {
@@ -169,12 +172,12 @@
 
       .initial-app-shell__error p {
         margin: 0.75rem 0 0;
-        color: #4d675e;
+        color: #5b635d;
         line-height: 1.6;
       }
 
       html.dark .initial-app-shell__error p {
-        color: #c5d0cb;
+        color: #b5bdb6;
       }
 
       .initial-app-shell__actions {
@@ -186,11 +189,11 @@
 
       .initial-app-shell__actions button {
         min-height: 2.75rem;
-        border: 1px solid #1f6b50;
-        border-radius: 999px;
+        border: 1px solid #1f6b4f;
+        border-radius: 4px;
         padding: 0.6rem 1rem;
-        background: #1f6b50;
-        color: #fff;
+        background: #1f6b4f;
+        color: #ffffff;
         font: inherit;
         font-weight: 650;
         cursor: pointer;
@@ -198,15 +201,15 @@
 
       .initial-app-shell__actions button + button {
         background: transparent;
-        color: #1f6b50;
+        color: #1f6b4f;
       }
 
       html.dark .initial-app-shell__actions button + button {
-        color: #d6eee4;
+        color: #7ed4a8;
       }
 
       .initial-app-shell__actions button:focus-visible {
-        outline: 3px solid rgba(31, 107, 80, 0.3);
+        outline: 3px solid rgba(31, 107, 79, 0.32);
         outline-offset: 3px;
       }
 
@@ -214,7 +217,7 @@
       .initial-app-shell__button {
         display: block;
         border-radius: 999px;
-        background: rgba(21, 56, 45, 0.14);
+        background: rgba(23, 26, 23, 0.13);
         animation: initial-shell-pulse 1.2s ease-in-out infinite alternate;
       }
 
@@ -291,13 +294,55 @@
         }
       })();
     </script>
+    <script type="text/javascript">
+      (function () {
+        var recoveryKey = 'go-kyrgyzstan-travel-preload-recovery';
+
+        function recoverFromStaleBundle(event) {
+          var now = Date.now();
+          var lastRecovery = 0;
+
+          try {
+            lastRecovery = Number(sessionStorage.getItem(recoveryKey) || 0);
+          } catch (error) {
+            lastRecovery = 0;
+          }
+
+          if (lastRecovery && now - lastRecovery < 30000) {
+            return;
+          }
+
+          if (event && typeof event.preventDefault === 'function') {
+            event.preventDefault();
+          }
+
+          try {
+            sessionStorage.setItem(recoveryKey, String(now));
+          } catch (error) {
+            // A reload still repairs stale HTML when session storage is blocked.
+          }
+
+          window.location.reload();
+        }
+
+        window.addEventListener('vite:preloadError', recoverFromStaleBundle);
+        window.addEventListener('load', function () {
+          window.setTimeout(function () {
+            try {
+              sessionStorage.removeItem(recoveryKey);
+            } catch (error) {
+              // Nothing to clear when session storage is unavailable.
+            }
+          }, 10000);
+        });
+      })();
+    </script>
   </head>
   <body>
-    <div data-initial-app-shell>
+    <div data-initial-app-shell data-nosnippet>
       <div class="initial-app-shell__header">
         <div class="initial-app-shell__brand">
-          <span class="initial-app-shell__mark" aria-hidden="true">KT</span>
-          <span>Go Kyrgyzstan Travel</span>
+          <span class="initial-app-shell__logo" role="img" aria-label="kyrgyz.tours"></span>
         </div>
       </div>
       <div class="initial-app-shell__stage">

@@ -1,39 +1,62 @@
-import { BadgeCheck, Instagram, Languages, MapPin, MessageCircle, Phone, Shield } from 'lucide-react';
+import { ClipboardList, Instagram, Languages, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { ResponsiveImage } from './ResponsiveImage';
 import {
   FOUNDER_IMAGE,
   FOUNDER_NAME,
-  FOUNDER_ROLE,
   INSTAGRAM_URL,
   TELEGRAM_URL,
   TELEGRAM_USERNAME,
   WHATSAPP_DISPLAY,
   WHATSAPP_URL,
 } from '../lib/contact';
+import { localizedPath, useSiteLocale } from '../lib/locale';
 
 export function AboutMe() {
+  const locale = useSiteLocale();
+  const isRussian = locale === 'ru';
+  const name = isRussian ? 'Инсан Жакыпбеков' : FOUNDER_NAME;
+  const text = isRussian ? {
+    role: 'Основатель и организатор поездок',
+    eyebrow: 'Кто планирует вашу поездку',
+    intro: 'Я Инсан, основатель Go Kyrgyzstan Travel. Kyrgyz.tours — наш сайт для путешествий по Кыргызстану. Я или наша команда в Бишкеке поможем выбрать маршрут и согласуем с вами детали напрямую.',
+    process: 'Расскажите о датах, составе группы и пожеланиях. До бронирования согласуем программу, итоговую цену, включённые услуги и условия поездки в переписке.',
+    request: 'Обсудить поездку',
+    location: 'Бишкек, Кыргызстан',
+    locationDetail: 'Место встречи и завершения поездки согласуем для вашего маршрута.',
+    languages: 'Общаемся на трёх языках',
+    languagesDetail: 'Английский, русский и кыргызский. Язык гида уточняется для каждой поездки.',
+    quote: 'Детали в письменном виде',
+    quoteDetail: 'Программа, размещение, транспорт и питание — в согласованном предложении.',
+  } : {
+    role: 'Founder and local trip planner',
+    eyebrow: 'Meet your trip planner',
+    intro: 'I’m Insan, the founder of Go Kyrgyzstan Travel. Kyrgyz.tours is our website for trips in Kyrgyzstan. I or our team in Bishkek will help you choose a route and agree the details with you directly.',
+    process: 'Share your dates, group size, and what you would love to see. Before you book, we agree the itinerary, full price, included services, and trip conditions in writing.',
+    request: 'Talk about your trip',
+    location: 'Bishkek, Kyrgyzstan',
+    locationDetail: 'Meeting and drop-off arrangements are agreed for your route.',
+    languages: 'Talk to us in your language',
+    languagesDetail: 'English, Russian, and Kyrgyz. The guide’s language is confirmed for each trip.',
+    quote: 'Your details in writing',
+    quoteDetail: 'Itinerary, accommodation, transport, and meals are set out in your agreed quote.',
+  };
   const highlights = [
     {
       icon: MapPin,
-      title: 'Based in Bishkek',
-      description: 'Flexible pickups and meetups across Kyrgyzstan.',
+      title: text.location,
+      description: text.locationDetail,
     },
     {
       icon: Languages,
-      title: 'Languages',
-      description: 'English, Russian, and Kyrgyz.',
+      title: text.languages,
+      description: text.languagesDetail,
     },
     {
-      icon: BadgeCheck,
-      title: 'Local expertise',
-      description: 'Routes built with trusted drivers, hosts, and guides.',
-    },
-    {
-      icon: Shield,
-      title: 'Safety-first',
-      description: 'Clear planning, reliable gear, and realistic pacing.',
+      icon: ClipboardList,
+      title: text.quote,
+      description: text.quoteDetail,
     },
   ];
 
@@ -41,7 +64,7 @@ export function AboutMe() {
     <section id="founder" className="py-16 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
       <div className="max-w-7xl mx-auto grid gap-10 lg:grid-cols-[1fr_1.2fr] items-center">
         <div className="relative">
-          <div className="aspect-[4/5] overflow-hidden rounded-2xl shadow-lg">
+          <div className="aspect-[4/5] overflow-hidden rounded-md shadow-lg">
             <ResponsiveImage
               src={FOUNDER_IMAGE}
               variants={[
@@ -52,7 +75,7 @@ export function AboutMe() {
                 { src: '/images/founder-jakypbekov-insan-480.webp', width: 480 },
               ]}
               sizes="(min-width: 1024px) 40vw, 100vw"
-              alt={`${FOUNDER_NAME}, founder of Go Kyrgyzstan Travel`}
+              alt={isRussian ? `${name}, основатель Go Kyrgyzstan Travel` : `${FOUNDER_NAME}, founder of Go Kyrgyzstan Travel`}
               width={1200}
               height={1600}
               className="h-full w-full object-cover object-[center_38%]"
@@ -60,63 +83,51 @@ export function AboutMe() {
               decoding="async"
             />
           </div>
-          <div className="absolute -bottom-6 left-6 right-6 rounded-xl border border-border bg-card p-4 shadow-lg">
-            <p className="text-sm text-muted-foreground">{FOUNDER_ROLE}</p>
-            <p className="text-lg text-foreground">{FOUNDER_NAME}</p>
+          <div className="absolute -bottom-6 left-6 right-6 rounded-md border border-border bg-card p-4 shadow-lg">
+            <p className="text-sm text-muted-foreground">{text.role}</p>
+            <p className="text-lg text-foreground">{name}</p>
           </div>
         </div>
 
         <div className="space-y-6">
           <div>
             <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">
-              Founder
+              {text.eyebrow}
             </p>
-            <h2 className="text-3xl sm:text-4xl text-foreground mb-4">{FOUNDER_NAME}</h2>
+            <h2 className="text-3xl sm:text-4xl text-foreground mb-4">{name}</h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              I am the founder of Go Kyrgyzstan Travel and a local trip planner based in
-              Kyrgyzstan. Guests choose a ready route or send a request, then I or my managers
-              contact them directly to confirm the details.
+              {text.intro}
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3">
             {highlights.map((item) => {
               const Icon = item.icon;
               return (
-                <div key={item.title} className="rounded-lg border border-border bg-card p-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
-                      <Icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <h3 className="text-base text-foreground">{item.title}</h3>
+                <div key={item.title} className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent">
+                    <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
                   </div>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <div>
+                    <h3 className="text-base text-foreground">{item.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+                  </div>
                 </div>
               );
             })}
           </div>
 
+          <p className="text-sm leading-6 text-muted-foreground">{text.process}</p>
+
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild className="btn-micro btn-action">
               <Link
-                to="/feedback"
+                to={localizedPath('/feedback', locale)}
                 data-track-event="about_request_click"
                 data-track-label="About request"
               >
-                Send a Request
+                {text.request}
               </Link>
-            </Button>
-            <Button asChild variant="outline" className="btn-micro btn-action-outline">
-              <a
-                href={TELEGRAM_URL}
-                target="_blank"
-                rel="noreferrer"
-                data-track-event="founder_telegram_click"
-                data-track-label={TELEGRAM_USERNAME}
-              >
-                <MessageCircle className="h-4 w-4" />
-                Telegram
-              </a>
             </Button>
           </div>
 
@@ -125,7 +136,7 @@ export function AboutMe() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noreferrer"
-              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent"
+              className="rounded-md border border-border bg-card p-4 transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary"
               data-track-event="founder_instagram_click"
               data-track-label="jakypbekovv1"
             >
@@ -137,7 +148,7 @@ export function AboutMe() {
               href={TELEGRAM_URL}
               target="_blank"
               rel="noreferrer"
-              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent"
+              className="rounded-md border border-border bg-card p-4 transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary"
               data-track-event="founder_telegram_card_click"
               data-track-label={TELEGRAM_USERNAME}
             >
@@ -149,7 +160,7 @@ export function AboutMe() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noreferrer"
-              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent"
+              className="rounded-md border border-border bg-card p-4 transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary"
               data-track-event="founder_whatsapp_click"
               data-track-label={WHATSAPP_DISPLAY}
             >

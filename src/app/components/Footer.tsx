@@ -11,9 +11,10 @@ import {
 import { localizedPath, useSiteLocale } from '../lib/locale';
 import { tourPath } from '../lib/tourRoutes';
 import { openCookieSettings } from '../lib/cookieConsent';
+import { BrandMark } from './BrandMark';
 
 const footerLinkClass =
-  'rounded-sm text-[#d8e7de] transition-colors hover:text-white hover:underline hover:decoration-[#f2b179] hover:underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b179] focus-visible:ring-offset-2 focus-visible:ring-offset-[#064e3b]';
+  'rounded-sm text-[var(--site-muted-on-dark)] transition-colors hover:text-white hover:underline hover:decoration-[var(--site-green-on-dark)] hover:underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-green-on-dark)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--site-surface-dark)]';
 
 export function Footer() {
   const locale = useSiteLocale();
@@ -22,7 +23,8 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   const text = isRussian
     ? {
-        intro: `Частные туры по Кыргызстану с ${FOUNDER_NAME}.`,
+        intro: 'Kyrgyz.tours — сайт Go Kyrgyzstan Travel. Частные поездки по Кыргызстану с Инсаном Жакыпбековым и местной командой.',
+        location: 'Бишкек, Кыргызстан',
         request: 'Спланировать путешествие',
         quick: 'Навигация',
         tours: 'Популярные туры',
@@ -45,7 +47,8 @@ export function Footer() {
         cookieSettings: 'Настройки cookies',
       }
     : {
-        intro: `Private Kyrgyzstan tours planned by ${FOUNDER_NAME}.`,
+        intro: `Kyrgyz.tours is the website of Go Kyrgyzstan Travel. Private trips planned by ${FOUNDER_NAME} and our local team.`,
+        location: 'Bishkek, Kyrgyzstan',
         request: 'Plan your Kyrgyzstan trip',
         quick: 'Explore',
         tours: 'Popular Tours',
@@ -69,20 +72,17 @@ export function Footer() {
       };
 
   return (
-    <footer id="site-footer" className="border-t border-white/10 bg-[#064e3b] text-[#fffdf8]">
+    <footer id="site-footer" className="border-t border-white/10 bg-[var(--site-surface-dark)] text-[var(--site-text-on-dark)]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 xl:grid-cols-[1.15fr_0.75fr_1.05fr_1.15fr] xl:gap-12">
           <div className="order-1">
             <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 font-medium text-white shadow-sm">
-                KT
-              </div>
-              <span className="text-xl font-medium text-white">Go Kyrgyzstan Travel</span>
+              <span className="site-brand text-white"><BrandMark variant="white" /></span>
             </div>
-            <p className="mb-5 max-w-sm text-sm leading-6 text-[#d8e7de]">{text.intro}</p>
+            <p className="mb-5 max-w-sm text-sm leading-6 text-[var(--site-muted-on-dark)]">{text.intro}</p>
             <Link
               to={path('/feedback')}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[#fffdf8] px-4 py-2.5 text-sm font-medium text-[#064e3b] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b179] focus-visible:ring-offset-2 focus-visible:ring-offset-[#064e3b]"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[var(--site-green-on-dark)] px-4 py-2.5 text-sm font-semibold text-[var(--site-surface-dark)] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[var(--site-green-on-dark-hover)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-green-on-dark)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--site-surface-dark)]"
               data-track-event="footer_request_click"
               data-track-label={text.request}
             >
@@ -113,8 +113,8 @@ export function Footer() {
 
           <div className="order-2 xl:order-4">
             <h3 className="mb-4 text-base font-semibold text-white">{text.contact}</h3>
-            <div className="mb-4 space-y-2 text-sm text-[#d8e7de]">
-              <p className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /> Bishkek, Kyrgyzstan</p>
+            <div className="mb-4 space-y-2 text-sm text-[var(--site-muted-on-dark)]">
+              <p className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /> {text.location}</p>
               <p className="flex items-center gap-2"><Clock className="h-4 w-4 shrink-0" /> {text.reply}</p>
             </div>
             <div className="space-y-3">
@@ -122,7 +122,7 @@ export function Footer() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="flex min-h-11 items-center gap-3 rounded-md bg-[#fffdf8] px-4 py-2.5 text-sm font-medium text-[#064e3b] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b179] focus-visible:ring-offset-2 focus-visible:ring-offset-[#064e3b]"
+                className="flex min-h-11 items-center gap-3 rounded-md bg-[var(--site-text-on-dark)] px-4 py-2.5 text-sm font-medium text-[var(--site-surface-dark)] shadow-sm transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-green-on-dark)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--site-surface-dark)]"
                 data-track-event="footer_whatsapp_click"
                 data-track-label={WHATSAPP_DISPLAY}
               >
@@ -133,12 +133,12 @@ export function Footer() {
                 href={TELEGRAM_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="flex min-h-11 items-center gap-3 rounded-md border border-white/30 bg-white/[0.06] px-4 py-2.5 text-sm text-white transition-colors hover:border-white/50 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b179] focus-visible:ring-offset-2 focus-visible:ring-offset-[#064e3b]"
+                className="flex min-h-11 items-center gap-3 rounded-md border border-white/25 bg-white/[0.06] px-4 py-2.5 text-sm text-white transition-colors hover:border-[var(--site-green-on-dark)] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-green-on-dark)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--site-surface-dark)]"
                 data-track-event="footer_telegram_click"
                 data-track-label={TELEGRAM_USERNAME}
               >
                 <MessageCircle className="h-4 w-4 shrink-0" />
-                <span><span className="block text-xs text-[#d8e7de]">{text.telegram}</span>{TELEGRAM_USERNAME}</span>
+                <span><span className="block text-xs text-[var(--site-muted-on-dark)]">{text.telegram}</span>{TELEGRAM_USERNAME}</span>
               </a>
             </div>
             <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm">
@@ -150,7 +150,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-6 text-sm text-[#d8e7de] md:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-6 text-sm text-[var(--site-muted-on-dark)] md:flex-row">
           <p>&copy; {currentYear} Go Kyrgyzstan Travel. {text.rights}</p>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 md:justify-end">
             <Link to={path('/privacy-policy')} className={footerLinkClass}>{text.privacy}</Link>

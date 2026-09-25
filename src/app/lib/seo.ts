@@ -13,7 +13,7 @@ import { tourPath } from './tourRoutes';
 
 export const SITE_NAME = 'Go Kyrgyzstan Travel';
 export const SITE_URL = 'https://kyrgyz.tours';
-export const DEFAULT_SOCIAL_IMAGE = '/images/go-kyrgyzstan-hero.webp';
+export const DEFAULT_SOCIAL_IMAGE = '/images/travel-gallery-2026/travel-076-960.webp';
 export const SITE_DESCRIPTION =
   'Private Kyrgyzstan tours, small-group trips, Song-Kul and Issyk-Kul lake routes, horse riding, yurt stays, and mountain road trips with local planning.';
 
@@ -52,7 +52,7 @@ export function organizationJsonLd(): JsonLd {
     name: SITE_NAME,
     url: SITE_URL,
     image: absoluteUrl(DEFAULT_SOCIAL_IMAGE),
-    logo: absoluteUrl('/favicon.svg'),
+    logo: absoluteUrl('/brand/kyrgyz-tours-app-icon-512.png'),
     description: SITE_DESCRIPTION,
     sameAs: SOCIAL_PROFILE_URLS,
     founder: {

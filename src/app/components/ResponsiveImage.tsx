@@ -19,6 +19,7 @@ export function ResponsiveImage({
   mobileVariants = [],
   sizes,
   alt = '',
+  fetchPriority,
   ...imageProps
 }: ResponsiveImageProps) {
   const webpSrcSet = variants
@@ -39,7 +40,13 @@ export function ResponsiveImage({
         />
       )}
       {webpSrcSet && <source type="image/webp" srcSet={webpSrcSet} sizes={sizes} />}
-      <img src={withBasePath(src)} alt={alt} sizes={sizes} {...imageProps} />
+      <img
+        src={withBasePath(src)}
+        alt={alt}
+        sizes={sizes}
+        {...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
+        {...imageProps}
+      />
     </picture>
   );
 }

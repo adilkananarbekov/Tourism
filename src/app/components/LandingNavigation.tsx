@@ -50,7 +50,7 @@ export function LandingNavigation() {
             const Icon = item.icon;
             return (
               <article key={item.to} className="interactive-card rounded-lg border border-border bg-card p-4 shadow-sm">
-                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-md bg-gradient-to-br from-[#315d4c] via-[#264c3e] to-[#b95f42] text-white shadow-sm ring-1 ring-white/20">
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-sm ring-1 ring-secondary/20">
                   <Icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg text-foreground">{item.title}</h3>

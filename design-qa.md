@@ -38,9 +38,129 @@
 
 final result: passed
 
+---
+
+# Neutral green 60/30/10 local redesign QA — 2026-09-03
+
+## Evidence
+
+- Baseline mobile hero: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\neutral-green-60-30-10\before-mobile-dark.png`.
+- Final mobile hero: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\neutral-green-60-30-10\after-mobile-dark.png`.
+- Same-state comparison: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\neutral-green-60-30-10\before-after-mobile.png`.
+- Route contact sheets: `mobile-dark-contact-sheet.jpg` and `mobile-light-contact-sheet.jpg` in the same QA directory.
+- Focused form captures: `feedback-mobile-light-final.png` and `ru-feedback-mobile-light-final.png`.
+- State: local development build, 454 x 544 captured viewport, English and Russian, light and dark themes. No server deployment was performed.
+
+## Findings
+
+- Visual hierarchy now follows the requested 60/30/10 direction: off-white/white and near-black carry the surfaces and text; green is limited to navigation state, focus, small labels, rules, icons, and conversion actions.
+- The previous coral, cyan, and navy literals were removed from active public UI, loading shell, theme metadata, and favicon. Red remains reserved for validation and destructive states.
+- Barlow Condensed and global uppercase were removed from the public presentation. Lora 600–700 is self-hosted with Latin, Cyrillic, and Cyrillic Extended subsets for stable EN/RU rendering; system sans handles navigation, body copy, forms, and controls; Outfit remains limited to the Latin brand lockup.
+- Large headings use sentence case, balanced wrapping, and safer mobile line-height. The long English and Russian request headings received a dedicated mobile scale, reducing the wall-of-text effect without changing their copy.
+- Natural photographs are not colorized. The hero uses neutral black shading, white text, and one restrained green underline so the photography remains the emotional color source.
+- Footer, floating contacts, CTA bands, destination heroes, gallery video action, tabs, form focus states, and the animated 404 compass now share the same black/white/green language.
+- The `.admin-shell` token block was kept unchanged.
+- Checked public routes have no horizontal overflow and no broken visible images at the captured mobile viewport.
+
+## Interaction and runtime checks
+
+- Mobile navigation opened and exposed destination, seasonal trip, guide, gallery, language, theme, and request actions.
+- Light and dark theme choices changed the root palette correctly.
+- Homepage season selection changed from September to October and updated the seasonal heading.
+- 404 search with `Song Kul` navigated to `/tours?q=Song%20Kul`.
+- Lora reported loaded for both English and Russian headings through `document.fonts.check`.
+- Core palette contrast passed WCAG AA: light green CTA 6.34:1, dark-theme green 8.02:1, light secondary copy 5.56:1, and dark secondary copy 9.31:1.
+- `npm run typecheck`: passed.
+- `npm run build`: passed; 109 canonical routes, 39 tours, 12 blogs, and 3 destinations generated and verified.
+
+## Final result
+
+final result: passed locally; awaiting visual approval before deployment
+
+---
+
+# Site-wide coral / navy redesign QA — 2026-08-27
+
+## Evidence
+
+- Source visual truth: `C:\Users\user\.codex\generated_images\019fa789-7208-7523-ba70-5128803544e1\exec-b995cfba-933e-4883-9799-74e94c40d322.png`.
+- Final homepage capture: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-sitewide\implementation-dark-1440.png`.
+- Same-input comparison: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-sitewide\comparison-dark-1440.png`.
+- Route captures: `tours-winter-1440.png`, `tour-detail-1440.png`, `blogs-1440.png`, `best-time-1440.png`, `gallery-1440.png`, `feedback-1440.png`, `song-kul-1440.png`, `privacy-1440.png`, and `404-1440.png` in the same QA directory.
+- Mobile captures: English home, menu, tours, and feedback plus Russian home, feedback, and tour detail at 390 x 844.
+- Desktop state: dark theme at 1440 x 1024. Mobile state: dark theme at 390 x 844.
+
+## Findings
+
+- No actionable P0, P1, or P2 visual differences remain.
+- The selected condensed editorial typography, graphite/navy surfaces, coral conversion color, cyan seasonal accent, squared controls, thin rules, photographic scale, and compact brand lockup now carry across the public site.
+- Tours, tour detail, editorial guides, gallery, request flow, destination hubs, legal pages, footer, floating contacts, and 404 use the same surface geometry and interaction language.
+- The public logo is a responsive `kyrgyz.tours` lockup built from the existing Lucide mountain icon system; favicon and initial loading shell use the same coral/navy identity.
+- English and Russian long headings remain readable. All checked routes have zero horizontal overflow and zero broken visible images at desktop and mobile widths.
+- Floating contact buttons start at the desktop breakpoint and are omitted on request and legal routes, preventing overlap with the mobile sticky lead bar and the request form.
+- The loading shell now matches the live theme, so there is no old green flash or unstyled text exposure before React is ready.
+
+## Interaction and runtime checks
+
+- Mobile navigation opens, exposes every expected action, navigates to `/tours`, and closes after the route change.
+- Season and month controls expose selected state; the homepage defaults to the upcoming travel season instead of being permanently fixed to September.
+- Gallery video replaces its poster with a playable local video (`readyState` 4). “Load more photos” increased the stable masonry grid from 12 to 24 items and preserved scroll position (`deltaScroll` 0 with a real pointer click).
+- Feedback routes render without floating-contact overlap. No request was submitted during QA.
+- Fresh console session: zero errors; only the two known React Router v7 opt-in notices remain.
+- TypeScript check, backend syntax check, production Vite build, SEO HTML generation, and SEO output validation passed.
+- SEO output: 109 canonical routes, 39 tours, 12 blog posts, and 3 destination hubs.
+- Frontend release `/var/www/go-kyrgyzstan-travel-releases/20260827-021841` passed live HTTPS smoke and visual checks; `/health` stayed healthy and the backend release was not changed.
+
+## Final result
+
+final result: passed
+
 ## Animation update — 2026-08-14
 
 - The native SVG has no image dependency: its geometry includes two circular rings, 48 bearing ticks, four cardinal directions, topographic path details, and a layered brass needle.
 - The needle moves independently through a restrained 9-second route-search motion; the dial drifts by less than one degree, while the halo and pivot breathe at separate intervals. The effect uses CSS transforms and opacity only.
 - Browser evidence confirms one SVG compass, zero raster images inside it, all four cardinal directions, a changing needle transform, and no horizontal overflow.
 - `prefers-reduced-motion: reduce` disables all four compass animations. The Russian mobile page at 390 x 844 has no horizontal overflow.
+
+---
+
+# Coral seasonal homepage redesign QA — 2026-08-26
+
+## Evidence
+
+- Source visual truth: `C:\Users\user\.codex\generated_images\019fa789-7208-7523-ba70-5128803544e1\exec-b995cfba-933e-4883-9799-74e94c40d322.png`.
+- Desktop implementation: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-concepts\implementation-dark-1440.png`.
+- Mobile implementation: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-concepts\implementation-dark-mobile-390.png`.
+- Side-by-side comparison: `C:\Users\user\Documents\kyrgyz.tours\source_code\.codex-qa\redesign-concepts\comparison-dark-1440.png`.
+- Reference state: coral dark concept, 1487 x 1058 pixels. Implementation state: English homepage, dark mode, 1440 x 1024 CSS viewport; mobile state: 390 x 844.
+
+## Findings
+
+- No actionable P0, P1, or P2 differences remain.
+- Visual identity: the implementation preserves the reference's deep graphite/navy field, coral conversion color, cool cyan seasonal accent, condensed editorial display type, squared controls, panoramic mountain photography, and four-tab season selector.
+- Source adaptation: the implementation uses real photographs and real tour data already stored in the project. This deliberately replaces generated reference landscapes and placeholder route names without changing the selected art direction.
+- Layout: the desktop hero mirrors the reference's two-line white/cyan headline system, edge-to-edge mountain image, compact overlay header, seasonal rail, asymmetric route grid, and four-part trust strip. Mobile stacks without horizontal overflow and keeps both primary actions visible above the fold.
+- Theme system: the new coral/navy tokens work in light and dark modes; the admin-specific token scope remains unchanged.
+- Localization: English and Russian homepages share the same seasonal component, localized copy, links, route titles, tabs, and reassurance labels.
+- Accessibility: tabs expose tab semantics and selected state, interactive elements have visible focus styles, imagery has localized alt text, and motion respects reduced-motion preferences.
+- Acceptable P3 differences: the production UI retains the existing floating WhatsApp/Telegram controls and includes an explanatory paragraph plus a secondary CTA, both of which support the site's real conversion flow.
+
+## Interaction and runtime checks
+
+- Season tabs changed the selected state and updated the heading and real tour selection; October returned three season-ranked routes.
+- Light and dark theme choices changed the root theme and body colors correctly.
+- Mobile navigation opened and exposed all expected navigation, language, theme, and trip-planning controls.
+- English and Russian homepages rendered the localized seasonal experience with no browser runtime errors.
+- Fresh browser session: zero console errors; two pre-existing React Router v7 migration warnings only.
+- `npm run typecheck`: passed.
+- `npm run build`: passed; 109 canonical SEO routes generated and verified.
+
+## Comparison history
+
+1. The first implementation used an oversized hero title that wrapped into four lines and pushed the seasonal rail below the reference position. The title scale, hero height, and vertical spacing were tightened.
+2. The heading was then split into a white lead and cyan accent to reproduce the reference's three-line editorial rhythm on desktop while retaining a readable mobile stack.
+3. A React warning caused by an unsupported `fetchPriority` prop was removed from the new hero. A fresh browser run confirmed zero runtime errors.
+
+## Final result
+
+final result: passed

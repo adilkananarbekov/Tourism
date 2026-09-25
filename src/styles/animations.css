@@ -80,7 +80,7 @@
 
 .card-hover:hover {
   transform: translateY(calc(var(--motion-lift) * -1));
-  box-shadow: 0 20px 40px rgba(38, 76, 62, 0.18);
+  box-shadow: 0 20px 40px rgba(7, 17, 23, 0.16);
 }
 
 .card-hover .card-media {
@@ -111,7 +111,7 @@
 .btn-micro:hover {
   transform: translateY(-1px);
   filter: brightness(1.03);
-  box-shadow: 0 10px 24px rgba(38, 76, 62, 0.16);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--site-green) 16%, transparent);
 }
 
 .btn-micro:active {
@@ -234,7 +234,7 @@
   border: 1px solid rgba(255, 253, 248, 0.8);
   border-radius: 1.5rem;
   background: linear-gradient(145deg, rgba(255, 253, 248, 0.9), rgba(246, 235, 215, 0.78));
-  box-shadow: 0 22px 52px rgba(38, 76, 62, 0.2);
+  box-shadow: 0 22px 52px rgba(7, 17, 23, 0.2);
   backdrop-filter: blur(8px);
 }
 
@@ -589,7 +589,7 @@
   .btn-interactive:hover:not(:disabled) {
     transform: translateY(-2px) scale(1.01);
     filter: brightness(1.04);
-    box-shadow: 0 12px 26px rgba(38, 76, 62, 0.2);
+    box-shadow: 0 12px 26px rgba(7, 17, 23, 0.2);
   }
 
   .btn-interactive:hover:not(:disabled) svg {
@@ -618,14 +618,14 @@
 @media (hover: hover) {
   .interactive-card:hover {
     border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
-    box-shadow: 0 18px 36px rgba(38, 76, 62, 0.16);
+    box-shadow: 0 18px 36px rgba(7, 17, 23, 0.16);
   }
 }
 
 .interactive-card:focus-within {
   border-color: color-mix(in srgb, var(--primary) 58%, var(--border));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent),
-    0 18px 36px rgba(38, 76, 62, 0.12);
+    0 18px 36px rgba(7, 17, 23, 0.12);
 }
 
 .card-title-link,
@@ -664,38 +664,38 @@
 
 .btn-action {
   border: 0;
-  background: linear-gradient(135deg, #264c3e 0%, #b95f42 100%);
-  color: #ffffff;
-  box-shadow: 0 12px 28px rgba(185, 95, 66, 0.22);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--site-green) 20%, transparent);
 }
 
 .btn-action:hover {
-  background: linear-gradient(135deg, #315d4c 0%, #9f4f37 100%);
-  color: #ffffff;
+  background: var(--site-green-hover);
+  color: var(--secondary-foreground);
 }
 
 .btn-action-outline {
-  border-color: rgba(185, 95, 66, 0.42);
-  background: rgba(185, 95, 66, 0.08);
-  color: #8d432e;
+  border-color: color-mix(in srgb, var(--site-green) 48%, var(--border));
+  background: color-mix(in srgb, var(--site-green) 8%, transparent);
+  color: var(--site-green);
 }
 
 .btn-action-outline:hover {
-  border-color: rgba(38, 76, 62, 0.48);
-  background: rgba(38, 76, 62, 0.1);
-  color: #264c3e;
+  border-color: color-mix(in srgb, var(--site-green) 72%, var(--border));
+  background: color-mix(in srgb, var(--site-green) 13%, transparent);
+  color: var(--site-green-hover);
 }
 
 .dark .btn-action-outline {
-  border-color: rgba(221, 138, 100, 0.42);
-  background: rgba(221, 138, 100, 0.1);
-  color: #f0b18e;
+  border-color: color-mix(in srgb, var(--site-green) 50%, var(--border));
+  background: color-mix(in srgb, var(--site-green) 10%, transparent);
+  color: var(--site-green);
 }
 
 .dark .btn-action-outline:hover {
-  border-color: rgba(131, 173, 138, 0.5);
-  background: rgba(131, 173, 138, 0.12);
-  color: #b9d2ad;
+  border-color: color-mix(in srgb, var(--site-green) 72%, var(--border));
+  background: color-mix(in srgb, var(--site-green) 16%, transparent);
+  color: var(--site-green-hover);
 }
 
 .nav-link {
@@ -983,10 +983,10 @@
 }
 
 .not-found-compass__halo {
-  fill: rgba(214, 160, 111, 0.12);
-  stroke: rgba(214, 160, 111, 0.52);
+  fill: rgba(126, 212, 168, 0.1);
+  stroke: rgba(126, 212, 168, 0.52);
   stroke-width: 1.25;
-  filter: drop-shadow(0 0 16px rgba(214, 160, 111, 0.28));
+  filter: drop-shadow(0 0 16px rgba(126, 212, 168, 0.24));
   transform-box: view-box;
   transform-origin: center;
   will-change: transform, opacity;
@@ -1008,10 +1008,10 @@
 }
 
 .not-found-compass__pivot {
-  fill: #f1c18c;
-  stroke: #7b3928;
+  fill: #7ed4a8;
+  stroke: #1f6b4f;
   stroke-width: 2;
-  filter: drop-shadow(0 0 7px rgba(241, 193, 140, 0.88));
+  filter: drop-shadow(0 0 7px rgba(126, 212, 168, 0.56));
   transform-box: view-box;
   transform-origin: center;
   will-change: transform, opacity;

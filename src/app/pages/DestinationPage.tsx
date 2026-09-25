@@ -174,7 +174,7 @@ export function DestinationPage() {
         ]}
       />
 
-      <section className="relative isolate overflow-hidden border-b border-border bg-primary px-4 py-14 text-white sm:px-6 sm:py-20 lg:px-8">
+      <section className="page-editorial-hero relative isolate overflow-hidden border-b border-border bg-primary px-4 py-14 text-white sm:px-6 sm:py-20 lg:px-8">
         <ResponsiveImage
           src={destination.heroImage}
           variants={imageVariants(destination.heroImage)}
@@ -189,7 +189,7 @@ export function DestinationPage() {
           decoding="async"
           className="absolute inset-0 -z-20 h-full w-full object-cover opacity-50"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#0c2a22]/95 via-[#173d31]/85 to-[#173d31]/50" />
+        <div className="absolute inset-0 -z-10 bg-[#101311]/72" />
         <div className="relative mx-auto max-w-7xl">
           <nav aria-label={isRussian ? 'Хлебные крошки' : 'Breadcrumb'} className="mb-7 text-sm text-white/75">
             <Link className="hover:text-white" to={localizedPath('/', locale)}>{labels.home}</Link>
@@ -197,7 +197,7 @@ export function DestinationPage() {
             <span>{copy.title}</span>
           </nav>
           <div className="max-w-3xl">
-            <p className="mb-4 text-sm uppercase tracking-[0.22em] text-[#f2d3a0]">{copy.eyebrow}</p>
+            <p className="mb-4 text-sm uppercase tracking-[0.22em] text-[var(--site-green-on-dark)]">{copy.eyebrow}</p>
             <h1 className="text-4xl leading-tight sm:text-5xl lg:text-6xl">{copy.title}</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90 sm:text-xl">{copy.intro}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -463,7 +463,7 @@ export function DestinationPage() {
         </div>
       </section>
 
-      <section className="border-t border-border bg-primary px-4 py-14 text-primary-foreground sm:px-6 lg:px-8">
+      <section className="border-t border-white/10 bg-[var(--site-surface-dark)] px-4 py-14 text-[var(--site-text-on-dark)] sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-2xl">
             <h2 className="text-3xl">{copy.ctaTitle}</h2>

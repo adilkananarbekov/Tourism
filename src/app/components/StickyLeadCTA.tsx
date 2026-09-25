@@ -5,12 +5,14 @@ import { Button } from './ui/button';
 import { localizedPath, useSiteLocale } from '../lib/locale';
 
 export function StickyLeadCTA() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const locale = useSiteLocale();
   const isRussian = locale === 'ru';
+  const isTourDetail = /^\/(?:ru\/)?tours\/[^/]+$/.test(pathname);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
-  const hiddenRoutes = ['/feedback', '/privacy-policy', '/terms-of-use', '/admin', '/auth', '/dashboard'];
-  const shouldHide = hiddenRoutes.some((route) => pathname === route || pathname.startsWith(`/ru${route}`));
+  const hiddenRoutes = ['/feedback', '/blogs', '/privacy-policy', '/terms-of-use', '/admin', '/auth', '/dashboard'];
+  const shouldHide = hash === '#booking'
+    || hiddenRoutes.some((route) => pathname === route || pathname.startsWith(`/ru${route}`));
 
   useEffect(() => {
     const footer = document.getElementById('site-footer');
@@ -38,13 +40,13 @@ export function StickyLeadCTA() {
             <MessageCircle className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-foreground">{isRussian ? 'Нужна помощь с выбором?' : 'Need help choosing?'}</p>
-            <p className="truncate text-xs text-muted-foreground">{isRussian ? 'Оставьте WhatsApp, Telegram или email.' : 'Leave WhatsApp, Telegram, or email.'}</p>
+            <p className="truncate text-sm font-medium text-foreground">{isTourDetail ? (isRussian ? 'Интересует этот маршрут?' : 'Interested in this route?') : (isRussian ? 'Нужна помощь с выбором?' : 'Need help choosing?')}</p>
+            <p className="truncate text-xs text-muted-foreground">{isRussian ? 'Уточните даты и стоимость.' : 'Ask about dates and price.'}</p>
           </div>
         </div>
         <Button asChild className="btn-micro btn-action shrink-0">
           <Link
-            to={localizedPath('/feedback', locale)}
+            to={isTourDetail ? `${pathname}#booking` : localizedPath('/feedback', locale)}
             data-track-event="sticky_mobile_lead_click"
             data-track-label="Mobile sticky lead CTA"
           >

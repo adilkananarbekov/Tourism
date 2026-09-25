@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { CalendarDays, Search, Snowflake, SunMedium } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Button } from '../components/ui/button';
@@ -10,6 +10,7 @@ import { useToursData } from '../hooks/useTours';
 import { localizeTour } from '../lib/localizedTours';
 import { localeAlternates } from '../lib/locale';
 import { breadcrumbJsonLd, tourListJsonLd } from '../lib/seo';
+import { rankToursForMonth, upcomingTravelMonth } from '../lib/seasonalTours';
 
 type FilterKey =
   | 'all'
@@ -32,6 +33,13 @@ const filters: { key: FilterKey; label: string }[] = [
   { key: 'seven-plus-days', label: '7+ дней' },
 ];
 const filterKeys = new Set<FilterKey>(filters.map((filter) => filter.key));
+const monthChoices = [
+  { value: 0, label: 'Любой месяц', short: 'Любой' },
+  { value: 9, label: 'Сентябрь', short: 'Сен' },
+  { value: 10, label: 'Октябрь', short: 'Окт' },
+  { value: 11, label: 'Ноябрь', short: 'Ноя' },
+  { value: 12, label: 'Зима', short: 'Зима' },
+];
 
 function normalizeSearchText(value: string) {
   return value
@@ -93,6 +101,9 @@ export function RussianToursPage() {
   const search = searchParams.get('q') || '';
   const filterParam = searchParams.get('filter');
   const activeFilter: FilterKey = isFilterKey(filterParam) ? filterParam : 'all';
+  const monthParam = Number(searchParams.get('month'));
+  const selectedMonth = monthChoices.some((choice) => choice.value === monthParam) ? monthParam : 0;
+  const rankingMonth = selectedMonth || upcomingTravelMonth();
   const translatedTours = useMemo(
     () => tours.map((tour) => localizeTour(tour, 'ru')),
     [tours]
@@ -100,7 +111,7 @@ export function RussianToursPage() {
   const filteredTours = useMemo(() => {
     const queryTokens = normalizeSearchText(search).split(' ').filter(Boolean);
 
-    return translatedTours.filter((tour) => {
+    const matchingTours = translatedTours.filter((tour) => {
       const tourText = normalizeSearchText([
         tour.title,
         tour.description,
@@ -117,7 +128,8 @@ export function RussianToursPage() {
       );
       return matchesSearch && matchesFilter;
     });
-  }, [activeFilter, search, translatedTours]);
+    return rankToursForMonth(matchingTours, rankingMonth);
+  }, [activeFilter, rankingMonth, search, selectedMonth, translatedTours]);
   const seoJsonLd = useMemo(
     () => [
       breadcrumbJsonLd([
@@ -153,8 +165,17 @@ export function RussianToursPage() {
     });
   };
 
+  const updateMonth = (month: number) => {
+    setSearchParams((currentParams) => {
+      const nextParams = new URLSearchParams(currentParams);
+      if (month === 0) nextParams.delete('month');
+      else nextParams.set('month', String(month));
+      return nextParams;
+    });
+  };
+
   return (
-    <div className="bg-background pb-20 md:pb-0">
+    <div className="tours-catalog-page bg-background pb-20 md:pb-0">
       <SEO
         title="Туры по Кыргызстану — озёра, горы, культура и конные маршруты"
         description="Выберите тур по Кыргызстану: Иссык-Куль, Сон-Куль, Кель-Суу, верховая езда, юрты и горные автопутешествия из Бишкека."
@@ -163,17 +184,17 @@ export function RussianToursPage() {
         alternates={localeAlternates('/tours')}
         jsonLd={seoJsonLd}
       />
-      <section className="border-b border-border bg-muted px-4 py-12 sm:px-6 lg:px-8">
+      <section className="page-editorial-hero border-b border-border bg-muted px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-3xl">
-            <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">Готовые маршруты</p>
+            <p className="mb-3 text-sm uppercase tracking-[0.22em] text-secondary">Частные поездки · Местная команда</p>
             <h1 className="text-3xl text-foreground sm:text-4xl lg:text-5xl">Туры по Кыргызстану</h1>
             <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
-              Выберите маршрут, а даты, темп и остановки уточним после личного общения.
+              Сравните маршруты по местам, длительности и формату. Запросите расчёт для своей группы: даты, включённые услуги и цену согласуем до бронирования.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
             <div className="relative">
               <label htmlFor="russian-tour-search" className="sr-only">
                 Поиск туров
@@ -204,6 +225,42 @@ export function RussianToursPage() {
         </div>
       </section>
 
+      <section className="border-b border-border bg-background px-4 py-4 sm:px-6 lg:px-8" aria-labelledby="russian-travel-month-heading">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h2 id="russian-travel-month-heading" className="inline-flex items-center gap-2 text-base font-medium text-foreground">
+                <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                Месяц поездки
+              </h2>
+              <p className="mt-1 text-sm leading-5 text-muted-foreground">
+                Сначала — подходящие по сезону маршруты. Даты и доступность уточним при расчёте.
+              </p>
+            </div>
+            <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1 scrollbar-hide sm:flex-wrap sm:overflow-visible" role="group" aria-label="Месяц поездки">
+              {monthChoices.map((choice) => (
+                <button
+                  key={choice.value}
+                  type="button"
+                  onClick={() => updateMonth(choice.value)}
+                  aria-pressed={selectedMonth === choice.value}
+                  className={cn(
+                    'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md border px-4 text-sm font-medium transition-[transform,background-color,border-color,color,box-shadow] duration-200 motion-reduce:transition-none hover:-translate-y-0.5 motion-reduce:hover:translate-y-0 active:translate-y-0',
+                    selectedMonth === choice.value
+                      ? 'border-primary bg-primary text-primary-foreground shadow-md'
+                      : 'border-border bg-background text-foreground hover:border-primary/50 hover:bg-muted'
+                  )}
+                >
+                  {choice.value === 12 ? <Snowflake className="h-4 w-4" aria-hidden="true" /> : choice.value ? <SunMedium className="h-4 w-4" aria-hidden="true" /> : null}
+                  <span className="sm:hidden">{choice.short}</span>
+                  <span className="hidden sm:inline">{choice.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section
         className="sticky top-14 z-30 border-b border-border/50 bg-background/60 px-4 shadow-sm backdrop-blur-xl sm:px-6 lg:px-8"
         aria-label="Фильтры туров"
@@ -216,7 +273,7 @@ export function RussianToursPage() {
               onClick={() => updateFilter(filter.key)}
               aria-pressed={activeFilter === filter.key}
               className={cn(
-                'min-h-[40px] whitespace-nowrap rounded-full border px-5 text-sm font-medium transition-all duration-300 ease-in-out hover:scale-105 active:scale-95',
+                'min-h-11 whitespace-nowrap rounded-md border px-5 text-sm font-medium transition-colors motion-reduce:transition-none',
                 activeFilter === filter.key
                   ? 'border-primary bg-primary text-primary-foreground shadow-md'
                   : 'border-border/50 bg-background/50 text-muted-foreground hover:border-primary/50 hover:bg-muted hover:text-foreground'
@@ -228,13 +285,18 @@ export function RussianToursPage() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 pt-6 sm:px-6 lg:px-8">
         <p className="text-sm text-muted-foreground" aria-live="polite" aria-atomic="true">
           Найдено туров: {filteredTours.length} из {translatedTours.length}
         </p>
+        {(search || activeFilter !== 'all' || selectedMonth !== 0) && (
+          <button type="button" className="min-h-11 rounded-sm text-sm font-medium text-primary underline underline-offset-4" onClick={() => setSearchParams({})}>
+            Сбросить поиск и фильтры
+          </button>
+        )}
       </div>
 
-      <ToursGrid tours={filteredTours} loading={loading} error={error} stagger locale="ru" />
+      <ToursGrid tours={filteredTours} loading={loading} error={error} stagger compact hasActiveFilters={Boolean(search || activeFilter !== 'all')} locale="ru" selectedMonth={rankingMonth} />
     </div>
   );
 }

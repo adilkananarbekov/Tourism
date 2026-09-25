@@ -1,10 +1,8 @@
 import { AboutMe } from '../components/AboutMe';
-import { CTASection } from '../components/CTASection';
 import { ContactStrip } from '../components/ContactStrip';
-import { Hero } from '../components/Hero';
-import { HotToursSection } from '../components/HotToursSection';
 import { LandingNavigation } from '../components/LandingNavigation';
 import { Reveal } from '../components/Reveal';
+import { SeasonalHomeExperience } from '../components/SeasonalHomeExperience';
 import { SectionTransition } from '../components/SectionTransition';
 import { SEO } from '../components/SEO';
 import { SEOContent } from '../components/SEOContent';
@@ -27,33 +25,25 @@ export function HomePage() {
         ]}
       />
       <div className="home-flow">
-        <Hero />
-        <Reveal className="section-reveal">
-          <SectionTransition />
-          <HotToursSection />
-        </Reveal>
-        <Reveal className="section-reveal">
-          <SectionTransition className="section-transition--reverse" />
-          <TripIdeas />
-        </Reveal>
-        <Reveal className="section-reveal">
-          <SectionTransition />
-          <LandingNavigation />
-        </Reveal>
+        <SeasonalHomeExperience />
         <Reveal className="section-reveal">
           <SectionTransition className="section-transition--reverse" />
           <AboutMe />
         </Reveal>
         <Reveal className="section-reveal">
           <SectionTransition />
-          <CTASection />
+          <TripIdeas />
         </Reveal>
         <Reveal className="section-reveal">
           <SectionTransition className="section-transition--reverse" />
-          <SEOContent />
+          <LandingNavigation />
         </Reveal>
         <Reveal className="section-reveal">
           <SectionTransition />
+          <SEOContent />
+        </Reveal>
+        <Reveal className="section-reveal">
+          <SectionTransition className="section-transition--reverse" />
           <ContactStrip />
         </Reveal>
       </div>

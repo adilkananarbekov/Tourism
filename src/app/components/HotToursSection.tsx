@@ -5,36 +5,12 @@ import type { Tour } from './tour-data';
 import { ResponsiveImage } from './ResponsiveImage';
 import { Button } from './ui/button';
 import { tourPath } from '../lib/tourRoutes';
+import { getSeasonalTourLabels, rankToursForMonth, upcomingTravelMonth } from '../lib/seasonalTours';
 
-const DEFAULT_HOT_TOUR_IDS = [6, 1, 2];
-
-function preferredTourOrder(tours: Tour[]) {
-  const prioritized = new Map(
-    DEFAULT_HOT_TOUR_IDS.map((id, index) => [id, index]),
-  );
-
-  return [...tours].sort(
-    (first, second) =>
-      (prioritized.get(first.id) ?? Number.MAX_SAFE_INTEGER) -
-      (prioritized.get(second.id) ?? Number.MAX_SAFE_INTEGER),
-  );
-}
-
-function selectHotTours(tours: Tour[]) {
-  const manuallySelected = tours.filter((tour) => tour.isHot);
-  const candidates = [...manuallySelected, ...preferredTourOrder(tours), ...tours];
-  const selected = new Map<number, Tour>();
-
-  for (const tour of candidates) {
-    if (!selected.has(tour.id)) {
-      selected.set(tour.id, tour);
-    }
-    if (selected.size === 3) {
-      break;
-    }
-  }
-
-  return [...selected.values()];
+function selectSeasonalTours(tours: Tour[], month: number) {
+  return rankToursForMonth(tours, month)
+    .filter((tour) => getSeasonalTourLabels(tour, month).status !== 'next-season')
+    .slice(0, 3);
 }
 
 function tourImageVariants(image: string) {
@@ -51,7 +27,10 @@ function tourImageVariants(image: string) {
 
 export function HotToursSection() {
   const { tours } = useToursData();
-  const hotTours = selectHotTours(tours);
+  const travelMonth = upcomingTravelMonth();
+  const hotTours = selectSeasonalTours(tours, travelMonth);
+  const travelMonthLabel = new Intl.DateTimeFormat('en', { month: 'long' })
+    .format(new Date(2026, travelMonth - 1, 1));
 
   if (hotTours.length === 0) {
     return null;
@@ -64,12 +43,12 @@ export function HotToursSection() {
           <div className="max-w-3xl">
             <p className="mb-3 inline-flex items-center gap-2 text-sm uppercase tracking-[0.22em] text-secondary">
               <Flame className="h-4 w-4" aria-hidden="true" />
-              Hot tours
+              Best for {travelMonthLabel}
             </p>
-            <h2 className="text-3xl text-foreground sm:text-4xl">Start with the routes travelers ask for most.</h2>
+            <h2 className="text-3xl text-foreground sm:text-4xl">Start with routes that fit the season.</h2>
             <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
-              A short selection for an upcoming Kyrgyzstan trip. Send your dates and we will
-              confirm real availability, route details, and the best pace for your group.
+              Find a route for your travel month, from lake roads to mountain trails.
+              We confirm dates, access, and the right pace for your group before you book.
             </p>
           </div>
           <Button asChild variant="outline" className="w-full btn-micro btn-action-outline lg:w-auto">
@@ -84,6 +63,7 @@ export function HotToursSection() {
           {hotTours.map((tour, index) => {
             const imageVariants = tourImageVariants(tour.image);
             const publicTourPath = tourPath(tour);
+            const seasonal = getSeasonalTourLabels(tour, travelMonth);
             return (
               <article
                 key={tour.id}
@@ -112,7 +92,7 @@ export function HotToursSection() {
                   <div className="card-overlay absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                   <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 px-3 py-1.5 text-xs font-medium text-foreground shadow-sm">
                     <Flame className="h-3.5 w-3.5 text-secondary" aria-hidden="true" />
-                    Hot right now
+                    {seasonal.promotionLabel || seasonal.availabilityLabel}
                   </span>
                   <span className="absolute bottom-4 left-4 rounded-full border border-white/30 bg-black/30 px-3 py-1.5 text-sm text-white backdrop-blur-sm">
                     {tour.season || 'Flexible season'}
@@ -120,7 +100,7 @@ export function HotToursSection() {
                 </Link>
 
                 <div className="p-5 sm:p-6">
-                  <div className="flex items-start justify-between gap-4">
+                  <div>
                     <h3 className="text-xl leading-snug text-foreground sm:text-2xl">
                       <Link
                         to={publicTourPath}
@@ -132,7 +112,7 @@ export function HotToursSection() {
                         <ArrowRight className="h-5 w-5" aria-hidden="true" />
                       </Link>
                     </h3>
-                    <p className="shrink-0 text-base font-semibold text-primary">{tour.price}</p>
+                    <p className="mt-3 text-sm font-medium text-primary">{tour.price}</p>
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
@@ -148,7 +128,7 @@ export function HotToursSection() {
 
                   <p className="mt-4 line-clamp-2 text-sm leading-6 text-muted-foreground">{tour.description}</p>
 
-                  <div className="mt-5 flex items-center justify-between gap-3 border-t border-border pt-4">
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
                     <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                       <Tag className="h-4 w-4 text-secondary" aria-hidden="true" />
                       Dates and final price confirmed personally

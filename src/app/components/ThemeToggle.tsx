@@ -20,7 +20,7 @@ export function ThemeToggle() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="btn-micro h-9 w-9 rounded-full border-border bg-card text-foreground"
+          className="theme-trigger btn-micro h-9 w-9 rounded-full border-border bg-card text-foreground"
           aria-label="Choose color theme"
           title="Choose color theme"
           data-track-event="theme_menu_open"

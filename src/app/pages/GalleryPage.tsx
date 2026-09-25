@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { galleryItems, galleryVideo } from '../data/gallery';
 import { SEO } from '../components/SEO';
 import { Button } from '../components/ui/button';
@@ -43,6 +43,7 @@ function useGalleryColumnCount() {
 export function GalleryPage() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_GALLERY_COUNT);
   const [videoActive, setVideoActive] = useState(false);
+  const preservedScrollY = useRef<number | null>(null);
   const columnCount = useGalleryColumnCount();
   const visibleItems = galleryItems.slice(0, visibleCount);
   const hasMore = visibleCount < galleryItems.length;
@@ -60,11 +61,28 @@ export function GalleryPage() {
   }, [columnCount, visibleItems]);
 
   const loadMorePhotos = () => {
+    preservedScrollY.current = window.scrollY;
     setVisibleCount((count) => Math.min(count + GALLERY_BATCH_SIZE, galleryItems.length));
   };
 
+  useEffect(() => {
+    if (preservedScrollY.current === null) return;
+    const targetScrollY = preservedScrollY.current;
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        window.scrollTo({ top: targetScrollY, behavior: 'auto' });
+        preservedScrollY.current = null;
+      });
+    });
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+    };
+  }, [visibleCount]);
+
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
+    <section className="gallery-editorial-page py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <SEO
         title="Kyrgyzstan Travel Photos & Videos"
         description="See real Kyrgyzstan travel photos and videos from mountain tours, horse riding routes, yurt camps, hikes, and cultural experiences."
@@ -76,7 +94,7 @@ export function GalleryPage() {
         ])}
       />
       <div className="max-w-7xl mx-auto space-y-12">
-        <div className="text-center">
+        <div className="page-editorial-heading text-center">
           <h1 className="text-3xl sm:text-4xl text-foreground mb-4">Kyrgyzstan Travel Photo Gallery</h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             A visual diary of trips, landscapes, and guest experiences across Kyrgyzstan.
@@ -84,7 +102,7 @@ export function GalleryPage() {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-start">
-          <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
+          <div className="rounded-md overflow-hidden border border-border bg-card shadow-sm">
             {videoActive ? (
               <video
                 className="h-full w-full"
@@ -99,7 +117,7 @@ export function GalleryPage() {
             ) : (
               <button
                 type="button"
-                className="btn-interactive group relative block w-full overflow-hidden rounded-xl text-left focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                className="btn-interactive group relative block w-full overflow-hidden rounded-md text-left focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-primary"
                 onClick={() => setVideoActive(true)}
                 aria-label={`Play ${galleryVideo.title}`}
               >
@@ -122,14 +140,14 @@ export function GalleryPage() {
                   className="aspect-video h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                 />
                 <span className="absolute inset-0 flex items-center justify-center bg-black/20">
-                  <span className="rounded-full bg-white/95 px-5 py-3 text-sm font-medium text-slate-900 shadow-lg">
+                  <span className="rounded-md bg-[var(--site-green-on-dark)] px-5 py-3 text-sm font-semibold text-[var(--site-surface-dark)] shadow-lg">
                     Play video
                   </span>
                 </span>
               </button>
             )}
           </div>
-          <div className="rounded-2xl border border-border bg-card p-6 space-y-3">
+          <div className="rounded-md border border-border bg-card p-6 space-y-3">
             <p className="text-sm text-muted-foreground">Featured video</p>
             <h2 className="text-2xl text-foreground">{galleryVideo.title}</h2>
             <p className="text-muted-foreground">
@@ -180,7 +198,7 @@ export function GalleryPage() {
         {hasMore && (
           <div className="flex justify-center">
             <Button
-              className="btn-micro bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="btn-micro btn-action"
               onClick={loadMorePhotos}
             >
               Load more photos

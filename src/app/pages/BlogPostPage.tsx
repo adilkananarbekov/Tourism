@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 import { ArrowLeft, ArrowRight, Clock } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { SEO } from '../components/SEO';
+import { ResponsiveImage } from '../components/ResponsiveImage';
 import { Button } from '../components/ui/button';
 import {
   blogPath,
@@ -19,6 +20,7 @@ import blogSeoOverrides from '../../../data/blog_seo_overrides.json';
 type BlogSeoOverride = {
   seoTitle?: string;
   seoDescription?: string;
+  quickAnswer?: { heading: string; text: string; links: Array<{ label: string; path: string }> };
   faq?: Array<{ question: string; answer: string }>;
 };
 
@@ -68,6 +70,102 @@ const guideRouteLinks: Record<string, { eyebrow: string; title: string; descript
     description: 'Send your dates, experience and preferred pace. We will check what is practical before suggesting a private mountain day.',
     links: [{ to: '/feedback', label: 'Request a private hiking plan' }],
   },
+  'karakol-kyrgyzstan-guide': {
+    eyebrow: 'Explore eastern Issyk-Kul',
+    title: 'Use Karakol as a place to pause, not only a trailhead',
+    description: 'Continue with the Issyk-Kul road-trip guide, then compare nearby valleys without forcing every stop into one day.',
+    links: [
+      { to: '/destinations/issyk-kul', label: 'Explore the Issyk-Kul place hub' },
+      { to: '/blogs/issyk-kul-road-trip-guide', label: 'Read the Issyk-Kul road-trip guide' },
+    ],
+  },
+  'skazka-canyon-kyrgyzstan-guide': {
+    eyebrow: 'South-shore landscape',
+    title: 'Place Skazka inside a slower Issyk-Kul journey',
+    description: 'The canyon works best as one focused landscape stop, combined with the lake and nearby villages rather than a rushed lap of Issyk-Kul.',
+    links: [
+      { to: '/destinations/issyk-kul', label: 'Explore Issyk-Kul places' },
+      { to: '/blogs/best-time-to-visit-kyrgyzstan', label: 'Check the seasonal guide' },
+    ],
+  },
+  'jeti-oguz-red-rocks-guide': {
+    eyebrow: 'East of Issyk-Kul',
+    title: 'Connect red-rock viewpoints with the wider valley',
+    description: 'Jeti-Oguz can be a short scenic stop or the beginning of a longer mountain day. Keep those two experiences separate when planning.',
+    links: [
+      { to: '/blogs/karakol-kyrgyzstan-guide', label: 'Read the Karakol place guide' },
+      { to: '/destinations/issyk-kul', label: 'Explore the Issyk-Kul place hub' },
+    ],
+  },
+  'burana-tower-guide': {
+    eyebrow: 'Silk Roads heritage',
+    title: 'See Burana as an archaeological landscape',
+    description: 'The minaret is the visual landmark, but the value of a visit comes from reading it together with the remains of Balasagun and the wider Chui Valley.',
+    links: [
+      { to: '/blogs/best-time-to-visit-kyrgyzstan', label: 'Choose a realistic travel month' },
+      { to: '/blogs', label: 'Browse more place guides' },
+    ],
+  },
+  'kel-suu-lake-place-guide': {
+    eyebrow: 'Remote Naryn landscape',
+    title: 'Understand the place before choosing the route',
+    description: 'The place guide explains why Kel-Suu matters. The destination hub covers route options and the access checks needed for your dates.',
+    links: [
+      { to: '/destinations/kel-suu', label: 'Open the Kel-Suu destination hub' },
+      { to: '/blogs/remote-kyrgyzstan-travel-tips', label: 'Read the remote travel checklist' },
+    ],
+  },
+  'tash-rabat-caravanserai-place-guide': {
+    eyebrow: 'Inner Tien Shan heritage',
+    title: 'Connect the stone monument with the wider Naryn landscape',
+    description: 'Continue with practical remote-travel advice or compare nearby Kel-Suu without treating either place as a quick roadside stop.',
+    links: [
+      { to: '/blogs/remote-kyrgyzstan-travel-tips', label: 'Prepare for a remote route' },
+      { to: '/destinations/kel-suu', label: 'Explore the Kel-Suu destination hub' },
+    ],
+  },
+  'remote-kyrgyzstan-travel-tips': {
+    eyebrow: 'Practical field notes',
+    title: 'Apply the checklist to a real highland place',
+    description: 'Compare two remote Naryn places and notice why roads, accommodation, documents and activities must be confirmed separately.',
+    links: [
+      { to: '/blogs/kel-suu-lake-place-guide', label: 'Read why Kel-Suu is worth visiting' },
+      { to: '/blogs/tash-rabat-caravanserai-place-guide', label: 'Read the Tash Rabat place story' },
+    ],
+  },
+};
+
+const placeGuideMeta: Record<string, Array<{ label: string; value: string }>> = {
+  'karakol-kyrgyzstan-guide': [
+    { label: 'Why go', value: 'Architecture, food and regional culture' },
+    { label: 'Best pace', value: 'At least one unhurried city day' },
+    { label: 'Seasonal value', value: 'Useful in every season' },
+  ],
+  'skazka-canyon-kyrgyzstan-guide': [
+    { label: 'Why go', value: 'Colour, erosion and close-up geology' },
+    { label: 'Best pace', value: 'A focused short walk' },
+    { label: 'Seasonal note', value: 'Heat, wind and rain change the experience' },
+  ],
+  'jeti-oguz-red-rocks-guide': [
+    { label: 'Why go', value: 'Red cliffs meeting a forested valley' },
+    { label: 'Best pace', value: 'Viewpoint or a separate longer valley day' },
+    { label: 'Seasonal note', value: 'Confirm deeper-valley access locally' },
+  ],
+  'burana-tower-guide': [
+    { label: 'Why go', value: 'A visible fragment of medieval Balasagun' },
+    { label: 'Best pace', value: 'Time for the museum and site, not one photo' },
+    { label: 'Heritage', value: 'Part of a transnational UNESCO property' },
+  ],
+  'kel-suu-lake-place-guide': [
+    { label: 'Why go', value: 'Scale, silence and a remote canyon lake' },
+    { label: 'Best pace', value: 'A multi-day Naryn journey' },
+    { label: 'Check first', value: 'Documents, road and local access' },
+  ],
+  'tash-rabat-caravanserai-place-guide': [
+    { label: 'Why go', value: 'Stone architecture in a high Silk Roads valley' },
+    { label: 'Best pace', value: 'Time for both interior and landscape' },
+    { label: 'Seasonal note', value: 'Services and road conditions vary' },
+  ],
 };
 
 function formatArticleDate(value?: string) {
@@ -85,6 +183,10 @@ function formatArticleDate(value?: string) {
     month: 'long',
     year: 'numeric',
   }).format(date);
+}
+
+function placeNameFromTitle(title: string) {
+  return title.split(':')[0].replace(/^Why Visit\s+/i, '');
 }
 
 export function BlogPostPage() {
@@ -130,6 +232,8 @@ export function BlogPostPage() {
   const path = blogPath(post);
   const relatedPosts = publishedPosts.filter((item) => item.id !== post.id).slice(0, 3);
   const routeLinks = guideRouteLinks[post.slug];
+  const placeMeta = placeGuideMeta[post.slug];
+  const isPlaceGuide = Boolean(placeMeta);
   const editorial = (blogSeoOverrides as Record<string, BlogSeoOverride>)[post.slug];
   const seoTitle = editorial?.seoTitle || post.seoTitle || post.title;
   const seoDescription = editorial?.seoDescription || post.seoDescription || post.excerpt;
@@ -172,7 +276,7 @@ export function BlogPostPage() {
     : undefined;
 
   return (
-    <article className="bg-background">
+    <article className="editorial-content-page bg-background">
       <SEO
         title={seoTitle}
         description={seoDescription}
@@ -190,7 +294,7 @@ export function BlogPostPage() {
         ]}
       />
 
-      <header className="border-b border-border bg-muted/50">
+      <header className="page-editorial-hero border-b border-border bg-muted/50">
         <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:py-16">
           <Link
             to="/blogs"
@@ -216,20 +320,40 @@ export function BlogPostPage() {
           </div>
           <h1 className="mt-5 text-4xl text-foreground sm:text-5xl">{post.title}</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{post.excerpt}</p>
+          {editorial?.quickAnswer && (
+            <aside className="mt-6 rounded-md border border-border bg-card p-5 sm:p-6" aria-label="Season guide at a glance">
+              <h2 className="text-xl font-semibold text-foreground">{editorial.quickAnswer.heading}</h2>
+              <p className="mt-3 text-base leading-7 text-muted-foreground">{editorial.quickAnswer.text}</p>
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3">
+                {editorial.quickAnswer.links.map(link => <Link key={link.path} to={link.path} className="text-sm font-medium text-primary underline underline-offset-4">{link.label}</Link>)}
+              </div>
+            </aside>
+          )}
         </div>
       </header>
 
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-        <img
-          src={withBasePath(post.coverImage || '/images/go-kyrgyzstan-hero-1080.webp')}
-          alt={post.title}
+        <ResponsiveImage
+          src={post.coverImage || '/images/go-kyrgyzstan-hero-1080.webp'}
+          alt={post.coverImageAlt || post.title}
           width={1080}
           height={720}
           loading="eager"
           fetchPriority="high"
           decoding="async"
-          className="max-h-[560px] w-full rounded-2xl object-cover shadow-sm"
+          className="max-h-[560px] w-full rounded-md object-cover shadow-sm"
         />
+
+        {placeMeta ? (
+          <section className="mx-auto mt-6 grid max-w-3xl gap-3 sm:grid-cols-3" aria-label="Guide at a glance">
+            {placeMeta.map((item) => (
+              <div key={item.label} className="rounded-md border border-border bg-card p-4 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.16em] text-secondary">{item.label}</p>
+                <p className="mt-2 leading-6 text-foreground">{item.value}</p>
+              </div>
+            ))}
+          </section>
+        ) : null}
 
         <div
           className="blog-content mx-auto mt-10 max-w-3xl text-base leading-8 text-muted-foreground [&_a]:text-primary [&_a]:underline [&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:text-3xl [&_h2]:text-foreground [&_h3]:mb-3 [&_h3]:mt-8 [&_h3]:text-xl [&_h3]:text-foreground [&_li]:mb-2 [&_p]:mb-5 [&_strong]:font-medium [&_strong]:text-foreground [&_ul]:mb-6 [&_ul]:list-disc [&_ul]:pl-6"
@@ -240,9 +364,11 @@ export function BlogPostPage() {
           <section className="mx-auto mt-12 max-w-3xl" aria-labelledby="guide-faq-heading">
             <p className="text-xs uppercase tracking-[0.18em] text-secondary">Quick answers</p>
             <h2 id="guide-faq-heading" className="mt-2 text-3xl text-foreground">
-              Frequently asked questions about Kyrgyzstan travel seasons
+              {isPlaceGuide
+                ? `Frequently asked questions about ${placeNameFromTitle(post.title)}`
+                : 'Frequently asked questions about Kyrgyzstan travel seasons'}
             </h2>
-            <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-card px-5 shadow-sm sm:px-6">
+            <div className="mt-6 divide-y divide-border rounded-md border border-border bg-card px-5 shadow-sm sm:px-6">
               {editorial.faq.map((item) => (
                 <details key={item.question} className="group py-5">
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-lg text-foreground marker:content-none">
@@ -257,7 +383,7 @@ export function BlogPostPage() {
         ) : null}
 
         {routeLinks && (
-          <aside className="mx-auto mt-10 max-w-3xl rounded-2xl border border-secondary/30 bg-secondary/10 p-6 sm:p-7">
+          <aside className="mx-auto mt-10 max-w-3xl rounded-md border border-secondary/30 bg-secondary/10 p-6 sm:p-7">
             <p className="text-xs uppercase tracking-[0.18em] text-secondary">{routeLinks.eyebrow}</p>
             <h2 className="mt-2 text-2xl text-foreground">{routeLinks.title}</h2>
             <p className="mt-3 leading-7 text-muted-foreground">
@@ -274,18 +400,25 @@ export function BlogPostPage() {
           </aside>
         )}
 
-        <div className="mx-auto mt-12 max-w-3xl rounded-2xl border border-border bg-card p-6 sm:p-8">
-          <h2 className="text-2xl text-foreground">Turn this guide into your own route</h2>
+        <div className="mx-auto mt-12 max-w-3xl rounded-md border border-border bg-card p-6 sm:p-8">
+          <h2 className="text-2xl text-foreground">
+            {isPlaceGuide ? 'Keep exploring the place, not just the checklist' : 'Turn this guide into your own route'}
+          </h2>
           <p className="mt-3 leading-7 text-muted-foreground">
-            Share your dates, group size, comfort level, and preferred pace. We will suggest a
-            practical itinerary and explain what can be adjusted.
+            {isPlaceGuide
+              ? 'Use the related guides to understand the surrounding region, season and travel pace. A place is more rewarding when it is not reduced to a quick photo stop.'
+              : 'Share your dates, group size, comfort level, and preferred pace. We will suggest a practical itinerary and explain what can be adjusted.'}
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Button asChild>
-              <Link to="/feedback">Request a private itinerary</Link>
+              <Link to={isPlaceGuide ? '/blogs' : '/feedback'}>
+                {isPlaceGuide ? 'Browse place guides' : 'Request a private itinerary'}
+              </Link>
             </Button>
             <Button asChild variant="outline">
-              <Link to="/tours">Compare tours</Link>
+              <Link to={isPlaceGuide ? '/blogs/best-time-to-visit-kyrgyzstan' : '/tours'}>
+                {isPlaceGuide ? 'Check the season guide' : 'Compare tours'}
+              </Link>
             </Button>
           </div>
         </div>
@@ -300,7 +433,7 @@ export function BlogPostPage() {
                 <Link
                   key={item.id}
                   to={blogPath(item)}
-                  className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary"
+                  className="rounded-md border border-border bg-card p-5 transition-colors hover:border-primary"
                 >
                   <p className="text-xs uppercase tracking-wide text-secondary">
                     {item.category || 'Travel Guide'}

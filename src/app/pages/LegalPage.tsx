@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { FileCheck2, ShieldCheck } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { Button } from '../components/ui/button';
@@ -116,8 +117,8 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
     terms: {
       eyebrow: 'Website terms',
       title: 'Terms of Use',
-      description: 'Rules for using the Go Kyrgyzstan Travel website and requesting travel information.',
-      updated: 'Last updated: 9 August 2026',
+      description: 'How enquiries, written quotations and booking confirmation work, plus the rules for using Kyrgyz.tours — Go Kyrgyzstan Travel.',
+      updated: 'Last updated: 9 September 2026',
       back: 'Browse tours',
       contact: 'Ask a trip question',
       sections: [
@@ -126,8 +127,19 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
           paragraphs: ['You may use this website to explore Kyrgyzstan travel information and ask about private or small-group trips. Do not misuse the site, interfere with its operation, attempt unauthorized access, or submit false, harmful, or unlawful content.'],
         },
         {
+          id: 'booking',
           title: 'Requests are not bookings',
           paragraphs: ['A website request is an enquiry only. It does not confirm a tour, transport, accommodation, price, payment, or availability. A booking is confirmed only after the itinerary, price, terms, and payment arrangements have been agreed with the team in writing.'],
+        },
+        {
+          title: 'What happens after your enquiry',
+          paragraphs: ['The team replies through the WhatsApp number, Telegram username or email address you selected. We discuss your dates, group size, experience and accommodation preferences before preparing a proposal. This website does not collect trip payments.'],
+          bullets: ['First: discuss the route and check availability for your dates.', 'Next: review a written itinerary and itemised quotation, including inclusions, exclusions, currency, group size and the trip organiser.', 'Before paying: agree the deposit, balance deadline, cancellation conditions and payment recipient in writing.', 'Finally: obtain written booking confirmation. Sending the form or selecting a calendar date alone does not reserve places.'],
+        },
+        {
+          id: 'changes-and-cancellation',
+          title: 'Changes, cancellations and refunds',
+          paragraphs: ['There is no single deposit amount or cancellation schedule published for every route on this website. The conditions depend on the agreed trip and its suppliers; do not assume that a deposit or payment is refundable.', 'Before committing, ask for the applicable cancellation deadlines, charges and any refundable amounts in your written proposal. Also clarify what happens if the organiser cancels, a road closes, or weather prevents an activity, and how any agreed refund would be paid and within what timeframe.', 'To request a change or cancellation, write to the team through your existing trip conversation and include your request or booking reference. Ask for written acknowledgement and the effect on your itinerary and price before accepting a replacement. These planning notes do not replace the terms of your individual booking or any mandatory rights.'],
         },
         {
           title: 'Prices, routes, and availability',
@@ -232,8 +244,8 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
     terms: {
       eyebrow: 'Правила сайта',
       title: 'Условия использования',
-      description: 'Правила использования сайта Go Kyrgyzstan Travel и отправки запросов на путешествия.',
-      updated: 'Обновлено: 9 августа 2026 года',
+      description: 'Как проходят заявка, письменный расчёт и подтверждение поездки, а также правила использования Kyrgyz.tours — Go Kyrgyzstan Travel.',
+      updated: 'Обновлено: 9 сентября 2026 года',
       back: 'Смотреть туры',
       contact: 'Задать вопрос о поездке',
       sections: [
@@ -242,8 +254,19 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
           paragraphs: ['Сайт можно использовать для изучения путешествий по Кыргызстану и отправки запросов о частных или небольших групповых поездках. Нельзя нарушать работу сайта, пытаться получить несанкционированный доступ или отправлять ложный, вредоносный либо незаконный контент.'],
         },
         {
+          id: 'booking',
           title: 'Заявка не является бронированием',
           paragraphs: ['Заявка с сайта — это только запрос. Она не подтверждает тур, транспорт, размещение, цену, оплату или наличие мест. Бронирование подтверждается только после письменного согласования маршрута, стоимости, условий и оплаты с командой.'],
+        },
+        {
+          title: 'Что происходит после заявки',
+          paragraphs: ['Команда отвечает по выбранному вами WhatsApp, Telegram или email. До подготовки предложения мы обсуждаем даты, число гостей, опыт и пожелания к размещению. На этом сайте оплата поездок не принимается.'],
+          bullets: ['Сначала обсуждаем маршрут и проверяем доступность на ваши даты.', 'Затем вы рассматриваете письменную программу и подробный расчёт: состав услуг, исключения, валюту, размер группы и организатора поездки.', 'До оплаты согласуйте письменно предоплату, срок внесения остатка, условия отмены и получателя платежа.', 'Получите письменное подтверждение бронирования. Отправка формы или выбор даты в календаре сами по себе не резервируют места.'],
+        },
+        {
+          id: 'changes-and-cancellation',
+          title: 'Изменения, отмена и возврат',
+          paragraphs: ['На сайте не опубликован единый размер предоплаты или график отмены для всех маршрутов. Условия зависят от согласованной поездки и поставщиков; не считайте предоплату или платёж автоматически возвратными.', 'До принятия обязательств запросите в письменном предложении сроки отмены, удержания и возвращаемые суммы. Также уточните порядок действий при отмене организатором, закрытии дороги или невозможности провести активность из-за погоды, способ и срок любого согласованного возврата.', 'Для изменения или отмены напишите команде в существующей переписке о поездке и укажите номер заявки или бронирования. Попросите письменное подтверждение получения запроса и влияния изменений на программу и стоимость, прежде чем принимать замену. Эти пояснения не заменяют условия конкретного бронирования и обязательные права по закону.'],
         },
         {
           title: 'Цены, маршруты и доступность',
@@ -271,6 +294,7 @@ const copy: Record<SiteLocale, Record<LegalPageKind, LegalCopy>> = {
 };
 
 export function LegalPage({ kind }: { kind: LegalPageKind }) {
+  const { hash } = useLocation();
   const locale = useSiteLocale();
   const text = copy[locale][kind];
   const isPrivacy = kind === 'privacy';
@@ -280,8 +304,18 @@ export function LegalPage({ kind }: { kind: LegalPageKind }) {
   const feedbackPath = localizedPath('/feedback', locale);
   const Icon = isPrivacy ? ShieldCheck : FileCheck2;
 
+  useEffect(() => {
+    if (!['#booking', '#changes-and-cancellation', '#cookies'].includes(hash)) return;
+    // This route is lazy-loaded; the router's global top reset runs before its
+    // section exists. Resolve the target after this page has mounted.
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start', behavior: 'auto' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [hash, kind, locale]);
+
   return (
-    <section className="bg-background">
+    <section className="editorial-content-page bg-background">
       <SEO
         title={text.title}
         description={text.description}
@@ -294,7 +328,7 @@ export function LegalPage({ kind }: { kind: LegalPageKind }) {
         ])}
       />
 
-      <div className="border-b border-border bg-muted/60 px-4 py-14 sm:px-6 lg:px-8">
+      <div className="page-editorial-hero border-b border-border bg-muted/60 px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
           <div className="flex items-center gap-3 text-secondary">
             <Icon className="h-6 w-6" aria-hidden="true" />
@@ -322,7 +356,7 @@ export function LegalPage({ kind }: { kind: LegalPageKind }) {
         ))}
 
         {isPrivacy && text.cookieTable && (
-          <section id="cookies" className="scroll-mt-24 rounded-2xl border border-border bg-card p-6 sm:p-8">
+          <section id="cookies" className="scroll-mt-24 rounded-md border border-border bg-card p-6 sm:p-8">
             <h2 className="text-2xl text-foreground">{text.cookieTable.title}</h2>
             <div className="mt-5 overflow-x-auto">
               <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
@@ -347,7 +381,7 @@ export function LegalPage({ kind }: { kind: LegalPageKind }) {
           <PolicySection key={section.title} section={section} />
         ))}
 
-        <section className="rounded-2xl border border-border bg-muted/50 p-6 sm:p-8">
+        <section className="rounded-md border border-border bg-muted/50 p-6 sm:p-8">
           <h2 className="text-2xl text-foreground">{text.contact}</h2>
           <p className="mt-3 leading-7 text-muted-foreground">{locale === 'ru' ? 'Напишите нам через форму: команда ответит по удобному каналу связи.' : 'Use the request form and the team will reply through your preferred contact channel.'}</p>
           <Button asChild className="mt-5 btn-micro">

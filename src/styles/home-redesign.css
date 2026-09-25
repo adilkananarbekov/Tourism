@@ -1,0 +1,633 @@
+.home-flow {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.site-header {
+  color: var(--foreground);
+}
+
+.site-header--transparent {
+  color: var(--site-text-on-dark);
+}
+
+.site-header--transparent .theme-trigger {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(0, 0, 0, 0.48);
+  color: var(--site-text-on-dark);
+}
+
+.site-brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.site-brand__logo {
+  display: block;
+  width: 11.25rem;
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+}
+
+.site-brand__logo--symbol {
+  width: 2.75rem;
+}
+
+.nav-link {
+  position: relative;
+  color: currentColor;
+  font-weight: 600;
+  opacity: 0.76;
+  transition: opacity 160ms ease, color 160ms ease;
+}
+
+.nav-link:hover,
+.nav-link-active {
+  color: currentColor;
+  opacity: 1;
+}
+
+.nav-link-active::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.55rem;
+  left: 0;
+  height: 2px;
+  background: var(--site-green);
+  content: '';
+}
+
+.site-header-cta,
+.seasonal-home-primary,
+.seasonal-home-secondary {
+  display: inline-flex;
+  min-height: 2.8rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1.15rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.site-header-cta {
+  background: var(--site-green);
+  color: var(--secondary-foreground);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+}
+
+.site-header--transparent .site-header-cta,
+.seasonal-home-primary {
+  background: var(--site-green-on-dark);
+  color: #0e1b13;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+}
+
+.site-header-cta:hover {
+  background: var(--site-green-hover);
+}
+
+.site-header--transparent .site-header-cta:hover,
+.seasonal-home-primary:hover {
+  background: var(--site-green-on-dark-hover);
+}
+
+.site-header-cta:hover,
+.seasonal-home-primary:hover,
+.seasonal-home-secondary:hover {
+  transform: translateY(-2px);
+}
+
+.site-header-cta svg,
+.seasonal-home-primary svg,
+.seasonal-home-secondary svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.site-mobile-menu {
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.seasonal-home-experience {
+  position: relative;
+  overflow: hidden;
+  background: var(--site-surface-dark);
+  color: var(--site-text-on-dark);
+}
+
+.seasonal-home-hero {
+  position: relative;
+  display: flex;
+  min-height: 600px;
+  align-items: flex-end;
+  overflow: hidden;
+  border-bottom: 1px solid var(--site-border-on-dark);
+}
+
+.seasonal-home-hero__image,
+.seasonal-home-hero__image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 52%;
+}
+
+.seasonal-home-hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.67) 0%, rgba(0, 0, 0, 0.34) 58%, rgba(0, 0, 0, 0.18) 100%),
+    linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.08) 62%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+.seasonal-home-hero__content {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 2rem, 80rem);
+  margin: 0 auto;
+  padding: 8rem 0 3.25rem;
+}
+
+.seasonal-home-kicker,
+.seasonal-home-season-copy > div > p,
+.seasonal-home-route__season {
+  color: var(--site-green-on-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.seasonal-home-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.15rem;
+}
+
+.seasonal-home-kicker::before {
+  width: 2.25rem;
+  height: 2px;
+  background: var(--site-green-on-dark);
+  content: '';
+}
+
+.seasonal-home-title {
+  max-width: 1050px;
+  margin: 0;
+  color: var(--site-text-on-dark);
+  font-family: var(--font-display);
+  font-size: clamp(3.8rem, 6vw, 5.75rem);
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+.seasonal-home-title__lead,
+.seasonal-home-title__accent {
+  display: block;
+}
+
+.seasonal-home-title__lead {
+  width: fit-content;
+  color: var(--site-text-on-dark);
+}
+
+.seasonal-home-title__accent {
+  position: relative;
+  width: fit-content;
+  color: var(--site-text-on-dark);
+}
+
+.seasonal-home-title__accent::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.16em;
+  left: 0;
+  height: 0.08em;
+  background: var(--site-green-on-dark);
+  content: '';
+  opacity: 0.92;
+}
+
+.seasonal-home-intro {
+  max-width: 38rem;
+  margin-top: 1rem;
+  color: var(--site-muted-on-dark);
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  line-height: 1.7;
+}
+
+.seasonal-home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.25rem;
+}
+
+.seasonal-home-secondary {
+  border: 1px solid rgba(247, 248, 244, 0.62);
+  background: rgba(0, 0, 0, 0.44);
+  color: var(--site-text-on-dark);
+}
+
+.seasonal-home-primary:focus-visible,
+.seasonal-home-secondary:focus-visible,
+.site-header-cta:focus-visible,
+.seasonal-home-season:focus-visible,
+.seasonal-home-route:focus-visible {
+  outline: 3px solid var(--site-green-on-dark);
+  outline-offset: 4px;
+}
+
+.seasonal-home-panel {
+  width: min(100% - 2rem, 80rem);
+  margin: 0 auto;
+  padding: 0 0 4.5rem;
+}
+
+.seasonal-home-seasons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-right: 1px solid var(--site-border-on-dark);
+  border-bottom: 1px solid var(--site-border-on-dark);
+  border-left: 1px solid var(--site-border-on-dark);
+}
+
+.seasonal-home-season {
+  position: relative;
+  display: flex;
+  min-height: 5.4rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  border-right: 1px solid var(--site-border-on-dark);
+  color: var(--site-muted-on-dark);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.seasonal-home-season:last-child {
+  border-right: 0;
+}
+
+.seasonal-home-season::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: transparent;
+  content: '';
+}
+
+.seasonal-home-season[data-active='true'] {
+  background: var(--site-surface-dark-raised);
+  color: var(--site-text-on-dark);
+}
+
+.seasonal-home-season[data-active='true']::before {
+  background: var(--site-green-on-dark);
+}
+
+.seasonal-home-season svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--site-green-on-dark);
+}
+
+.seasonal-home-season-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(16rem, 0.7fr);
+  gap: 3rem;
+  align-items: end;
+  padding: 3.5rem 0 2rem;
+}
+
+.seasonal-home-season-copy h2 {
+  max-width: 46rem;
+  margin-top: 0.55rem;
+  color: var(--site-text-on-dark);
+  font-family: var(--font-display);
+  font-size: clamp(2.65rem, 4.6vw, 4.8rem);
+  font-weight: 700;
+  letter-spacing: -0.014em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.seasonal-home-season-copy > p {
+  color: var(--site-muted-on-dark);
+  line-height: 1.65;
+}
+
+.seasonal-home-routes {
+  display: grid;
+  min-height: 450px;
+  grid-template-columns: minmax(0, 1.7fr) minmax(19rem, 0.85fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--site-border-on-dark);
+  border: 1px solid var(--site-border-on-dark);
+}
+
+.seasonal-home-route {
+  position: relative;
+  min-height: 220px;
+  overflow: hidden;
+  color: var(--site-text-on-dark);
+  isolation: isolate;
+}
+
+.seasonal-home-route[data-featured='true'] {
+  grid-row: 1 / span 2;
+}
+
+.seasonal-home-route__image,
+.seasonal-home-route__image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 520ms cubic-bezier(0.2, 0.75, 0.3, 1);
+}
+
+.seasonal-home-route__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0.34) 58%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+.seasonal-home-route__content {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.5rem;
+}
+
+.seasonal-home-route__content strong {
+  max-width: 90%;
+  margin-top: 0.45rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.25vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.seasonal-home-route__meta {
+  margin-top: 0.55rem;
+  color: var(--site-muted-on-dark);
+  font-size: 0.8rem;
+}
+
+.seasonal-home-route__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  color: var(--site-green-on-dark);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.seasonal-home-route__link svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.seasonal-home-route:hover .seasonal-home-route__image,
+.seasonal-home-route:hover .seasonal-home-route__image img {
+  transform: scale(1.045);
+}
+
+.seasonal-home-reassurance {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 3rem;
+  border-top: 1px solid var(--site-border-on-dark);
+  border-bottom: 1px solid var(--site-border-on-dark);
+}
+
+.seasonal-home-reassurance > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1.6rem 1rem;
+  border-right: 1px solid var(--site-border-on-dark);
+}
+
+.seasonal-home-reassurance > div:last-child {
+  border-right: 0;
+}
+
+.seasonal-home-reassurance svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-top: 0.15rem;
+  color: var(--site-green-on-dark);
+}
+
+.seasonal-home-reassurance span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.seasonal-home-reassurance strong {
+  color: var(--site-text-on-dark);
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+}
+
+.seasonal-home-reassurance small {
+  color: var(--site-muted-on-dark);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.seasonal-home-mountain-mark {
+  position: absolute;
+  right: -4rem;
+  bottom: 8rem;
+  color: color-mix(in srgb, var(--site-green-on-dark) 7%, transparent);
+  pointer-events: none;
+}
+
+.seasonal-home-mountain-mark svg {
+  width: 24rem;
+  height: 24rem;
+  stroke-width: 0.6;
+}
+
+@media (max-width: 1023px) {
+  .site-header--home:has(.site-mobile-menu) {
+    background: var(--card);
+    color: var(--foreground);
+  }
+
+  .seasonal-home-hero {
+    min-height: 650px;
+  }
+
+  .seasonal-home-routes {
+    min-height: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: minmax(300px, auto);
+  }
+
+  .seasonal-home-route[data-featured='true'] {
+    grid-row: auto;
+  }
+
+  .seasonal-home-route__content strong {
+    max-width: 100%;
+  }
+
+  .seasonal-home-reassurance {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .seasonal-home-reassurance > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .seasonal-home-reassurance > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--site-border-on-dark);
+  }
+}
+
+@media (max-width: 767px) {
+  .site-brand__logo {
+    width: 9.75rem;
+  }
+
+  .seasonal-home-hero {
+    min-height: 690px;
+  }
+
+  .seasonal-home-hero__image,
+  .seasonal-home-hero__image img {
+    object-position: 64% 50%;
+  }
+
+  .seasonal-home-hero__content {
+    width: min(100% - 2.5rem, 40rem);
+    padding: 8.5rem 0 4.6rem;
+  }
+
+  .seasonal-home-title {
+    font-size: clamp(3rem, 14.5vw, 4.45rem);
+    line-height: 1;
+  }
+
+  .seasonal-home-intro {
+    font-size: 0.98rem;
+  }
+
+  .seasonal-home-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .seasonal-home-primary,
+  .seasonal-home-secondary {
+    width: 100%;
+  }
+
+  .seasonal-home-panel {
+    width: min(100% - 1.5rem, 40rem);
+    padding-bottom: 3rem;
+  }
+
+  .seasonal-home-seasons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .seasonal-home-season {
+    min-height: 4.8rem;
+    border-bottom: 1px solid var(--site-border-on-dark);
+    font-size: 0.9rem;
+  }
+
+  .seasonal-home-season:nth-child(2) {
+    border-right: 0;
+  }
+
+  .seasonal-home-season:nth-child(n + 3) {
+    border-bottom: 0;
+  }
+
+  .seasonal-home-season-copy {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 2.6rem 0 1.5rem;
+  }
+
+  .seasonal-home-season-copy h2 {
+    font-size: clamp(2.35rem, 11vw, 3.35rem);
+  }
+
+  .seasonal-home-routes {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+
+  .seasonal-home-route,
+  .seasonal-home-route[data-featured='true'] {
+    min-height: 295px;
+  }
+
+  .seasonal-home-route__content strong {
+    font-size: 2rem;
+  }
+
+  .seasonal-home-reassurance {
+    grid-template-columns: 1fr;
+  }
+
+  .seasonal-home-reassurance > div,
+  .seasonal-home-reassurance > div:nth-child(2) {
+    border-right: 0;
+    border-bottom: 1px solid var(--site-border-on-dark);
+  }
+
+  .seasonal-home-reassurance > div:last-child {
+    border-bottom: 0;
+  }
+
+  .seasonal-home-mountain-mark {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seasonal-home-route__image,
+  .seasonal-home-route__image img,
+  .site-header-cta,
+  .seasonal-home-primary,
+  .seasonal-home-secondary {
+    transition: none;
+  }
+}
